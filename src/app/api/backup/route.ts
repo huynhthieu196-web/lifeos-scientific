@@ -1,26 +1,28 @@
 import { db } from "@/lib/db";
-import { ok, bad, parseBody } from "@/lib/api";
+import { ok, bad } from "@/lib/api";
+import { currentUserId, unauthorizedResponse } from "@/lib/require-user";
 
 export const dynamic = "force-dynamic";
 
-// GET /api/backup — full database export as JSON
-export async function GET() {
+/** Export only data owned by the authenticated user. Domains are shared taxonomy. */
+export async function GET(req: Request) {
+  const ownerId = await currentUserId(req);
+  if (!ownerId) return unauthorizedResponse();
   const [domains, projects, items, links, tags, reviews, habitLogs] = await Promise.all([
     db.domain.findMany(),
-    db.project.findMany(),
-    db.item.findMany({ include: { tags: { include: { tag: true } } } }),
-    db.link.findMany(),
-    db.tag.findMany(),
-    db.review.findMany(),
-    db.habitLog.findMany(),
+    db.project.findMany({ where: { ownerId } }),
+    db.item.findMany({ where: { ownerId }, include: { tags: { include: { tag: true } } } }),
+    db.link.findMany({ where: { from: { ownerId }, to: { ownerId } } }),
+    db.tag.findMany({ where: { items: { some: { item: { ownerId } } } } }),
+    db.review.findMany({ where: { ownerId } }),
+    db.habitLog.findMany({ where: { item: { ownerId } } }),
   ]);
-
   return ok({
-    version: 1,
+    version: 2,
     exportedAt: new Date().toISOString(),
     domains,
     projects,
-    items: items.map((i) => ({ ...i, metadata: i.metadata })),
+    items,
     links,
     tags,
     reviews,
@@ -28,76 +30,9 @@ export async function GET() {
   });
 }
 
-// POST /api/backup — restore from JSON backup
+/** Do not allow legacy destructive global restore in a two-user database. */
 export async function POST(req: Request) {
-  const body = await parseBody(req);
-  if (!body || !body.version) return bad("Invalid backup file");
-
-  try {
-    // Clear existing data (except users)
-    await db.habitLog.deleteMany();
-    await db.reviewItem.deleteMany();
-    await db.review.deleteMany();
-    await db.link.deleteMany();
-    await db.tagOnItem.deleteMany();
-    await db.tag.deleteMany();
-    await db.item.deleteMany();
-    await db.project.deleteMany();
-    await db.domain.deleteMany();
-
-    // Restore domains
-    if (body.domains) {
-      for (const d of body.domains) {
-        await db.domain.create({ data: { ...d, items: undefined, projects: undefined } });
-      }
-    }
-
-    // Restore tags
-    if (body.tags) {
-      for (const t of body.tags) {
-        await db.tag.create({ data: { ...t, items: undefined } });
-      }
-    }
-
-    // Restore projects
-    if (body.projects) {
-      for (const p of body.projects) {
-        await db.project.create({ data: { ...p, items: undefined, domain: undefined } });
-      }
-    }
-
-    // Restore items
-    if (body.items) {
-      for (const i of body.items) {
-        const { tags, domain, project, ...itemData } = i;
-        await db.item.create({ data: itemData });
-      }
-    }
-
-    // Restore links
-    if (body.links) {
-      for (const l of body.links) {
-        await db.link.create({ data: l });
-      }
-    }
-
-    // Restore reviews
-    if (body.reviews) {
-      for (const r of body.reviews) {
-        const { items, ...reviewData } = r;
-        await db.review.create({ data: reviewData });
-      }
-    }
-
-    // Restore habit logs
-    if (body.habitLogs) {
-      for (const h of body.habitLogs) {
-        await db.habitLog.create({ data: h });
-      }
-    }
-
-    return ok({ success: true, message: "Backup restored successfully" });
-  } catch (e: any) {
-    return bad(`Restore failed: ${e.message}`, 500);
-  }
+  const ownerId = await currentUserId(req);
+  if (!ownerId) return unauthorizedResponse();
+  return bad("Restore is temporarily disabled until a per-user transactional importer is implemented.", 409);
 }
