@@ -24,6 +24,7 @@ model User {
   items       Item[]
   projects    Project[]
   reviews     Review[]
+  tags        Tag[]
 }
 
 // ─── Life Domains ────────────────────────────────────────────────────────────
@@ -48,8 +49,8 @@ model Domain {
 // finances, contacts, ideas, goals, documents, bookmarks, milestones, etc.
 // Type-specific data lives in a JSON `metadata` string.
 model Item {
-  ownerId     String?
-  owner       User?    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId     String
+  owner       User    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   id          String   @id @default(cuid())
   type        String   // task | note | journal | habit | event | finance | contact | idea | goal | document | bookmark | milestone | routine | symptom | medication | affirmation | vision
   title       String
@@ -92,8 +93,8 @@ model Item {
 // ─── Project / Thread ────────────────────────────────────────────────────────
 // A container that aggregates related items into a unified dashboard.
 model Project {
-  ownerId     String?
-  owner       User?    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId     String
+  owner       User    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   id          String   @id @default(cuid())
   name        String
   description String?
@@ -136,10 +137,15 @@ model Link {
 // ─── Tags ────────────────────────────────────────────────────────────────────
 model Tag {
   id        String   @id @default(cuid())
-  name      String   @unique
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  name      String
   color     String   @default("#71717a")
   items     TagOnItem[]
   createdAt DateTime @default(now())
+
+  @@unique([ownerId, name])
+  @@index([ownerId])
 }
 
 model TagOnItem {
@@ -168,8 +174,8 @@ model HabitLog {
 
 // ─── Reviews & Reflections ───────────────────────────────────────────────────
 model Review {
-  ownerId     String?
-  owner       User?    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId     String
+  owner       User    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   id         String   @id @default(cuid())
   type       String   // daily | weekly | monthly
   date       DateTime
@@ -226,8 +232,7 @@ model Setting {
 }
 
 // ─── Cloud-synced activity sessions (independent of legacy, unscoped Item) ───
-// Only this new model is owner-scoped. Legacy Item/Review/Project need
-// owner scoping before the complete app is safe for multi-user cloud hosting.
+// User-owned activity sessions. Existing core models are now owner-scoped too.
 model ActivitySession {
   id        String   @id @default(cuid())
   userId    String
