@@ -13,7 +13,7 @@ export async function GET(req: Request) {
     db.project.findMany({ where: { ownerId } }),
     db.item.findMany({ where: { ownerId }, include: { tags: { include: { tag: true } } } }),
     db.link.findMany({ where: { from: { ownerId }, to: { ownerId } } }),
-    db.tag.findMany({ where: { items: { some: { item: { ownerId } } } } }),
+    db.tag.findMany({ where: { ownerId } }),
     db.review.findMany({ where: { ownerId } }),
     db.habitLog.findMany({ where: { item: { ownerId } } }),
   ]);
