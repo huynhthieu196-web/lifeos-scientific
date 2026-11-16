@@ -12,11 +12,12 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
   const current = await db.review.findFirst({ where: { id, ownerId }, select: { id: true } });
   if (!current) return notFound();
   const body = await parseBody(req);
-  const { priorities, ...rest } = body;
+  const { priorities, ownerId: _ignoredOwnerId, owner: _ignoredOwner, ...rest } = body;
   const review = await db.review.update({
     where: { id, ownerId },
     data: {
       ...rest,
+      ownerId,
       ...(priorities !== undefined
         ? { priorities: typeof priorities === "string" ? priorities : JSON.stringify(priorities) }
         : {}),
