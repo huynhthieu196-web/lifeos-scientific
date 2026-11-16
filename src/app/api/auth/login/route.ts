@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { ok, bad, parseBody, verifyPassword, createSession } from "@/lib/auth-utils";
 import type { NextRequest } from "next/server";
+import { approvedAccountEmails, isAllowedAccount } from "@/lib/account-policy";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +10,9 @@ export async function POST(req: NextRequest) {
   const body = await parseBody(req);
   const { email, password } = body;
 
-  if (!email || !password) return bad("Email and password are required");
+  if (!email || !password || typeof email !== "string" || typeof password !== "string") return bad("Email and password are required");
+  if (!approvedAccountEmails()) return bad("Account allowlist is not configured", 503);
+  if (!isAllowedAccount(email)) return bad("Invalid email or password", 401);
 
   const user = await db.user.findUnique({ where: { email: email.toLowerCase() } });
   if (!user) return bad("Invalid email or password", 401);
@@ -21,13 +24,13 @@ export async function POST(req: NextRequest) {
   if (user.totpVerified && user.totpSecret) {
     const session = createSession(user.id, user.email, false);
     const res = ok({ requiresVerification: true, email: user.email });
-    res.headers.set("Set-Cookie", `lifeos-session=${session}; Path=/; HttpOnly; SameSite=Lax; Max-Age=600`);
+    res.headers.set("Set-Cookie", `lifeos-session=${session}; Path=/; HttpOnly; SameSite=Lax; Max-Age=600${process.env.NODE_ENV === "production" ? "; Secure" : ""}`);
     return res;
   }
 
   // No 2FA — fully authenticated directly
   const session = createSession(user.id, user.email, true);
   const res = ok({ authenticated: true, email: user.email, name: user.name });
-  res.headers.set("Set-Cookie", `lifeos-session=${session}; Path=/; HttpOnly; SameSite=Lax; Max-Age=604800`);
+  res.headers.set("Set-Cookie", `lifeos-session=${session}; Path=/; HttpOnly; SameSite=Lax; Max-Age=604800${process.env.NODE_ENV === "production" ? "; Secure" : ""}`);
   return res;
 }
