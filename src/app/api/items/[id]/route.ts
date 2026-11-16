@@ -68,7 +68,7 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
       await db.tagOnItem.createMany({
         data: await Promise.all(
           (tagNames as string[]).map(async (name) => {
-            const tag = await db.tag.upsert({ where: { name }, update: {}, create: { name } });
+            const tag = await db.tag.upsert({ where: { ownerId_name: { ownerId, name } }, update: {}, create: { ownerId, name } });
             return { itemId: id, tagId: tag.id };
           }),
         ).then((rows) => rows),
