@@ -33,7 +33,11 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
   const exists = await db.item.findFirst({ where: { id, ownerId }, select: { id: true } });
   if (!exists) return notFound();
   const body = await parseBody(req);
-  const { metadata, tagNames, ...rest } = body;
+  if (body.projectId) {
+    const project = await db.project.findFirst({ where: { id: body.projectId, ownerId }, select: { id: true } });
+    if (!project) return bad("Project not found", 404);
+  }
+  const { metadata, tagNames, owner, ownerId: _ignoredOwnerId, ...rest } = body;
 
   // handle completedAt on status change
   if (rest.status === "done" && !rest.completedAt) {
@@ -47,6 +51,7 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
     where: { id, ownerId },
     data: {
       ...rest,
+      ownerId,
       ...(metadata ? { metadata: JSON.stringify(metadata) } : {}),
     },
     include: {
