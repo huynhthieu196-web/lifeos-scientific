@@ -8,6 +8,7 @@ import { GET as getItems, POST as postItems } from "../src/app/api/items/route";
 import { GET as getProjects, POST as postProjects } from "../src/app/api/projects/route";
 import { GET as getReviews, POST as postReviews } from "../src/app/api/reviews/route";
 import { GET as getBackup } from "../src/app/api/backup/route";
+import { GET as getTags, POST as postTags } from "../src/app/api/tags/route";
 
 const prefix = "test-two-accounts-";
 const alice = prefix + "alice@example.org";
@@ -57,6 +58,18 @@ test("two accounts cannot read each other's activity sessions via API", async ()
     assert.equal((await postProjects(request(bob, b.id, "POST", { name: "Private project B" }))).status, 200);
     assert.equal((await postReviews(request(alice, a.id, "POST", { type: "daily", notes: "Private review A" }))).status, 200);
     assert.equal((await postReviews(request(bob, b.id, "POST", { type: "daily", notes: "Private review B" }))).status, 200);
+    assert.equal((await postTags(request(alice, a.id, "POST", { name: "Private tag" }))).status, 200);
+    assert.equal((await postTags(request(bob, b.id, "POST", { name: "Private tag" }))).status, 200);
+    const tagsA = await (await getTags(request(alice, a.id, "GET"))).json();
+    const tagsB = await (await getTags(request(bob, b.id, "GET"))).json();
+    assert.equal(tagsA.tags.length, 1);
+    assert.equal(tagsB.tags.length, 1);
+    assert.notEqual(tagsA.tags[0].id, tagsB.tags[0].id);
+    const bobProject = await db.project.findFirstOrThrow({where:{ownerId:b.id}});
+    const crossProject = await postItems(request(alice, a.id, "POST", {
+      title:"illegal project reference", type:"task", projectId:bobProject.id
+    }));
+    assert.equal(crossProject.status, 404);
     const itemA = await (await getItems(request(alice, a.id, "GET"))).json();
     const itemB = await (await getItems(request(bob, b.id, "GET"))).json();
     assert.deepEqual(itemA.items.map((v: any) => v.title), ["Private task A"]);
