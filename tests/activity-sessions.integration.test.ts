@@ -1,4 +1,4 @@
-import { test } from "bun:test";
+import { test } from "node:test";
 import { strict as assert } from "node:assert";
 import { NextRequest } from "next/server";
 import { db } from "../src/lib/db";
