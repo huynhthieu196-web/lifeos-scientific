@@ -6,10 +6,24 @@ on:
 jobs:
   typecheck-build:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: placeholder
+          POSTGRES_DB: lifeos
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d lifeos"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     env:
       DATABASE_URL: postgresql://postgres:placeholder@localhost:5432/lifeos
       SESSION_SECRET: ci-only-long-random-not-for-production-0123456789
-      LIFEOS_ALLOWED_EMAILS: first@example.org,second@example.org
+      LIFEOS_ALLOWED_EMAILS: test-two-accounts-alice@example.org,test-two-accounts-bob@example.org
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -27,3 +41,7 @@ jobs:
         run: bun run build
       - name: Pure logic tests
         run: bun test tests/activity-sessions.test.ts tests/account-policy.test.ts
+      - name: Initialize disposable PostgreSQL schema
+        run: bunx prisma db push
+      - name: Two-account database isolation test
+        run: bun test tests/activity-sessions.integration.test.ts
