@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
   const withStats = await Promise.all(
     projects.map(async (p) => {
       const items = await db.item.findMany({
-        where: { projectId: p.id, status: { in: ["active", "done", "inbox"] } },
+        where: { projectId: p.id, ownerId, status: { in: ["active", "done", "inbox"] } },
         select: { type: true, status: true, dueDate: true },
       });
       const tasks = items.filter((i) => i.type === "task");
