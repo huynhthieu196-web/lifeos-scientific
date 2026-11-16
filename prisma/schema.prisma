@@ -21,6 +21,9 @@ model User {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   activitySessions ActivitySession[]
+  items       Item[]
+  projects    Project[]
+  reviews     Review[]
 }
 
 // ─── Life Domains ────────────────────────────────────────────────────────────
@@ -45,6 +48,8 @@ model Domain {
 // finances, contacts, ideas, goals, documents, bookmarks, milestones, etc.
 // Type-specific data lives in a JSON `metadata` string.
 model Item {
+  ownerId     String?
+  owner       User?    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   id          String   @id @default(cuid())
   type        String   // task | note | journal | habit | event | finance | contact | idea | goal | document | bookmark | milestone | routine | symptom | medication | affirmation | vision
   title       String
@@ -75,6 +80,7 @@ model Item {
   habitLogs   HabitLog[]
   reminders   Reminder[]
 
+  @@index([ownerId, type])
   @@index([type])
   @@index([status])
   @@index([domainId])
@@ -86,6 +92,8 @@ model Item {
 // ─── Project / Thread ────────────────────────────────────────────────────────
 // A container that aggregates related items into a unified dashboard.
 model Project {
+  ownerId     String?
+  owner       User?    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   id          String   @id @default(cuid())
   name        String
   description String?
@@ -103,6 +111,7 @@ model Project {
 
   items       Item[]
 
+  @@index([ownerId, status])
   @@index([status])
   @@index([domainId])
 }
@@ -159,6 +168,8 @@ model HabitLog {
 
 // ─── Reviews & Reflections ───────────────────────────────────────────────────
 model Review {
+  ownerId     String?
+  owner       User?    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   id         String   @id @default(cuid())
   type       String   // daily | weekly | monthly
   date       DateTime
@@ -180,6 +191,7 @@ model Review {
 
   items      ReviewItem[]
 
+  @@index([ownerId, type, date])
   @@index([type, date])
 }
 
