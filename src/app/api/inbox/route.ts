@@ -22,6 +22,10 @@ export async function POST(req: NextRequest) {
   const ownerId = await currentUserId(req);
   if (!ownerId) return unauthorizedResponse();
   const body = await parseBody(req);
+  if (body.projectId) {
+    const project = await db.project.findFirst({ where: { id: body.projectId, ownerId }, select: { id: true } });
+    if (!project) return Response.json({ error: "Project not found" }, { status: 404 });
+  }
   const title = (body.title || body.text || "").trim();
   if (!title) return ok({ error: "title required" }, { status: 400 });
 
