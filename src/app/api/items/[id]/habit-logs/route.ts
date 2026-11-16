@@ -1,12 +1,17 @@
 import { db } from "@/lib/db";
 import { ok, bad, parseBody } from "@/lib/api";
 import type { NextRequest } from "next/server";
+import { currentUserId, unauthorizedResponse } from "@/lib/require-user";
 
 export const dynamic = "force-dynamic";
 
 // GET /api/items/[id]/habit-logs
-export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const { id } = await ctx.params;
+  const ownerId = await currentUserId(req);
+  if (!ownerId) return unauthorizedResponse();
+  const habit = await db.item.findFirst({ where: { id, ownerId, type: "habit" }, select: { id: true } });
+  if (!habit) return bad("Not found", 404);
   const logs = await db.habitLog.findMany({ where: { itemId: id }, orderBy: { date: "desc" } });
   return ok({ logs });
 }
@@ -14,6 +19,10 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
 // POST /api/items/[id]/habit-logs — toggle log for a given date
 export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const { id } = await ctx.params;
+  const ownerId = await currentUserId(req);
+  if (!ownerId) return unauthorizedResponse();
+  const habit = await db.item.findFirst({ where: { id, ownerId, type: "habit" }, select: { id: true } });
+  if (!habit) return bad("Not found", 404);
   const body = await parseBody(req);
   const dateStr = body.date || new Date().toISOString().slice(0, 10);
   const date = new Date(dateStr);
