@@ -20,6 +20,7 @@ model User {
   totpVerified Boolean   @default(false)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+  activitySessions ActivitySession[]
 }
 
 // ─── Life Domains ────────────────────────────────────────────────────────────
@@ -210,4 +211,21 @@ model Reminder {
 model Setting {
   id    String @id
   value String
+}
+
+// ─── Cloud-synced activity sessions (independent of legacy, unscoped Item) ───
+// Only this new model is owner-scoped. Legacy Item/Review/Project need
+// owner scoping before the complete app is safe for multi-user cloud hosting.
+model ActivitySession {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label     String
+  startedAt DateTime
+  endedAt   DateTime
+  minutes   Int
+  isPrimary Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([userId, startedAt])
 }
