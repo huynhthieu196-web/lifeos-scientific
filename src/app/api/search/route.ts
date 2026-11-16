@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
       orderBy: { updatedAt: "desc" },
     }),
     db.project.findMany({ where: { ownerId, OR: [{ name: { contains: q } }, { description: { contains: q } }] }, take: 10 }),
-    db.tag.findMany({ where: { name: { contains: q }, items: { some: { item: { ownerId } } } }, take: 10, include: { _count: { select: { items: true } } } }),
+    db.tag.findMany({ where: { ownerId, name: { contains: q } }, take: 10, include: { _count: { select: { items: true } } } }),
   ]);
 
   return ok({ items: parseListMeta(items as any[]), projects, tags });
