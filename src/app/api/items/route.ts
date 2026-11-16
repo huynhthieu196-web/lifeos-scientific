@@ -1,13 +1,16 @@
 import { db } from "@/lib/db";
 import { ok, bad, parseBody, parseListMeta, parseMeta } from "@/lib/api";
 import type { NextRequest } from "next/server";
+import { currentUserId, unauthorizedResponse } from "@/lib/require-user";
 
 export const dynamic = "force-dynamic";
 
 // GET /api/items — list with rich filtering
 export async function GET(req: NextRequest) {
+  const ownerId = await currentUserId(req);
+  if (!ownerId) return unauthorizedResponse();
   const sp = req.nextUrl.searchParams;
-  const where: any = {};
+  const where: any = { ownerId };
 
   const type = sp.get("type");
   if (type) where.type = type.split(",").length > 1 ? { in: type.split(",") } : type;
@@ -52,6 +55,8 @@ export async function GET(req: NextRequest) {
 
 // POST /api/items — create
 export async function POST(req: NextRequest) {
+  const ownerId = await currentUserId(req);
+  if (!ownerId) return unauthorizedResponse();
   const body = await parseBody(req);
   if (!body.title) return bad("title is required");
   if (!body.type) return bad("type is required");
@@ -61,6 +66,7 @@ export async function POST(req: NextRequest) {
   const item = await db.item.create({
     data: {
       ...rest,
+      ownerId,
       ...(metadata ? { metadata: JSON.stringify(metadata) } : {}),
       ...(tagNames?.length
         ? {
