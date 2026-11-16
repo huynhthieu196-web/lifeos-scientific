@@ -1,10 +1,13 @@
 import { db } from "@/lib/db";
 import { ok, parseMeta } from "@/lib/api";
+import { currentUserId, unauthorizedResponse } from "@/lib/require-user";
 
 export const dynamic = "force-dynamic";
 
 // GET /api/on-this-day — journal entries and reviews from this same day in past years/weeks
-export async function GET() {
+export async function GET(req: Request) {
+  const ownerId = await currentUserId(req);
+  if (!ownerId) return unauthorizedResponse();
   const now = new Date();
   const month = now.getMonth();
   const date = now.getDate();
@@ -16,6 +19,7 @@ export async function GET() {
   const [journals, reviews] = await Promise.all([
     db.item.findMany({
       where: {
+        ownerId,
         type: "journal",
         status: { not: "archived" },
         OR: [
@@ -28,7 +32,7 @@ export async function GET() {
       take: 200,
     }),
     db.review.findMany({
-      where: { date: { gte: oneYearAgo } },
+      where: { ownerId, date: { gte: oneYearAgo } },
       orderBy: { date: "desc" },
       take: 200,
     }),
@@ -58,6 +62,7 @@ export async function GET() {
   // Also include items completed on this day in past (milestones, bookmarks)
   const completedOnDay = await db.item.findMany({
     where: {
+      ownerId,
       completedAt: { gte: oneYearAgo, not: null },
       status: "done",
       type: { in: ["milestone", "bookmark", "goal"] },
