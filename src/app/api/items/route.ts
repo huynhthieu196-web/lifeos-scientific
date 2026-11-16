@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
             tags: {
               create: await Promise.all(
                 (tagNames as string[]).map(async (name) => ({
-                  tag: { connectOrCreate: { where: { name }, create: { name } } },
+                  tag: { connectOrCreate: { where: { ownerId_name: { ownerId, name } }, create: { ownerId, name } } },
                 })),
               ),
             },
