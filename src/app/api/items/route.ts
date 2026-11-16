@@ -61,7 +61,11 @@ export async function POST(req: NextRequest) {
   if (!body.title) return bad("title is required");
   if (!body.type) return bad("type is required");
 
-  const { metadata, tagNames, ...rest } = body;
+  if (body.projectId) {
+    const project = await db.project.findFirst({ where: { id: body.projectId, ownerId }, select: { id: true } });
+    if (!project) return bad("Project not found", 404);
+  }
+  const { metadata, tagNames, owner, ownerId: _ignoredOwnerId, ...rest } = body;
 
   const item = await db.item.create({
     data: {
