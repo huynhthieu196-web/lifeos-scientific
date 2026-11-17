@@ -157,10 +157,10 @@ export function EisenhowerView() {
                         </span>}
                       </button>
                       <select className="max-w-[128px] rounded-md border border-input bg-background px-2 py-1.5 text-[11px]"
-                        aria-label={`Đổi mức ưu tiên cho ${task.title}`} value={q.key}
+                        aria-label={`${t(locale, "changePriority")} ${task.title}`} value={q.key}
                         disabled={busyTaskId !== null || update.isPending}
                         onChange={(event) => void assign(task, event.target.value as EisenhowerQuadrant | "unclassified")}>
-                        {QUADRANTS.map((option) => <option value={option.key} key={option.key}>{option.action}</option>)}
+                        {QUADRANTS.map((option) => <option value={option.key} key={option.key}>{t(locale, ({do:"actionDo",schedule:"actionSchedule",delegate:"actionDelegate",eliminate:"actionEliminate"} as const)[option.key])}</option>)}
                         <option value="unclassified">{t(locale, "unclassified")}</option>
                       </select>
                     </li>
@@ -181,7 +181,7 @@ export function EisenhowerView() {
               <li key={task.id} className="flex items-center gap-2 rounded-lg border border-border p-2">
                 <button type="button" onClick={() => openItemDetail(task.id)} className="min-w-0 flex-1 truncate text-left text-sm hover:underline">{task.title}</button>
                 <select value="unclassified" disabled={busyTaskId !== null || update.isPending}
-                  aria-label={`Phân loại công việc ${task.title}`}
+                  aria-label={`${t(locale, "classifyTask")} ${task.title}`}
                   onChange={(event) => void assign(task, event.target.value as EisenhowerQuadrant)}>
                   <option value="unclassified">{t(locale, "classify")}</option>
                   {QUADRANTS.map((q) => <option value={q.key} key={q.key}>{t(locale, ({do:"actionDo",schedule:"actionSchedule",delegate:"actionDelegate",eliminate:"actionEliminate"} as const)[q.key])}</option>)}
