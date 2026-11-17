@@ -19,7 +19,7 @@
 ### WHO / ILO (2021): thời gian làm việc dài
 - WHO/ILO Joint Estimates (2021), nghiên cứu tổng hợp về thời lượng làm việc và bệnh tim thiếu máu cục bộ / đột quỵ. WHO: https://www.who.int/news-room/questions-and-answers/item/global-regional-and-national-burdens-of-ischemic-heart-disease-and-stroke-attributable-to-exposure-to-long-working-hours-for-194-countries-2000-2016
 - Đối tượng so sánh trong nghiên cứu: **≥55 giờ/tuần** so với **35–40 giờ/tuần**. Đây là liên hệ nguy cơ ở mức quần thể trong nghiên cứu dài hạn; **không** có ý nghĩa "một tuần 55 giờ gây bệnh" và không tính xác suất bệnh cá nhân.
-- LifeOS chỉ tính số phút **người dùng khai là giờ làm việc** (không tự cộng giờ học, giờ rảnh hay thời gian theo dõi toàn bộ), và yêu cầu dữ liệu 7/7 ngày để tổng tuần có nghĩa.
+- LifeOS chỉ tính số phút **người dùng khai là giờ làm việc, kể cả tăng ca có hoặc không được trả lương** (không tự cộng giờ học, giờ rảnh hay thời gian theo dõi toàn bộ), và yêu cầu dữ liệu 7/7 ngày để tổng tuần có nghĩa.
 
 ### Micro-breaks (2022): những khoảng nghỉ ngắn
 - Albulescu et al., *"Give me a break!" A systematic review and meta-analysis on the efficacy of micro-breaks for increasing well-being and performance*, **PLOS ONE** (2022). https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0272460
