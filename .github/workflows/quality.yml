@@ -26,7 +26,6 @@ jobs:
     env:
       DATABASE_URL: postgresql://postgres:placeholder@localhost:5432/lifeos
       SESSION_SECRET: ci-only-long-random-not-for-production-0123456789
-      LIFEOS_ALLOWED_EMAILS: test-two-accounts-alice@example.org,test-two-accounts-bob@example.org
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
