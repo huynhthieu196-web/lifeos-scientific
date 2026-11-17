@@ -1,25 +1,38 @@
-/** Exactly two built-in account identities; no personal email addresses required. */
-export type AccountName = "account1" | "account2";
+/** Exactly two pre-approved accounts with fixed Vietnamese display/login names.
+ * Internal IDs remain stable for existing database references and signed sessions.
+ * Display names are not authentication secrets; passwords remain mandatory.
+ */
+export type AccountName = "Thanh Thiệu" | "Cao Kỳ";
 const ACCOUNTS = {
-  account1: "account1@lifeos.internal",
-  account2: "account2@lifeos.internal",
+  account1: { id: "account1@lifeos.internal", name: "Thanh Thiệu" },
+  account2: { id: "account2@lifeos.internal", name: "Cao Kỳ" },
 } as const;
 
+function normalizeName(value: string): string {
+  return value.trim().normalize("NFC").toLocaleLowerCase("vi-VN").replace(/\s+/g, " ");
+}
+
 export function normalizeAccountId(input: string): string | null {
-  const value = input.trim().toLowerCase();
-  if (value === "account1" || value === "account 1" || value === ACCOUNTS.account1) return ACCOUNTS.account1;
-  if (value === "account2" || value === "account 2" || value === ACCOUNTS.account2) return ACCOUNTS.account2;
+  if (typeof input !== "string") return null;
+  const value = normalizeName(input);
+  if (value === normalizeName(ACCOUNTS.account1.name) ||
+      value === normalizeName(ACCOUNTS.account1.id)) return ACCOUNTS.account1.id;
+  if (value === normalizeName(ACCOUNTS.account2.name) ||
+      value === normalizeName(ACCOUNTS.account2.id)) return ACCOUNTS.account2.id;
   return null;
 }
+
 export function approvedAccountEmails(): Set<string> {
-  return new Set(Object.values(ACCOUNTS));
+  return new Set([ACCOUNTS.account1.id, ACCOUNTS.account2.id]);
 }
+
 export function isAllowedAccount(value: string): boolean {
   return normalizeAccountId(value) !== null;
 }
+
 export function displayAccountName(value: string): AccountName | null {
-  const canonical = normalizeAccountId(value);
-  if (canonical === ACCOUNTS.account1) return "account1";
-  if (canonical === ACCOUNTS.account2) return "account2";
+  const id = normalizeAccountId(value);
+  if (id === ACCOUNTS.account1.id) return ACCOUNTS.account1.name;
+  if (id === ACCOUNTS.account2.id) return ACCOUNTS.account2.name;
   return null;
 }
