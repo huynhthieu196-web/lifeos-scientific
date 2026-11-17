@@ -8,6 +8,7 @@ import { PageHeader } from "../layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Icon } from "../icon";
+import { t } from "@/lib/i18n";
 
 type Task = {
   id: string; title: string; status: string; metadata?: Record<string, unknown> | null;
@@ -26,7 +27,7 @@ const BUTTON_STYLES: Record<EisenhowerQuadrant, string> = {
 };
 
 export function EisenhowerView() {
-  const { openItemDetail } = useLifeOS();
+  const { openItemDetail, locale } = useLifeOS();
   const { data, isLoading, error, refetch } = useItems({ type: "task", status: "active,inbox", limit: "500" });
   const create = useCreateItem();
   const update = useUpdateItem();
@@ -59,7 +60,7 @@ export function EisenhowerView() {
         metadata: eisenhowerMetadata(task.metadata, quadrant === "unclassified" ? null : quadrant),
       });
     } catch {
-      setErrorMessage("Không lưu được thay đổi. Vui lòng thử lại.");
+      setErrorMessage(t(locale, "saveFailed"));
     } finally {
       setBusyTaskId(null);
     }
@@ -78,15 +79,15 @@ export function EisenhowerView() {
       });
       setNewTitle("");
     } catch {
-      setErrorMessage("Không tạo được công việc. Vui lòng thử lại.");
+      setErrorMessage(t(locale, "createFailed"));
     }
   }
 
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Ma trận Eisenhower"
-        subtitle="Phân bổ công việc theo mức độ quan trọng và khẩn cấp. Dữ liệu được lưu trên Supabase cho riêng tài khoản của bạn."
+        title={t(locale, "eisenhower")}
+        subtitle={t(locale, "eisenhowerDesc")}
         icon="Grid2X2"
         color="#2563eb"
       />
@@ -94,56 +95,56 @@ export function EisenhowerView() {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {QUADRANTS.map((q) => (
           <div key={q.key} className="rounded-xl border border-border/70 bg-card/70 p-3">
-            <p className="text-xs text-muted-foreground">{q.action}</p>
+            <p className="text-xs text-muted-foreground">{t(locale, ({do:"actionDo",schedule:"actionSchedule",delegate:"actionDelegate",eliminate:"actionEliminate"} as const)[q.key])}</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums">{categorized[q.key].length}</p>
-            <p className="mt-1 text-[11px] text-muted-foreground">{q.title}</p>
+            <p className="mt-1 text-[11px] text-muted-foreground">{t(locale, ({do:"quadrantDo",schedule:"quadrantSchedule",delegate:"quadrantDelegate",eliminate:"quadrantEliminate"} as const)[q.key])}</p>
           </div>
         ))}
       </div>
 
       <form onSubmit={addTask} className="flex flex-wrap items-end gap-2 rounded-2xl border border-border bg-card/80 p-4">
         <label className="min-w-[220px] flex-1 space-y-1.5">
-          <span className="text-xs font-medium">Thêm công việc</span>
+          <span className="text-xs font-medium">{t(locale, "addTask")}</span>
           <Input value={newTitle} onChange={(event) => setNewTitle(event.target.value)} maxLength={200}
-            placeholder="Ví dụ: Hoàn thành báo cáo tuần..." aria-label="Tên công việc mới" />
+            placeholder={t(locale, "taskPlaceholder")} aria-label={t(locale, "addTask")} />
         </label>
         <label className="space-y-1.5">
-          <span className="block text-xs font-medium">Phân loại</span>
+          <span className="block text-xs font-medium">{t(locale, "classification")}</span>
           <select className="h-10 min-w-[180px] rounded-md border border-input bg-background px-3 text-sm"
             value={newQuadrant} onChange={(e) => setNewQuadrant(e.target.value as EisenhowerQuadrant)}
-            aria-label="Ô Eisenhower cho công việc mới">
-            {QUADRANTS.map((q) => <option key={q.key} value={q.key}>{q.action}</option>)}
+            aria-label={t(locale, "classification")}>
+            {QUADRANTS.map((q) => <option key={q.key} value={q.key}>{t(locale, ({do:"actionDo",schedule:"actionSchedule",delegate:"actionDelegate",eliminate:"actionEliminate"} as const)[q.key])}</option>)}
           </select>
         </label>
         <Button disabled={create.isPending || !newTitle.trim()} type="submit">
-          <Icon name="Plus" className="mr-1.5 h-4 w-4" /> Thêm
+          <Icon name="Plus" className="mr-1.5 h-4 w-4" /> {t(locale, "add")}
         </Button>
       </form>
 
       {(errorMessage || error) && (
         <div className="rounded-lg border border-rose-300 bg-rose-50 p-3 text-sm text-rose-700 dark:bg-rose-950/30" role="alert">
-          {errorMessage || "Không tải được công việc. Kiểm tra kết nối rồi thử lại."}
-          <button type="button" className="ml-2 underline" onClick={() => void refetch()}>Tải lại</button>
+          {errorMessage || t(locale, "loadFailed")}
+          <button type="button" className="ml-2 underline" onClick={() => void refetch()}>{t(locale, "reload")}</button>
         </div>
       )}
 
       {isLoading ? (
-        <p className="rounded-xl border border-border p-6 text-sm text-muted-foreground" aria-busy="true">Đang tải công việc...</p>
+        <p className="rounded-xl border border-border p-6 text-sm text-muted-foreground" aria-busy="true">{t(locale, "loadingTasks")}</p>
       ) : (
         <div className="grid gap-4 lg:grid-cols-2">
           {QUADRANTS.map((q) => (
             <section key={q.key} className={`min-h-[260px] rounded-2xl border p-4 ${QUADRANT_STYLES[q.key]}`}>
               <div className="mb-4 flex items-start justify-between gap-2">
                 <div>
-                  <h2 className="text-sm font-semibold">{q.title}</h2>
-                  <p className="mt-1 text-xs text-muted-foreground">{q.description}</p>
+                  <h2 className="text-sm font-semibold">{t(locale, ({do:"quadrantDo",schedule:"quadrantSchedule",delegate:"quadrantDelegate",eliminate:"quadrantEliminate"} as const)[q.key])}</h2>
+                  <p className="mt-1 text-xs text-muted-foreground">{t(locale, ({do:"descDo",schedule:"descSchedule",delegate:"descDelegate",eliminate:"descEliminate"} as const)[q.key])}</p>
                 </div>
-                <span className={`shrink-0 rounded-md px-2 py-1 text-[10px] font-semibold text-white ${BUTTON_STYLES[q.key]}`}>{q.action}</span>
+                <span className={`shrink-0 rounded-md px-2 py-1 text-[10px] font-semibold text-white ${BUTTON_STYLES[q.key]}`}>{t(locale, ({do:"actionDo",schedule:"actionSchedule",delegate:"actionDelegate",eliminate:"actionEliminate"} as const)[q.key])}</span>
               </div>
 
               {categorized[q.key].length === 0 ? (
                 <p className="rounded-lg border border-dashed border-border/70 p-6 text-center text-xs text-muted-foreground">
-                  Chưa có công việc. Thêm công việc ở phía trên hoặc phân loại ở mục bên dưới.
+                  {t(locale, "emptyQuadrant")}
                 </p>
               ) : (
                 <ul className="space-y-2">
@@ -152,7 +153,7 @@ export function EisenhowerView() {
                       <button type="button" className="min-w-0 flex-1 text-left text-sm font-medium hover:underline" onClick={() => openItemDetail(task.id)}>
                         {task.title}
                         {task.dueDate && <span className="mt-0.5 block text-[11px] font-normal text-muted-foreground">
-                          Hạn: {new Date(task.dueDate).toLocaleDateString("vi-VN")}
+                          {t(locale, "due")}: {new Date(task.dueDate).toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US")}
                         </span>}
                       </button>
                       <select className="max-w-[128px] rounded-md border border-input bg-background px-2 py-1.5 text-[11px]"
@@ -160,7 +161,7 @@ export function EisenhowerView() {
                         disabled={busyTaskId !== null || update.isPending}
                         onChange={(event) => void assign(task, event.target.value as EisenhowerQuadrant | "unclassified")}>
                         {QUADRANTS.map((option) => <option value={option.key} key={option.key}>{option.action}</option>)}
-                        <option value="unclassified">Chưa phân loại</option>
+                        <option value="unclassified">{t(locale, "unclassified")}</option>
                       </select>
                     </li>
                   ))}
@@ -173,8 +174,8 @@ export function EisenhowerView() {
 
       {!isLoading && categorized.unclassified.length > 0 && (
         <section className="rounded-2xl border border-border bg-card/80 p-4">
-          <h2 className="mb-1 text-sm font-semibold">Chưa phân loại ({categorized.unclassified.length})</h2>
-          <p className="mb-3 text-xs text-muted-foreground">Chỉ bạn mới quyết định việc nào thực sự quan trọng hay khẩn cấp; hệ thống không tự gán tùy tiện.</p>
+          <h2 className="mb-1 text-sm font-semibold">{t(locale, "unclassified")} ({categorized.unclassified.length})</h2>
+          <p className="mb-3 text-xs text-muted-foreground">{t(locale, "classifyExplanation")}</p>
           <ul className="grid gap-2 lg:grid-cols-2">
             {categorized.unclassified.map((task) => (
               <li key={task.id} className="flex items-center gap-2 rounded-lg border border-border p-2">
@@ -182,8 +183,8 @@ export function EisenhowerView() {
                 <select value="unclassified" disabled={busyTaskId !== null || update.isPending}
                   aria-label={`Phân loại công việc ${task.title}`}
                   onChange={(event) => void assign(task, event.target.value as EisenhowerQuadrant)}>
-                  <option value="unclassified">Phân loại...</option>
-                  {QUADRANTS.map((q) => <option value={q.key} key={q.key}>{q.action}</option>)}
+                  <option value="unclassified">{t(locale, "classify")}</option>
+                  {QUADRANTS.map((q) => <option value={q.key} key={q.key}>{t(locale, ({do:"actionDo",schedule:"actionSchedule",delegate:"actionDelegate",eliminate:"actionEliminate"} as const)[q.key])}</option>)}
                 </select>
               </li>
             ))}
@@ -192,8 +193,7 @@ export function EisenhowerView() {
       )}
 
       <p className="text-xs text-muted-foreground">
-        Gợi ý: ưu tiên xử lý ô I, dành thời gian có kế hoạch cho ô II. Ô III cân nhắc ủy quyền; ô IV hạn chế.
-        Tên nhóm mô tả phương pháp, không phải đánh giá tự động hiệu suất của bạn.
+        {t(locale, "matrixTip")}
       </p>
     </div>
   );
