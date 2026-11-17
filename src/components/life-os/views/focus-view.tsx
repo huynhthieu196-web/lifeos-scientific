@@ -65,27 +65,53 @@ export function FocusView() {
   const [todayMinutes, setTodayMinutes] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const [loaded, setLoaded] = useState(false);
+  const completedRef = useRef(false);
 
-  // load today's stats + sound pref from localStorage (once)
-  if (!loaded) {
-    setLoaded(true);
+  // Focus counts belong to the signed-in account and load from PostgreSQL.
+  // Local storage is retained only for the non-sensitive sound preference.
+  const refreshFocusStats = useCallback(async () => {
+    const response = await fetch("/api/activity-sessions", { cache: "no-store" });
+    if (!response.ok) throw new Error("Cannot load cloud focus history");
+    const payload = await response.json();
+    const today = new Date().toISOString().slice(0, 10);
+    const sessions = (payload.sessions || []).filter((session: { startedAt: string; label: string; minutes: number }) =>
+      new Date(session.startedAt).toISOString().slice(0, 10) === today &&
+      session.label.startsWith("Focus: "),
+    );
+    setCompletedSessions(sessions.length);
+    setTodayMinutes(sessions.reduce((total: number, session: { minutes: number }) =>
+      total + session.minutes, 0));
+  }, []);
+
+  useEffect(() => {
     try {
-      const today = new Date().toISOString().slice(0, 10);
-      const stored = localStorage.getItem(`lifeos-focus-${today}`);
-      if (stored) {
-        const { sessions, minutes } = JSON.parse(stored);
-        setCompletedSessions(sessions || 0);
-        setTodayMinutes(minutes || 0);
-      }
       const soundPref = localStorage.getItem("lifeos-focus-sound");
       if (soundPref !== null) setSoundEnabled(soundPref === "true");
     } catch {}
-  }
+    void refreshFocusStats().catch(() => {
+      notify.error("Focus history unavailable", "Check your cloud connection and try again.");
+    });
+  }, [refreshFocusStats]);
 
-  function persist(sessions: number, minutes: number) {
-    const today = new Date().toISOString().slice(0, 10);
-    localStorage.setItem(`lifeos-focus-${today}`, JSON.stringify({ sessions, minutes }));
+  async function persistFocusSession(minutes: number, title: string) {
+    const endedAt = new Date();
+    const startedAt = new Date(endedAt.getTime() - minutes * 60_000);
+    try {
+      const res = await fetch("/api/activity-sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          label: `Focus: ${title}`,
+          startedAt: startedAt.toISOString(),
+          endedAt: endedAt.toISOString(),
+          isPrimary: true,
+        }),
+      });
+      if (!res.ok) throw new Error("Cloud save failed");
+      await refreshFocusStats();
+    } catch {
+      notify.error("Could not save focus session", "Your progress has not been stored on cloud. Check your connection.");
+    }
   }
 
   function toggleSound() {
@@ -101,6 +127,7 @@ export function FocusView() {
     setDuration(mins * 60);
     setRemaining(mins * 60);
     setRunning(false);
+    completedRef.current = false;
   }, [customMins]);
 
   // apply custom duration
@@ -123,6 +150,9 @@ export function FocusView() {
     intervalRef.current = setInterval(() => {
       setRemaining((r) => {
         if (r <= 1) {
+          // Avoid duplicate writes when React re-runs state updater callbacks.
+          if (completedRef.current) return 0;
+          completedRef.current = true;
           // session complete
           setRunning(false);
           if (soundEnabled) playChime();
@@ -133,7 +163,11 @@ export function FocusView() {
             const newMinutes = todayMinutes + elapsedMins;
             setCompletedSessions(newSessions);
             setTodayMinutes(newMinutes);
-            persist(newSessions, newMinutes);
+            void persistFocusSession(elapsedMins, selectedItemType === "task"
+              ? tasks.find((task) => task.id === selectedItemId)?.title || "Task"
+              : selectedItemType === "habit"
+                ? habits.find((habit) => habit.id === selectedItemId)?.title || "Habit"
+                : "Deep Work");
 
             // Log habit if a habit was selected
             if (selectedItemType === "habit" && selectedItemId) {
@@ -164,7 +198,7 @@ export function FocusView() {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [running, mode, duration, completedSessions, todayMinutes, selectedItemId, selectedItemType, soundEnabled, switchMode, habits, toggleHabit]);
+  }, [running, mode, duration, completedSessions, todayMinutes, selectedItemId, selectedItemType, soundEnabled, switchMode, tasks, habits, toggleHabit]);
 
   function selectItem(id: string, type: "task" | "habit") {
     if (id === "none") {
@@ -366,7 +400,7 @@ export function FocusView() {
               size="lg"
               variant="outline"
               className="h-12 w-12 p-0"
-              onClick={() => { setRunning(false); setRemaining(duration); }}
+              onClick={() => { setRunning(false); setRemaining(duration); completedRef.current = false; }}
               title="Reset"
             >
               <Icon name="RotateCcw" className="h-5 w-5" />
