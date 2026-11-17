@@ -18,6 +18,7 @@ import { useState } from "react";
 
 const NAV = [
   { key: "dashboard", name: "Dashboard", icon: "LayoutDashboard" },
+  { key: "eisenhower", name: "Ma trận Eisenhower", icon: "Grid2X2" },
   { key: "inbox", name: "Inbox", icon: "Inbox" },
   { key: "calendar", name: "Calendar", icon: "CalendarDays" },
   { key: "agenda", name: "Agenda", icon: "CalendarRange" },
