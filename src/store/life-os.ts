@@ -6,6 +6,7 @@ import { DEFAULT_LOCALE, LOCALE_STORAGE_KEY, isLocale, type Locale } from "@/lib
 export type ViewKey =
   | "dashboard"
   | "eisenhower"
+  | "scientific"
   | "inbox"
   | "calendar"
   | "projects"
