@@ -133,15 +133,11 @@ export default function LoginPage() {
                   <button
                     onClick={() => { setMode("login"); setError(""); }}
                     className={`flex-1 rounded-lg py-2 text-sm font-semibold transition-all ${mode === "login" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
-                  >
-                    Đăng nhập
-                  </button>
+                  >{t(locale, "login")}</button>
                   <button
                     onClick={() => { setMode("register"); setError(""); }}
                     className={`flex-1 rounded-lg py-2 text-sm font-semibold transition-all ${mode === "register" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
-                  >
-                    Tạo tài khoản
-                  </button>
+                  >{t(locale, "signup")}</button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
