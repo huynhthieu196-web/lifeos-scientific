@@ -138,10 +138,10 @@ export default function LoginPage() {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   {mode === "register" && (
                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }}>
-                      <Label className="mb-1.5 block text-xs font-semibold text-muted-foreground">Name</Label>
+                      <Label className="mb-1.5 block text-xs font-semibold text-muted-foreground">Tên hiển thị</Label>
                       <div className="relative">
                         <Brain className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
-                        <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" className="h-11 pl-10" />
+                        <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Thanh Thiệu hoặc Cao Kỳ" className="h-11 pl-10" />
                       </div>
                     </motion.div>
                   )}
@@ -150,12 +150,12 @@ export default function LoginPage() {
                     <Label className="mb-1.5 block text-xs font-semibold text-muted-foreground">Tài khoản</Label>
                     <div className="relative">
                       <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
-                      <Input type="text" autoComplete="username" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="account1 hoặc account2" className="h-11 pl-10" />
+                      <Input type="text" autoComplete="username" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Thanh Thiệu hoặc Cao Kỳ" className="h-11 pl-10" />
                     </div>
                   </div>
 
                   <div>
-                    <Label className="mb-1.5 block text-xs font-semibold text-muted-foreground">Password</Label>
+                    <Label className="mb-1.5 block text-xs font-semibold text-muted-foreground">Mật khẩu</Label>
                     <div className="relative">
                       <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
                       <Input
@@ -275,7 +275,7 @@ export default function LoginPage() {
                 }} className="space-y-4">
                   <div className="relative">
                     <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
-                    <Input type="text" autoComplete="username" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="account1 hoặc account2" className="h-11 pl-10" />
+                    <Input type="text" autoComplete="username" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Thanh Thiệu hoặc Cao Kỳ" className="h-11 pl-10" />
                   </div>
                   <div className="relative">
                     <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
