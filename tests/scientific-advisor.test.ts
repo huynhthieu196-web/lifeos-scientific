@@ -24,7 +24,7 @@ test("sleep <7 uses consensus, but LifeOS thresholds described as heuristics", (
   const rec=report.recommendations.find(r=>r.id==="sleep_under_7")!;
   assert.equal(rec.recordedDays,7);
   assert.equal(rec.evidenceId,"AASM_2015");
-  assert.match(rec.caveatEn,/LifeOS implementation choice/);
+  assert.match(rec.caveatEn,/app rule, not a diagnostic cutoff/);
   assert.ok(SCIENTIFIC_SOURCES.find(s=>s.id===rec.evidenceId)?.url.startsWith("https://"));
 });
 test("WHO equivalent vigorous minutes and full seven-day coverage", () => {
