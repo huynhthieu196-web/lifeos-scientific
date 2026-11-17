@@ -160,8 +160,8 @@ export function createScientificReport(
     recommendations.push({
       id:"long_work_hours",category:"work",indicator:"paid_work_hours",observed:workHours,
       target:"<55 hours/week is outside the higher-exposure group studied",recordedDays:7,
-      observationVi:`Trong 7 ngày ghi đủ dữ liệu, bạn khai báo ${workHours} giờ làm việc (không gồm giờ học).`,
-      observationEn:`Across 7 fully recorded days you logged ${workHours} paid work hours (study excluded).`,
+      observationVi:`Trong 7 ngày ghi đủ dữ liệu, bạn khai báo ${workHours} giờ làm việc (gồm tăng ca, không gồm giờ học).`,
+      observationEn:`Across 7 fully recorded days you logged ${workHours} work hours including overtime (study excluded).`,
       adviceVi:"Nên xem lại tính bền vững của thời lượng làm việc, trao đổi về khối lượng và cơ hội nghỉ ngơi nếu có thể.",
       adviceEn:"Consider reviewing whether this workload is sustainable and discussing workload and recovery opportunities where feasible.",
       evidenceId:"WHO_ILO_2021",basis:"systematic_review",
