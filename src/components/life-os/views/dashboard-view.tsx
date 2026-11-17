@@ -198,6 +198,21 @@ export function DashboardView() {
         <div className="pointer-events-none absolute -bottom-16 right-24 h-40 w-40 rounded-full bg-teal-500/10 blur-3xl" />
       </motion.div>
 
+      <button
+        type="button"
+        onClick={() => setView("eisenhower")}
+        className="flex w-full items-center justify-between rounded-2xl border border-blue-200/70 bg-blue-50/60 px-4 py-3 text-left transition hover:bg-blue-100/70 dark:border-blue-900/60 dark:bg-blue-950/20"
+      >
+        <span className="flex items-center gap-3">
+          <Icon name="Grid2X2" className="h-5 w-5 text-blue-600" />
+          <span>
+            <span className="block text-sm font-semibold">Ma trận Eisenhower</span>
+            <span className="block text-xs text-muted-foreground">Phân loại việc quan trọng, khẩn cấp và ưu tiên hôm nay</span>
+          </span>
+        </span>
+        <Icon name="ArrowRight" className="h-4 w-4 text-blue-600" />
+      </button>
+
       {/* Stat pills */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <button onClick={() => setView("inbox")} className="text-left">
