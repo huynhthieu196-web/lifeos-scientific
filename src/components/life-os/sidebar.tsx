@@ -20,6 +20,7 @@ import { t, type TranslationKey } from "@/lib/i18n";
 const NAV = [
   { key: "dashboard", name: "Dashboard", icon: "LayoutDashboard" },
   { key: "eisenhower", name: "Ma trận Eisenhower", icon: "Grid2X2" },
+  { key: "scientific", name: "Phân tích khoa học", icon: "ChartNoAxesCombined" },
   { key: "inbox", name: "Inbox", icon: "Inbox" },
   { key: "calendar", name: "Calendar", icon: "CalendarDays" },
   { key: "agenda", name: "Agenda", icon: "CalendarRange" },
