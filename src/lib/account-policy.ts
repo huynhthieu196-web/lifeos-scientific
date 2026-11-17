@@ -1,15 +1,25 @@
-/** Simple two-account allowlist. Do not commit actual email addresses. */
-export function approvedAccountEmails(): Set<string> | null {
-  const raw = process.env.LIFEOS_ALLOWED_EMAILS || "";
-  const emails = raw.split(",").map((x) => x.trim().toLowerCase()).filter(Boolean);
-  if (emails.length < 1 || emails.length > 2 || new Set(emails).size !== emails.length ||
-      emails.some((email) => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) {
-    return null;
-  }
-  return new Set(emails);
+/** Exactly two built-in account identities; no personal email addresses required. */
+export type AccountName = "account1" | "account2";
+const ACCOUNTS = {
+  account1: "account1@lifeos.internal",
+  account2: "account2@lifeos.internal",
+} as const;
+
+export function normalizeAccountId(input: string): string | null {
+  const value = input.trim().toLowerCase();
+  if (value === "account1" || value === "account 1" || value === ACCOUNTS.account1) return ACCOUNTS.account1;
+  if (value === "account2" || value === "account 2" || value === ACCOUNTS.account2) return ACCOUNTS.account2;
+  return null;
 }
-export function isAllowedAccount(email: string): boolean {
-  const allowlist = approvedAccountEmails();
-  // Strict in all deployments: two-account project should never accept arbitrary signups.
-  return !!allowlist && allowlist.has(email.trim().toLowerCase());
+export function approvedAccountEmails(): Set<string> {
+  return new Set(Object.values(ACCOUNTS));
+}
+export function isAllowedAccount(value: string): boolean {
+  return normalizeAccountId(value) !== null;
+}
+export function displayAccountName(value: string): AccountName | null {
+  const canonical = normalizeAccountId(value);
+  if (canonical === ACCOUNTS.account1) return "account1";
+  if (canonical === ACCOUNTS.account2) return "account2";
+  return null;
 }
