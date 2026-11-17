@@ -10,9 +10,8 @@ import { GET as getReviews, POST as postReviews } from "../src/app/api/reviews/r
 import { GET as getBackup } from "../src/app/api/backup/route";
 import { GET as getTags, POST as postTags } from "../src/app/api/tags/route";
 
-const prefix = "test-two-accounts-";
-const alice = prefix + "alice@example.org";
-const bob = prefix + "bob@example.org";
+const alice = "account1@lifeos.internal";
+const bob = "account2@lifeos.internal";
 
 function request(email: string, userId: string, method: "GET" | "POST", body?: object) {
   const token = createSession(userId, email, true);
