@@ -12,6 +12,7 @@ import { NotificationManager } from "./notifications";
 import { OnboardingFlow } from "./onboarding-flow";
 import { AnimatePresence, motion } from "framer-motion";
 import { DashboardView } from "./views/dashboard-view";
+import { EisenhowerView } from "./views/eisenhower-view";
 import { InboxView } from "./views/inbox-view";
 import { CalendarView } from "./views/calendar-view";
 import { ProjectsView } from "./views/projects-view";
@@ -51,7 +52,7 @@ export function Shell() {
       // g + key navigation
       if (gPressed) {
         const map: Record<string, any> = {
-          d: "dashboard", i: "inbox", c: "calendar", a: "agenda",
+          d: "dashboard", e: "eisenhower", i: "inbox", c: "calendar", a: "agenda",
           f: "focus", p: "projects", g: "graph", r: "reviews", s: "insights", n: "sanctuary",
         };
         const target = map[e.key.toLowerCase()];
@@ -117,6 +118,7 @@ export function Shell() {
 
 function ViewSwitcher({ view }: { view: string }) {
   if (view === "dashboard") return <DashboardView />;
+  if (view === "eisenhower") return <EisenhowerView />;
   if (view === "inbox") return <InboxView />;
   if (view === "calendar") return <CalendarView />;
   if (view === "agenda") return <AgendaView />;
