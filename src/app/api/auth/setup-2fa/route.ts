@@ -1,20 +1,15 @@
 import { db } from "@/lib/db";
-import { ok, bad, parseBody, generateTOTPSecret, generateOTPAuthURL, generateTOTPCode, verifySession, verifyTOTP } from "@/lib/auth-utils";
+import { ok, bad, parseBody, generateTOTPSecret, generateOTPAuthURL, generateTOTPCode, verifyTOTP } from "@/lib/auth-utils";
 import type { NextRequest } from "next/server";
+import { currentUserId, unauthorizedResponse } from "@/lib/require-user";
 
 export const dynamic = "force-dynamic";
 
 // POST /api/auth/setup-2fa — generate TOTP secret and return QR code URL
 export async function POST(req: NextRequest) {
-  // Get session from cookie
-  const cookie = req.headers.get("cookie") || "";
-  const match = cookie.match(/lifeos-session=([^;]+)/);
-  if (!match) return bad("No active session", 401);
-
-  const session = verifySession(match[1]);
-  if (!session) return bad("Invalid or expired session", 401);
-
-  const user = await db.user.findUnique({ where: { id: session.userId } });
+  const userId = await currentUserId(req);
+  if (!userId) return unauthorizedResponse();
+  const user = await db.user.findUnique({ where: { id: userId } });
   if (!user) return bad("User not found", 401);
 
   const body = await parseBody(req);
