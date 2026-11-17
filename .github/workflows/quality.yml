@@ -44,7 +44,7 @@ jobs:
       - name: Build app (no DB push)
         run: bun run build
       - name: Pure logic tests
-        run: bun test tests/activity-sessions.test.ts tests/account-policy.test.ts tests/request-origin.test.ts tests/eisenhower.test.ts tests/i18n.test.ts
+        run: bun test tests/activity-sessions.test.ts tests/account-policy.test.ts tests/request-origin.test.ts tests/eisenhower.test.ts tests/i18n.test.ts tests/scientific-advisor.test.ts
       - name: Initialize disposable PostgreSQL schema
         run: bunx prisma db push
       - name: Two-account database isolation test
