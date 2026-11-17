@@ -27,7 +27,7 @@ const fields: {key:Field;vi:string;en:string;max:number;step:number}[]=[
   {key:"sleepHours",vi:"Giờ ngủ (giờ)",en:"Sleep duration (hours)",max:24,step:0.1},
   {key:"moderateMinutes",vi:"Vận động mức vừa (phút)",en:"Moderate activity (min)",max:1440,step:1},
   {key:"vigorousMinutes",vi:"Vận động mức mạnh (phút)",en:"Vigorous activity (min)",max:1440,step:1},
-  {key:"paidWorkMinutes",vi:"Thời gian làm việc, không tính giờ học (phút)",en:"Paid work time, study excluded (min)",max:1440,step:1},
+  {key:"paidWorkMinutes",vi:"Giờ làm việc, kể cả tăng ca (phút; không gồm giờ học)",en:"Work including overtime (min; study excluded)",max:1440,step:1},
 ];
 const emptyForm:Record<Field,string>={sleepHours:"",moderateMinutes:"",vigorousMinutes:"",paidWorkMinutes:""};
 const text={
@@ -35,7 +35,7 @@ const text={
     title:"Phân tích khoa học",subtitle:"Chỉ số dựa trên số liệu bạn nhập, với quy tắc khuyến nghị có trích dẫn nghiên cứu.",
     form:"Nhật ký số liệu hằng ngày",day:"Ngày",save:"Lưu số liệu",saving:"Đang lưu...",
     unknown:"Bỏ trống = chưa ghi nhận; số 0 = xác nhận không thực hiện. Không tự suy đoán từ tên hoạt động.",
-    recorded:"Số ngày có dữ liệu",sleep:"Ngủ trung bình (7 ngày)",activity:"Vận động tương đương (7 ngày)",work:"Làm việc trả lương (7 ngày)",task:"Công việc hoàn thành (30 ngày)",tracked:"Thời gian được theo dõi (30 ngày)",
+    recorded:"Số ngày có dữ liệu",sleep:"Ngủ trung bình (7 ngày)",activity:"Vận động tương đương (7 ngày)",work:"Thời gian làm việc (7 ngày)",task:"Công việc hoàn thành (30 ngày)",tracked:"Thời gian được theo dõi (30 ngày)",
     missing:"Chưa đủ số liệu",hours:"giờ",minutes:"phút",days:"ngày",nights:"đêm",
     sleepChart:"Giấc ngủ theo ngày",workChart:"Giờ làm việc theo ngày",activityChart:"Vận động mức vừa tương đương theo ngày",
     chartNote:"Điểm trống là chưa ghi nhận, không phải số 0.",
@@ -55,9 +55,9 @@ const text={
     title:"Scientific Insights",subtitle:"Evidence-linked analytics based only on values you explicitly record.",
     form:"Daily measurements",day:"Date",save:"Save measurements",saving:"Saving...",
     unknown:"Blank = not recorded; 0 = explicitly none. No guesses from activity labels.",
-    recorded:"Days with recorded data",sleep:"Average sleep (7 days)",activity:"Equivalent activity (7 days)",work:"Paid work (7 days)",task:"Tasks completed (30 days)",tracked:"Tracked time (30 days)",
+    recorded:"Days with recorded data",sleep:"Average sleep (7 days)",activity:"Equivalent activity (7 days)",work:"Work hours (7 days)",task:"Tasks completed (30 days)",tracked:"Tracked time (30 days)",
     missing:"Insufficient data",hours:"hours",minutes:"min",days:"days",nights:"nights",
-    sleepChart:"Daily sleep",workChart:"Daily paid work hours",activityChart:"Daily moderate-equivalent exercise",
+    sleepChart:"Daily sleep",workChart:"Daily work hours",activityChart:"Daily moderate-equivalent exercise",
     chartNote:"Missing points are unrecorded values, not zeros.",
     recommendations:"Evidence-linked recommendations",noRec:"No recommendation has sufficient data yet. This does not imply no health risks.",
     advice:"Action",evidence:"Research source",caveat:"Interpretation limit",sourceList:"Scientific evidence library",
@@ -182,6 +182,15 @@ export function ScientificView() {
           </section>
         </div>
         <p className="text-xs text-muted-foreground">{tr.chartNote}</p>
+      {data.metrics.topSessionLabels.length > 0 && <section className="rounded-2xl border border-border bg-card p-4">
+        <h2 className="mb-2 text-sm font-semibold">{tr.sessions} — {label(locale,"30 ngày qua","past 30 days")}</h2>
+        <div className="space-y-2">{data.metrics.topSessionLabels.map(x=><div key={x.label} className="grid grid-cols-[minmax(80px,1fr)_2fr_65px] items-center gap-3 text-xs">
+          <span className="truncate" title={x.label}>{x.label}</span>
+          <div className="h-2 overflow-hidden rounded-full bg-muted"><div className="h-full rounded-full bg-blue-500" style={{width:`${Math.min(100,100*x.minutes/Math.max(1,data.metrics.topSessionLabels[0].minutes))}%`}} /></div>
+          <span className="text-right tabular-nums">{Math.round(x.minutes/6)/10} {tr.hours}</span>
+        </div>)}</div>
+        <p className="mt-2 text-[11px] text-muted-foreground">{label(locale,"Nhóm theo đúng tên bạn nhập; không tự suy đoán đó là công việc hay học tập. Phiên có thể chồng lấp.","Grouped by your exact labels. Work/study classification is not inferred. Sessions may overlap.")}</p>
+      </section>}
 
         <section className="space-y-3">
           <h2 className="text-lg font-semibold"><Icon name="BookOpenCheck" className="mr-2 inline h-5 w-5 text-blue-600"/>{tr.recommendations}</h2>
