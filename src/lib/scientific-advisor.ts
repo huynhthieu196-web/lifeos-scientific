@@ -136,11 +136,11 @@ export function createScientificReport(
       target:"≥7 h/night, regularly",recordedDays:sleep.length,
       observationVi:`Trong ${sleep.length} đêm có dữ liệu, ${below7} đêm ngủ dưới 7 giờ (trung bình ${avgSleep} giờ).`,
       observationEn:`Of ${sleep.length} recorded nights, ${below7} were under 7 hours (average ${avgSleep} hours).`,
-      adviceVi:"Bạn có thể xem lại giờ ngủ và dành cơ hội ngủ đều đặn ít nhất 7 giờ mỗi đêm. Không thể đánh giá chất lượng giấc ngủ chỉ bằng thời lượng.",
-      adviceEn:"Consider protecting time to sleep regularly at least 7 hours per night. Duration alone does not establish sleep quality.",
+      adviceVi:"Nếu bạn 18–60 tuổi, hãy xem lại lịch ngủ và dành cơ hội ngủ đều đặn ít nhất 7 giờ mỗi đêm. Không thể đánh giá chất lượng giấc ngủ chỉ bằng thời lượng.",
+      adviceEn:"For adults aged 18–60, consider protecting time for at least 7 hours of sleep regularly. Duration alone does not establish sleep quality.",
       evidenceId:"AASM_2015",basis:"evidence_based_guideline",
-      caveatVi:"Ngưỡng 7 giờ là khuyến nghị AASM; điều kiện có ≥5 đêm và ≥3 đêm thiếu ngủ là quy tắc kích hoạt do LifeOS thiết kế, không phải ngưỡng chẩn đoán.",
-      caveatEn:"The 7-hour threshold is from AASM; the 5-night/3-night trigger is a LifeOS implementation choice, not a diagnostic cutoff.",
+      caveatVi:"Ngưỡng 7 giờ là khuyến nghị AASM cho tuổi 18–60, chưa kiểm chứng tuổi của từng tài khoản; điều kiện ≥5 đêm và ≥3 đêm dưới ngưỡng là quy tắc ứng dụng, không phải ngưỡng chẩn đoán.",
+      caveatEn:"The AASM 7-hour guidance is for ages 18–60 (user age not verified); the 5-night/3-night trigger is an app rule, not a diagnostic cutoff.",
     });
   }
   if (exercise.length === 7 && equivalentExercise < 150) {
@@ -149,8 +149,8 @@ export function createScientificReport(
       target:"≥150 min/week moderate-equivalent",recordedDays:7,
       observationVi:`Trong 7 ngày ghi đủ dữ liệu, bạn có ${equivalentExercise} phút vận động mức vừa tương đương.`,
       observationEn:`Across 7 fully recorded days, you logged ${equivalentExercise} moderate-equivalent activity minutes.`,
-      adviceVi:"Nếu phù hợp với sức khỏe, hãy tăng dần vận động aerobic mức vừa hướng tới tối thiểu 150 phút mỗi tuần (hoặc kết hợp mức mạnh tương đương).",
-      adviceEn:"If appropriate for your health, gradually build toward 150 minutes of moderate aerobic activity per week (or the vigorous equivalent).",
+      adviceVi:"Với người trưởng thành và nếu phù hợp với sức khỏe, hãy tăng dần vận động aerobic mức vừa hướng tới tối thiểu 150 phút mỗi tuần (hoặc kết hợp mức mạnh tương đương).",
+      adviceEn:"For adults, if appropriate for your health, gradually build toward 150 minutes of moderate aerobic activity per week (or the vigorous equivalent).",
       evidenceId:"WHO_2020",basis:"evidence_based_guideline",
       caveatVi:"150 phút là ngưỡng theo WHO; quy đổi 1 phút mức mạnh = 2 phút mức vừa chỉ là cách tính tương đương. Chỉ tính dữ liệu bạn chủ động khai báo.",
       caveatEn:"150 minutes is a WHO guideline; 1 vigorous minute is counted as 2 moderate minutes. Only explicitly logged exercise is counted.",
