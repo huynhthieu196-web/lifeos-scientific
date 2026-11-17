@@ -7,6 +7,10 @@ export const dynamic = "force-dynamic";
 
 // POST /api/auth/register
 export async function POST(req: NextRequest) {
+  // Registration stays locked on public cloud until the owner explicitly enables onboarding.
+  if (process.env.NODE_ENV === "production" && process.env.LIFEOS_ENABLE_REGISTRATION !== "true") {
+    return bad("Account registration is disabled", 403);
+  }
   const body = await parseBody(req);
   const { email, password, name } = body;
 
