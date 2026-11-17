@@ -14,9 +14,10 @@ import { Progress } from "@/components/ui/progress";
 import { DOMAINS, ITEM_TYPE_MAP } from "@/lib/constants";
 import { fmtDate, smartDate } from "@/lib/dates";
 import { motion } from "framer-motion";
+import { t } from "@/lib/i18n";
 
 export function DashboardView() {
-  const { setView, openItemDetail, openProject, openItemEditor, setQuickCaptureOpen } = useLifeOS();
+  const { setView, openItemDetail, openProject, openItemEditor, setQuickCaptureOpen, locale } = useLifeOS();
   const { data: stats, isLoading } = useStats();
   const { data: todayData, isLoading: tasksLoading } = useItems({ type: "task", status: "active" });
   const { data: projData, isLoading: projectsLoading } = useProjects();
@@ -206,8 +207,8 @@ export function DashboardView() {
         <span className="flex items-center gap-3">
           <Icon name="Grid2X2" className="h-5 w-5 text-blue-600" />
           <span>
-            <span className="block text-sm font-semibold">Ma trận Eisenhower</span>
-            <span className="block text-xs text-muted-foreground">Phân loại việc quan trọng, khẩn cấp và ưu tiên hôm nay</span>
+            <span className="block text-sm font-semibold">{t(locale, "eisenhower")}</span>
+            <span className="block text-xs text-muted-foreground">{t(locale, "matrixShortcut")}</span>
           </span>
         </span>
         <Icon name="ArrowRight" className="h-4 w-4 text-blue-600" />
