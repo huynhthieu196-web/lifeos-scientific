@@ -8,8 +8,6 @@ import { Brain, ArrowRight, Shield, Check, Loader2, QrCode, X, Lock, Mail, PlayC
 import { motion, AnimatePresence } from "framer-motion";
 
 type Step = "auth" | "verify" | "qr-confirm" | "done";
-const DEMO_EMAIL = "demo@gmail.com";
-const DEMO_PASSWORD = "Password123";
 
 export default function LoginPage() {
   const [step, setStep] = useState<Step>("auth");
@@ -73,13 +71,6 @@ export default function LoginPage() {
     finally { setLoading(false); }
   }
 
-  function fillDemoCredentials() {
-    setMode("login");
-    setEmail(DEMO_EMAIL);
-    setPassword(DEMO_PASSWORD);
-    setError("");
-  }
-
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background">
       {/* Animated background — floating orbs + grid pattern */}
@@ -134,13 +125,13 @@ export default function LoginPage() {
                     onClick={() => { setMode("login"); setError(""); }}
                     className={`flex-1 rounded-lg py-2 text-sm font-semibold transition-all ${mode === "login" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
                   >
-                    Sign in
+                    Đăng nhập
                   </button>
                   <button
                     onClick={() => { setMode("register"); setError(""); }}
                     className={`flex-1 rounded-lg py-2 text-sm font-semibold transition-all ${mode === "register" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
                   >
-                    Create account
+                    Tạo tài khoản
                   </button>
                 </div>
 
@@ -156,10 +147,10 @@ export default function LoginPage() {
                   )}
 
                   <div>
-                    <Label className="mb-1.5 block text-xs font-semibold text-muted-foreground">Email</Label>
+                    <Label className="mb-1.5 block text-xs font-semibold text-muted-foreground">Tài khoản</Label>
                     <div className="relative">
                       <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
-                      <Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className="h-11 pl-10" />
+                      <Input type="text" autoComplete="username" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="account1 hoặc account2" className="h-11 pl-10" />
                     </div>
                   </div>
 
@@ -179,7 +170,7 @@ export default function LoginPage() {
                         {showPassword ? <X className="h-4 w-4" /> : <Shield className="h-4 w-4" />}
                       </button>
                     </div>
-                    {mode === "register" && <p className="mt-1 text-[10px] text-muted-foreground">Minimum 8 characters</p>}
+                    {mode === "register" && <p className="mt-1 text-[10px] text-muted-foreground">Tối thiểu 12 ký tự</p>}
                   </div>
 
                   {error && (
@@ -200,23 +191,6 @@ export default function LoginPage() {
                       </>
                     )}
                   </Button>
-                  {mode === "login" && (
-                    <div className="space-y-2">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        disabled={loading}
-                        onClick={fillDemoCredentials}
-                        className="h-11 w-full gap-2"
-                      >
-                        <PlayCircle className="h-4 w-4" />
-                        Fill demo credentials
-                      </Button>
-                      <p className="text-center text-[10px] text-muted-foreground">
-                        Uses demo@gmail.com with Password123
-                      </p>
-                    </div>
-                  )}
                 </form>
 
                 {/* Features list */}
@@ -301,7 +275,7 @@ export default function LoginPage() {
                 }} className="space-y-4">
                   <div className="relative">
                     <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
-                    <Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className="h-11 pl-10" />
+                    <Input type="text" autoComplete="username" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="account1 hoặc account2" className="h-11 pl-10" />
                   </div>
                   <div className="relative">
                     <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
