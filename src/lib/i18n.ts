@@ -5,6 +5,7 @@ export const LOCALE_STORAGE_KEY = "lifeos-ui-locale";
 export function isLocale(value: unknown): value is Locale { return value === "vi" || value === "en"; }
 const dictionary = {
   vi: {
+    scientific:"Phân tích khoa học",
     language:"Ngôn ngữ", dashboard:"Tổng quan", eisenhower:"Ma trận Eisenhower", inbox:"Hộp thư đến",
     calendar:"Lịch", agenda:"Lịch trình", focus:"Tập trung", projects:"Dự án", graph:"Sơ đồ liên kết",
     reviews:"Đánh giá", insights:"Phân tích", all:"Tất cả mục", domains:"Lĩnh vực cuộc sống",
@@ -33,6 +34,7 @@ const dictionary = {
     matrixShortcut:"Phân loại công việc theo mức quan trọng và khẩn cấp",
   },
   en: {
+    scientific:"Scientific Insights",
     language:"Language", dashboard:"Dashboard", eisenhower:"Eisenhower Matrix", inbox:"Inbox",
     calendar:"Calendar", agenda:"Agenda", focus:"Focus", projects:"Projects", graph:"Brain Graph",
     reviews:"Reviews", insights:"Insights", all:"All Items", domains:"Life Domains",
