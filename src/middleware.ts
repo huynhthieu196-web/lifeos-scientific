@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { isAllowedAccount } from "@/lib/account-policy";
+import { isAllowedWriteOrigin } from "@/lib/request-origin";
 
 const PUBLIC_ROUTES = ["/", "/login", "/api/auth", "/api/public-prefs"];
 
@@ -57,6 +58,9 @@ async function validSession(req: NextRequest): Promise<boolean> {
 }
 
 export async function middleware(req: NextRequest) {
+  if (!isAllowedWriteOrigin(req.method, req.url, req.headers.get("origin"))) {
+    return NextResponse.json({ error: "Cross-origin write rejected" }, { status: 403 });
+  }
   const pathname = req.nextUrl.pathname;
   if (PUBLIC_ROUTES.some((route) => pathname === route || pathname.startsWith(route + "/"))) {
     return NextResponse.next();
