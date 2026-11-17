@@ -38,6 +38,8 @@ jobs:
         run: bunx prisma validate
       - name: Generate Prisma client
         run: bunx prisma generate
+      - name: Audit API ownership
+        run: node scripts/audit-api-ownership.mjs
       - name: Typecheck
         run: bunx tsc --noEmit
       - name: Build app (no DB push)
