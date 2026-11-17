@@ -124,7 +124,7 @@ export function createSession(userId: string, email: string, twoFactorVerified: 
     email,
     twoFactorVerified,
     createdAt: Date.now(),
-    expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7 days
+    expiresAt: Date.now() + (twoFactorVerified ? 7 * 24 * 60 * 60 * 1000 : 10 * 60 * 1000), // 7d normal / 10m pending 2FA
   };
   const payload = JSON.stringify(data);
   const signature = crypto.createHmac("sha256", getSessionSecret()).update(payload).digest("hex");
