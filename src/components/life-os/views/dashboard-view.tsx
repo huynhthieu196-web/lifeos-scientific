@@ -214,6 +214,14 @@ export function DashboardView() {
         <Icon name="ArrowRight" className="h-4 w-4 text-blue-600" />
       </button>
 
+      <button type="button" onClick={() => setView("scientific")}
+        className="flex w-full items-center justify-between rounded-2xl border border-blue-200/70 bg-blue-50/60 px-4 py-3 text-left hover:bg-blue-100/70 dark:border-blue-900/60 dark:bg-blue-950/20">
+        <span className="flex items-center gap-3"><Icon name="BookOpenCheck" className="h-5 w-5 text-blue-600" />
+          <span><span className="block text-sm font-semibold">{locale === "vi" ? "Phân tích khoa học" : "Scientific Insights"}</span>
+            <span className="block text-xs text-muted-foreground">{locale === "vi" ? "Biểu đồ, chỉ số và khuyến nghị có nguồn dẫn" : "Charts, metrics and sourced recommendations"}</span>
+          </span>
+        </span><Icon name="ArrowRight" className="h-4 w-4 text-blue-600" />
+      </button>
       {/* Stat pills */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <button onClick={() => setView("inbox")} className="text-left">
