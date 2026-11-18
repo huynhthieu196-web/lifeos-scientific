@@ -61,7 +61,7 @@ export function Topbar() {
         >
           <div className="max-h-[420px] overflow-y-auto p-2">
             {results.items.length === 0 && results.projects.length === 0 && results.tags.length === 0 ? (
-              <div className="py-8 text-center text-sm text-muted-foreground">No results for “{q}”</div>
+              <div className="py-8 text-center text-sm text-muted-foreground">{uiText("No results for")} “{q}”</div>
             ) : (
               <>
                 {results.projects.length > 0 && (
@@ -113,7 +113,7 @@ export function Topbar() {
           className="h-9 w-9"
           onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
           disabled={!mounted}
-          aria-label={mounted && resolvedTheme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+          aria-label={uiText(mounted && resolvedTheme === "dark" ? "Switch to light theme" : "Switch to dark theme")}
         >
           <Icon name={mounted && resolvedTheme === "dark" ? "Sun" : "Moon"} className="h-4 w-4" />
         </Button>
