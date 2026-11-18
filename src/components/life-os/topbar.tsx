@@ -93,7 +93,7 @@ export function Topbar() {
                           <Icon name={(m as any).icon || "Circle"} className="h-3.5 w-3.5" style={{ color: (m as any).color }} />
                           <span className="flex-1 truncate">{i.title}</span>
                           {i.domainId && DOMAIN_MAP[i.domainId] && (
-                            <span className="text-[10px] text-muted-foreground">{DOMAIN_MAP[i.domainId].short}</span>
+                            <span className="text-[10px] text-muted-foreground">{uiText(DOMAIN_MAP[i.domainId].short)}</span>
                           )}
                         </button>
                       );
