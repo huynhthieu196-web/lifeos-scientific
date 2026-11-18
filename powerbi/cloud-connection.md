@@ -58,7 +58,7 @@ Tài khoản **Cao Kỳ** dùng một connection được tạo riêng với rol
 ## Mô hình, báo cáo và refresh
 
 - Kết nối sáu view đúng account, đặt tên các bảng Power BI thành `FactDaily`, `FactTasks`, `FactSessions`, `FactHabits`, `FactReviews`, `DimProjects`.
-- Quan hệ nội bộ: `FactHabits[HabitId]` liên hệ nhiều dòng cho cùng thói quen nhưng bảng danh mục thói quen chưa được tách riêng; tổng hợp theo HabitTitle và kiểm tra đổi tên nếu muốn theo dõi dài hạn. `FactTasks` không có ProjectId trong bản view hiện tại, nên biểu đồ dự án dùng DimProjects riêng chứ **không suy ra** task→project.
+- Quan hệ nội bộ: `FactHabits[HabitId]` liên hệ nhiều dòng cho cùng thói quen nhưng bảng danh mục thói quen chưa được tách riêng; tổng hợp theo HabitTitle và kiểm tra đổi tên nếu muốn theo dõi dài hạn. `FactTasks[ProjectId]` liên kết nhiều-một tới `DimProjects[ProjectId]` để phân tích công việc theo dự án; kiểm tra trạng thái và ngày khi tính tiến độ.
 - Dùng measures [measures.dax](./measures.dax) để tính số giờ làm việc, vận động, hoàn thành công việc, nhóm Eisenhower. Measure chỉ trả giá trị khi đủ quan sát, không dùng 0 làm đại diện cho thiếu.
 - Bố cục đề xuất: (1) tổng quan 30 ngày, (2) sức khỏe/hoạt động, (3) Eisenhower & dự án, (4) dữ liệu thiếu, (5) bằng chứng và khuyến nghị.
 - Khuyến nghị hiện được **thực thi trực tiếp trong LifeOS** qua API `/api/scientific-report`, có nguồn và caveat. Power BI chưa có bảng SQL live dành cho khuyến nghị; các CSV `recommendations` và `sources` có thể lấy theo phiên đăng nhập để tham khảo, **không tự động refresh** từ URL đó trong Power BI Service.
