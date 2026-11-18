@@ -102,9 +102,9 @@ export function QuickCapture() {
         await create.mutateAsync({ title, type, status: "active", domainId: domainId || null, projectId: projectId || null });
       }
       setText("");
-      notify.success(captureMode ? "Captured to inbox" : "Created");
+      notify.success(uiText(captureMode ? "Captured to inbox" : "Created"));
     } catch (e: any) {
-      notify.error(e.message || "Failed");
+      notify.error(e.message || uiText("Failed"));
     }
   }
 
