@@ -188,7 +188,7 @@ export function FocusView() {
             // auto-suggest break
             setTimeout(() => switchMode(newSessions % 4 === 0 ? "long" : "short"), 800);
           } else {
-            notify.success("Break over — back to focus!", "You've got this.");
+            notify.success(uiText("Break over — back to focus!"), uiText("You've got this."));
             setTimeout(() => switchMode("focus"), 800);
           }
           return 0;
