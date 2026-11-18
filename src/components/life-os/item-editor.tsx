@@ -261,7 +261,7 @@ export function ItemEditor() {
 
             {/* Section: Status & Priority */}
             <div>
-              <SectionLabel icon="SlidersHorizontal">Status & Priority</SectionLabel>
+              <SectionLabel icon="SlidersHorizontal">{uiText("Status & Priority")}</SectionLabel>
               <div className="grid grid-cols-2 gap-2">
                 <Select value={form.status} onValueChange={(v) => set("status", v)}>
                   <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
