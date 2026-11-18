@@ -1,3 +1,5 @@
+> **Cập nhật 18/11/2026:** Đã triển khai 12 view PostgreSQL trong schema `lifeos_bi`, chia theo Thanh Thiệu và Cao Kỳ với vai trò đọc riêng NOLOGIN; đã kiểm thử các quyền truy cập chéo đều bị từ chối. Tham khảo [kết nối trực tiếp Power BI đám mây](./cloud-connection.md). Các CSV bên dưới vẫn có thể dùng theo phiên đăng nhập; **Power BI Service chưa được kết nối/xuất bản, chưa cấu hình tự động refresh**.
+
 # LifeOS Scientific × Microsoft Power BI — triển khai dữ liệu
 
 ## Trạng thái xác nhận (2026-11)
