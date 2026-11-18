@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useState, useMemo } from "react";
 import { useLifeOS } from "@/store/life-os";
@@ -52,8 +53,8 @@ export function CalendarView() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Master Calendar"
-        subtitle="Everything with a date — tasks, bills, appointments, birthdays — in one view."
+        title={uiText("Master Calendar")}
+        subtitle={uiText("Everything with a date — tasks, bills, appointments, birthdays — in one view.")}
         icon="CalendarDays"
         color="#06b6d4"
         actions={
@@ -207,7 +208,7 @@ export function CalendarView() {
             icon="CalendarClock"
           >
             {selectedDayItems.length === 0 ? (
-              <p className="py-6 text-center text-sm text-muted-foreground">Nothing scheduled.</p>
+              <p className="py-6 text-center text-sm text-muted-foreground">{uiText("Nothing scheduled.")}</p>
             ) : (
               <div className="max-h-96 space-y-2 overflow-y-auto">
                 {selectedDayItems.map((it) => {
