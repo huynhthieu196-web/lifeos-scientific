@@ -150,18 +150,18 @@ function Footer({ onQuickCapture, onCommand }: { onQuickCapture: () => void; onC
         </div>
         <div className="flex items-center gap-3">
           <button onClick={onCommand} className="hidden items-center gap-1 hover:text-foreground sm:inline-flex">
-            <kbd className="rounded border border-border bg-muted px-1">⌘P</kbd> command
+            <kbd className="rounded border border-border bg-muted px-1">⌘P</kbd> {uiText("command")}
           </button>
           <span className="hidden text-muted-foreground/60 sm:inline">·</span>
           <span className="hidden sm:inline">
-            <kbd className="rounded border border-border bg-muted px-1">⌘K</kbd> capture
+            <kbd className="rounded border border-border bg-muted px-1">⌘K</kbd> {uiText("capture")}
             <span className="mx-1">·</span>
-            <kbd className="rounded border border-border bg-muted px-1">⌘P</kbd> command
+            <kbd className="rounded border border-border bg-muted px-1">⌘P</kbd> {uiText("command")}
             <span className="mx-1">·</span>
-            <kbd className="rounded border border-border bg-muted px-1">?</kbd> help
+            <kbd className="rounded border border-border bg-muted px-1">?</kbd> {uiText("help")}
           </span>
           <button onClick={onQuickCapture} className="inline-flex items-center gap-1 text-emerald-600 hover:underline dark:text-emerald-400">
-            <Icon name="Zap" className="h-3 w-3" /> Quick Capture
+            <Icon name="Zap" className="h-3 w-3" /> {uiText("Quick Capture")}
           </button>
         </div>
       </div>
