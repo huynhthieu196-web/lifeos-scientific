@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useLifeOS } from "@/store/life-os";
 import { useStats, useItems, useProjects, useReviews } from "@/lib/hooks";
@@ -45,7 +46,7 @@ export function DashboardView() {
 
   if (isLoading || tasksLoading || projectsLoading || reviewsLoading) {
     return (
-      <div className="space-y-6" aria-busy="true" aria-label="Loading dashboard">
+      <div className="space-y-6" aria-busy="true" aria-label={uiText("Loading dashboard")}>
         {/* Hero skeleton */}
         <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-transparent p-6">
           <div className="space-y-2">
@@ -229,16 +230,16 @@ export function DashboardView() {
       {/* Stat pills */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <button onClick={() => setView("inbox")} className="text-left">
-          <StatPill label="In inbox" value={stats?.inboxCount ?? "—"} color="#f59e0b" icon="Inbox" />
+          <StatPill label={uiText("In inbox")} value={stats?.inboxCount ?? "—"} color="#f59e0b" icon="Inbox" />
         </button>
         <button onClick={() => setView("calendar")} className="text-left">
-          <StatPill label="Due today" value={stats?.tasksToday ?? "—"} color="#10b981" icon="CalendarClock" />
+          <StatPill label={uiText("Due today")} value={stats?.tasksToday ?? "—"} color="#10b981" icon="CalendarClock" />
         </button>
         <button onClick={() => setView("calendar")} className="text-left">
-          <StatPill label="Overdue" value={stats?.tasksOverdue ?? "—"} color="#f43f5e" icon="AlertTriangle" />
+          <StatPill label={uiText("Overdue")} value={stats?.tasksOverdue ?? "—"} color="#f43f5e" icon="AlertTriangle" />
         </button>
         <button onClick={() => setView("projects")} className="text-left">
-          <StatPill label="Active projects" value={stats?.activeProjects ?? "—"} color="#06b6d4" icon="FolderKanban" />
+          <StatPill label={uiText("Active projects")} value={stats?.activeProjects ?? "—"} color="#06b6d4" icon="FolderKanban" />
         </button>
       </div>
 
@@ -246,7 +247,7 @@ export function DashboardView() {
         {/* Today's focus — main column */}
         <div className="space-y-6 lg:col-span-2">
           <SectionCard
-            title="Today's focus"
+            title={uiText("Today's focus")}
             icon="Target"
             action={
               <Button variant="ghost" size="sm" onClick={() => openItemEditor({ type: "task" })}>
@@ -257,15 +258,15 @@ export function DashboardView() {
             {tasksToday.length === 0 && overdue.length === 0 && upcoming.length === 0 ? (
               <EmptyState
                 icon="Coffee"
-                title="Nothing scheduled today"
-                description="A clear calendar is a gift. Capture a thought or plan something meaningful."
+                title={uiText("Nothing scheduled today")}
+                description={uiText("A clear calendar is a gift. Capture a thought or plan something meaningful.")}
                 action={{ label: "Quick Capture", onClick: () => setQuickCaptureOpen(true) }}
               />
             ) : (
               <div className="space-y-4">
                 {overdue.length > 0 && (
                   <div>
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-rose-500">Overdue</p>
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-rose-500">{uiText("Overdue")}</p>
                     <div className="space-y-2">
                       {overdue.slice(0, 4).map((t) => (
                         <ItemCard key={t.id} item={t} showProject onClick={() => openItemDetail(t.id)} />
@@ -275,7 +276,7 @@ export function DashboardView() {
                 )}
                 {tasksToday.length > 0 && (
                   <div>
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-amber-500">Today</p>
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-amber-500">{uiText("Today")}</p>
                     <div className="space-y-2">
                       {tasksToday.map((t) => (
                         <ItemCard key={t.id} item={t} showProject onClick={() => openItemDetail(t.id)} />
@@ -285,7 +286,7 @@ export function DashboardView() {
                 )}
                 {upcoming.length > 0 && (
                   <div>
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Coming up</p>
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{uiText("Coming up")}</p>
                     <div className="space-y-2">
                       {upcoming.map((t) => (
                         <ItemCard key={t.id} item={t} showProject onClick={() => openItemDetail(t.id)} />
@@ -299,12 +300,12 @@ export function DashboardView() {
 
           {/* Active projects */}
           <SectionCard
-            title="Active threads"
+            title={uiText("Active threads")}
             icon="FolderKanban"
-            action={<Button variant="ghost" size="sm" onClick={() => setView("projects")}>View all</Button>}
+            action={<Button variant="ghost" size="sm" onClick={() => setView("projects")}>{uiText("View all")}</Button>}
           >
             {projects.length === 0 ? (
-              <EmptyState icon="FolderPlus" title="No active projects" description="Create a thread to unify related tasks, notes, and journal entries." />
+              <EmptyState icon="FolderPlus" title={uiText("No active projects")} description={uiText("Create a thread to unify related tasks, notes, and journal entries.")} />
             ) : (
               <div className="grid gap-3 sm:grid-cols-2">
                 {projects.map((p) => (
@@ -336,7 +337,7 @@ export function DashboardView() {
           <div className="grid gap-4 sm:grid-cols-2">
             {/* Habits */}
             {stats?.habitStats && stats.habitStats.length > 0 && (
-              <SectionCard title="Habits this week" icon="Repeat">
+              <SectionCard title={uiText("Habits this week")} icon="Repeat">
                 <div className="space-y-2.5">
                   {stats.habitStats.slice(0, 4).map((h: any) => (
                     <div key={h.id}>
@@ -360,7 +361,7 @@ export function DashboardView() {
             )}
 
             {/* Life balance */}
-            <SectionCard title="Life balance" icon="Scale">
+            <SectionCard title={uiText("Life balance")} icon="Scale">
               <div className="space-y-1.5">
                 {DOMAINS.map((d) => {
                   const count = stats?.byDomain?.find((b: any) => b.domain === d.key)?.count || 0;
@@ -389,7 +390,7 @@ export function DashboardView() {
           <MoodCheckIn />
 
           {/* Review prompt */}
-          <SectionCard title="Reflection" icon="NotebookPen" className="bg-gradient-to-br from-violet-500/10 to-fuchsia-500/5">
+          <SectionCard title={uiText("Reflection")} icon="NotebookPen" className="bg-gradient-to-br from-violet-500/10 to-fuchsia-500/5">
             {reviewAge > 1 ? (
               <div>
                 <p className="text-sm">
@@ -415,14 +416,14 @@ export function DashboardView() {
 
           {/* Week finance */}
           {stats?.week && (stats.week.income > 0 || stats.week.expense > 0) && (
-            <SectionCard title="This week" icon="Wallet">
+            <SectionCard title={uiText("This week")} icon="Wallet">
               <div className="grid grid-cols-2 gap-2 text-center">
                 <div className="rounded-lg bg-emerald-500/10 p-2.5">
-                  <p className="text-[9px] uppercase tracking-wide text-emerald-600">Income</p>
+                  <p className="text-[9px] uppercase tracking-wide text-emerald-600">{uiText("Income")}</p>
                   <p className="mt-0.5 text-base font-bold text-emerald-600">${stats.week.income.toLocaleString()}</p>
                 </div>
                 <div className="rounded-lg bg-rose-500/10 p-2.5">
-                  <p className="text-[9px] uppercase tracking-wide text-rose-500">Expenses</p>
+                  <p className="text-[9px] uppercase tracking-wide text-rose-500">{uiText("Expenses")}</p>
                   <p className="mt-0.5 text-base font-bold text-rose-500">${stats.week.expense.toLocaleString()}</p>
                 </div>
               </div>
