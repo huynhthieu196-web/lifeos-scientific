@@ -94,7 +94,7 @@ export function AllItemsView() {
                 style={on ? { background: t.color } : {}}
               >
                 <Icon name={t.icon} className="h-3 w-3" />
-                {t.name}
+                {uiText(t.name)}
               </button>
             );
           })}
