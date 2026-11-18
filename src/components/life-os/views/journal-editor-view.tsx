@@ -86,7 +86,7 @@ export function JournalEditorView() {
     if (val > 0) {
       setDailyGoal(val);
       localStorage.setItem(GOAL_STORAGE_KEY, String(val));
-      notify.success(`Daily goal set to ${val} words`);
+      notify.success(uiText("Daily goal set to").replace("{count}", String(val)));
     }
     setShowGoalInput(false);
   }, [goalInput]);
@@ -141,7 +141,7 @@ export function JournalEditorView() {
 
   async function save() {
     if (!title.trim()) {
-      notify.error("Add a title first");
+      notify.error(uiText("Add a title first"));
       return;
     }
     try {
@@ -153,7 +153,7 @@ export function JournalEditorView() {
           domainId: domainId || null,
           projectId: projectId || null,
         });
-        notify.success("Entry saved");
+        notify.success(uiText("Entry saved"));
       } else {
         await create.mutateAsync({
           type: "journal",
@@ -165,7 +165,7 @@ export function JournalEditorView() {
           scheduledAt: new Date().toISOString(),
         });
         localStorage.removeItem("lifeos-journal-draft");
-        notify.success("Journal entry created");
+        notify.success(uiText("Journal entry created"));
       }
       setSaved(true);
       setTimeout(() => setView("mind_soul"), 600);
@@ -179,7 +179,7 @@ export function JournalEditorView() {
     try {
       await del.mutateAsync(journalEditId);
       localStorage.removeItem("lifeos-journal-draft");
-      notify.success("Journal entry deleted");
+      notify.success(uiText("Journal entry deleted"));
       setView("mind_soul");
     } catch (e: any) {
       notify.error(e.message || "Failed to delete");
