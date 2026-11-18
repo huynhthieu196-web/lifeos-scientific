@@ -592,7 +592,9 @@ export const UI_VI_COPY: Readonly<Record<string,string>> = {
   "Capture to inbox": "Ghi vào hộp thư đến",
   "Complete": "Hoàn thành"
 };
-export function uiText(english:string):string {
-  const locale=useLifeOS.getState().locale;
+export function translateLegacy(locale:"vi"|"en",english:string):string {
   return locale==="vi"?(UI_VI_COPY[english]??english):english;
+}
+export function uiText(english:string):string {
+  return translateLegacy(useLifeOS.getState().locale,english);
 }
