@@ -251,7 +251,7 @@ export function DashboardView() {
             icon="Target"
             action={
               <Button variant="ghost" size="sm" onClick={() => openItemEditor({ type: "task" })}>
-                <Icon name="Plus" className="mr-1 h-3.5 w-3.5" /> Add task
+                <Icon name="Plus" className="mr-1 h-3.5 w-3.5" /> {uiText("Add task")}
               </Button>
             }
           >
@@ -260,7 +260,7 @@ export function DashboardView() {
                 icon="Coffee"
                 title={uiText("Nothing scheduled today")}
                 description={uiText("A clear calendar is a gift. Capture a thought or plan something meaningful.")}
-                action={{ label: "Quick Capture", onClick: () => setQuickCaptureOpen(true) }}
+                action={{ label: uiText("Quick Capture"), onClick: () => setQuickCaptureOpen(true) }}
               />
             ) : (
               <div className="space-y-4">
@@ -319,10 +319,10 @@ export function DashboardView() {
                       <span className="flex-1 truncate text-sm font-semibold">{p.name}</span>
                       <Icon name="ArrowUpRight" className="h-3.5 w-3.5 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
                     </div>
-                    <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">{p.description || "No description"}</p>
+                    <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">{p.description || uiText("No description")}</p>
                     <div className="mt-3">
                       <div className="mb-1 flex items-center justify-between text-[11px] text-muted-foreground">
-                        <span>{p.taskDone}/{p.taskTotal || p.itemCount} done</span>
+                        <span>{p.taskDone}/{p.taskTotal || p.itemCount} {uiText("done")}</span>
                         <span>{p.progress}%</span>
                       </div>
                       <Progress value={p.progress} className="h-1.5" />
@@ -368,7 +368,7 @@ export function DashboardView() {
                   const max = Math.max(1, ...(stats?.byDomain?.map((b: any) => b.count) || [1]));
                   return (
                     <div key={d.key} className="flex items-center gap-2">
-                      <span className="w-16 truncate text-[10px] text-muted-foreground">{d.short}</span>
+                      <span className="w-16 truncate text-[10px] text-muted-foreground">{uiText(d.short)}</span>
                       <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
                         <div
                           className="h-full rounded-full transition-all"
@@ -395,16 +395,16 @@ export function DashboardView() {
               <div>
                 <p className="text-sm">
                   {reviewAge > 7
-                    ? "It's been a while since you reflected. Take a moment to close the loop on your week."
-                    : `Your last ${lastReview?.type || "daily"} review was ${reviewAge} days ago.`}
+                    ? uiText("It's been a while since you reflected. Take a moment to close the loop on your week.")
+                    : (locale === "vi" ? `Lần đánh giá ${uiText(lastReview?.type || "daily")} gần nhất cách đây ${reviewAge} ngày.` : `Your last ${lastReview?.type || "daily"} review was ${reviewAge} days ago.`)}
                 </p>
                 <Button size="sm" className="mt-3" onClick={() => setView("reviews")}>
-                  <Icon name="NotebookPen" className="mr-1 h-3.5 w-3.5" /> Start reflection
+                  <Icon name="NotebookPen" className="mr-1 h-3.5 w-3.5" /> {uiText("Start reflection")}
                 </Button>
               </div>
             ) : (
               <div>
-                <p className="text-sm">You reflected {reviewAge === 0 ? "today" : "yesterday"}. Beautiful.</p>
+                <p className="text-sm">{locale === "vi" ? `Bạn đã đánh giá ${reviewAge === 0 ? "hôm nay" : "hôm qua"}. Hãy tiếp tục duy trì.` : `You reflected ${reviewAge === 0 ? "today" : "yesterday"}. Well done.`}</p>
                 {lastReview?.wins && (
                   <p className="mt-2 rounded-lg bg-background/60 p-2 text-xs italic text-muted-foreground">
                     “{lastReview.wins}”
