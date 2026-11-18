@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useState } from "react";
 import {
@@ -235,8 +236,8 @@ export function ItemDetailSheet() {
                       </button>
                     ) : (
                       <div className="flex gap-1">
-                        <button onClick={() => setEditingContent(false)} className="rounded px-2 py-0.5 text-[11px] text-muted-foreground hover:bg-muted">Cancel</button>
-                        <button onClick={saveContent} className="rounded bg-primary px-2 py-0.5 text-[11px] font-medium text-primary-foreground hover:bg-primary/90">Save</button>
+                        <button onClick={() => setEditingContent(false)} className="rounded px-2 py-0.5 text-[11px] text-muted-foreground hover:bg-muted">{uiText("Cancel")}</button>
+                        <button onClick={saveContent} className="rounded bg-primary px-2 py-0.5 text-[11px] font-medium text-primary-foreground hover:bg-primary/90">{uiText("Save")}</button>
                       </div>
                     )}
                   </div>
@@ -246,7 +247,7 @@ export function ItemDetailSheet() {
                       value={contentDraft}
                       onChange={(e) => setContentDraft(e.target.value)}
                       className="resize-none border-0 bg-transparent p-0 text-sm focus-visible:ring-0"
-                      placeholder="Write your notes… (Markdown supported)"
+                      placeholder={uiText("Write your notes… (Markdown supported)")}
                       autoFocus
                     />
                   ) : item.content ? (
@@ -254,7 +255,7 @@ export function ItemDetailSheet() {
                       <ReactMarkdown>{item.content}</ReactMarkdown>
                     </div>
                   ) : (
-                    <p className="text-sm italic text-muted-foreground/60">No notes yet. Click edit to add context.</p>
+                    <p className="text-sm italic text-muted-foreground/60">{uiText("No notes yet. Click edit to add context.")}</p>
                   )}
                 </div>
                 )}
@@ -282,7 +283,7 @@ export function ItemDetailSheet() {
                     <Input
                       value={linkSearch}
                       onChange={(e) => setLinkSearch(e.target.value)}
-                      placeholder="Search to connect…"
+                      placeholder={uiText("Search to connect…")}
                       className="h-8 bg-background pl-8 text-sm"
                     />
                     <AnimatePresence>
@@ -349,8 +350,8 @@ export function ItemDetailSheet() {
                     {!item.linksFrom?.length && !item.linksTo?.length && (
                       <div className="flex flex-col items-center py-4 text-center">
                         <Icon name="Link2" className="mb-1 h-6 w-6 text-muted-foreground/30" />
-                        <p className="text-xs text-muted-foreground">No connections yet</p>
-                        <p className="text-[10px] text-muted-foreground/60">Search above to link this item to others</p>
+                        <p className="text-xs text-muted-foreground">{uiText("No connections yet")}</p>
+                        <p className="text-[10px] text-muted-foreground/60">{uiText("Search above to link this item to others")}</p>
                       </div>
                     )}
                   </div>
@@ -396,14 +397,14 @@ export function ItemDetailSheet() {
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Delete this item?</AlertDialogTitle>
+                      <AlertDialogTitle>{uiText("Delete this item?")}</AlertDialogTitle>
                       <AlertDialogDescription>
                         This will permanently remove &ldquo;{item.title}&rdquo; and all its connections. This cannot be undone.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleDelete} className="bg-rose-500 hover:bg-rose-600">Delete</AlertDialogAction>
+                      <AlertDialogCancel>{uiText("Cancel")}</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDelete} className="bg-rose-500 hover:bg-rose-600">{uiText("Delete")}</AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
@@ -530,7 +531,7 @@ function TypeHighlight({ item, typeMeta }: { item: any; typeMeta: any }) {
         {/* Rating */}
         {m.rating > 0 && (
           <div className="mt-2 flex items-center gap-1">
-            <span className="text-[10px] text-muted-foreground">Rating:</span>
+            <span className="text-[10px] text-muted-foreground">{uiText("Rating:")}</span>
             <div className="flex gap-0.5">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Icon
@@ -600,7 +601,7 @@ function TypeHighlight({ item, typeMeta }: { item: any; typeMeta: any }) {
       >
         <div className="text-center">
           <p className="text-2xl font-bold" style={{ color: typeMeta.color }}>{m.streak || 0}</p>
-          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">day streak</p>
+          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{uiText("day streak")}</p>
         </div>
         <div className="h-10 w-px bg-border/40" />
         <div className="flex-1">
@@ -662,15 +663,15 @@ function JournalEditor({
         <div className="flex items-center justify-between border-b border-border/50 bg-muted/30 px-3 py-1.5">
           <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
             <Icon name="PenLine" className="h-3 w-3" style={{ color: accentColor }} />
-            <span className="font-medium">Writing</span>
+            <span className="font-medium">{uiText("Writing")}</span>
             <span>·</span>
             <span>{wordCount} words</span>
             <span>·</span>
             <span>{readTime} min read</span>
           </div>
           <div className="flex gap-1">
-            <button onClick={onCancel} className="rounded px-2 py-0.5 text-[11px] text-muted-foreground hover:bg-muted">Cancel</button>
-            <button onClick={onSave} className="rounded px-2 py-0.5 text-[11px] font-medium text-white" style={{ background: accentColor }}>Save</button>
+            <button onClick={onCancel} className="rounded px-2 py-0.5 text-[11px] text-muted-foreground hover:bg-muted">{uiText("Cancel")}</button>
+            <button onClick={onSave} className="rounded px-2 py-0.5 text-[11px] font-medium text-white" style={{ background: accentColor }}>{uiText("Save")}</button>
           </div>
         </div>
         <Textarea
@@ -690,7 +691,7 @@ function JournalEditor({
       <div className="flex items-center justify-between border-b border-border/30 px-4 py-2">
         <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
           <Icon name="BookHeart" className="h-3 w-3" style={{ color: accentColor }} />
-          <span className="font-medium">Journal entry</span>
+          <span className="font-medium">{uiText("Journal entry")}</span>
           {content && (
             <>
               <span>·</span>
@@ -727,7 +728,7 @@ function JournalEditor({
             className="flex w-full flex-col items-center py-8 text-center text-muted-foreground/60 transition-colors hover:text-muted-foreground"
           >
             <Icon name="PenLine" className="mb-2 h-6 w-6" style={{ color: accentColor }} />
-            <p className="text-sm">Start writing your journal entry…</p>
+            <p className="text-sm">{uiText("Start writing your journal entry…")}</p>
           </button>
         )}
       </div>
@@ -783,14 +784,14 @@ function ReadingProgressUpdater({ item, currentPage, totalPages, accentColor }: 
         <button
           onClick={() => updatePage(Math.max(0, currentPage - 10))}
           className="rounded-md border border-border/60 px-1.5 py-0.5 text-[10px] text-muted-foreground hover:bg-muted"
-          title="Go back 10 pages"
+          title={uiText("Go back 10 pages")}
         >
           −10
         </button>
         <button
           onClick={() => updatePage(Math.min(totalPages, currentPage + 10))}
           className="rounded-md border border-border/60 px-1.5 py-0.5 text-[10px] text-muted-foreground hover:bg-muted"
-          title="Forward 10 pages"
+          title={uiText("Forward 10 pages")}
         >
           +10
         </button>
@@ -798,7 +799,7 @@ function ReadingProgressUpdater({ item, currentPage, totalPages, accentColor }: 
           onClick={() => updatePage(totalPages)}
           className="rounded-md px-2 py-0.5 text-[10px] font-medium text-white"
           style={{ background: accentColor }}
-          title="Mark as finished"
+          title={uiText("Mark as finished")}
         >
           Done
         </button>
@@ -861,7 +862,7 @@ function ConnectionRow({
       <button
         onClick={onRemove}
         className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-muted-foreground opacity-0 transition-all hover:bg-rose-500/10 hover:text-rose-500 group-hover:opacity-100"
-        title="Remove connection"
+        title={uiText("Remove connection")}
       >
         <Icon name="X" className="h-3.5 w-3.5" />
       </button>
