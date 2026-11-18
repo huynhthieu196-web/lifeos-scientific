@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useState, useEffect } from "react";
 import { useLifeOS } from "@/store/life-os";
@@ -152,8 +153,8 @@ export function SettingsView() {
   }
 
   if (loading) return (
-    <div className="space-y-6" aria-busy="true" aria-label="Loading settings">
-      <PageHeader title="Settings" subtitle="Manage your account, security, AI, and preferences." icon="Settings" color="#71717a" />
+    <div className="space-y-6" aria-busy="true" aria-label={uiText("Loading settings")}>
+      <PageHeader title={uiText("Settings")} subtitle={uiText("Manage your account, security, AI, and preferences.")} icon="Settings" color="#71717a" />
 
       {/* Profile section skeleton */}
       <div className="space-y-3 rounded-2xl border border-border/60 bg-card/50 p-4">
@@ -197,41 +198,41 @@ export function SettingsView() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Settings" subtitle="Manage your account, security, AI, and preferences." icon="Settings" color="#71717a" />
+      <PageHeader title={uiText("Settings")} subtitle={uiText("Manage your account, security, AI, and preferences.")} icon="Settings" color="#71717a" />
 
       {/* Profile */}
-      <SectionCard title="Profile" icon="User">
+      <SectionCard title={uiText("Profile")} icon="User">
         <div className="space-y-3">
           <div>
-            <Label className="mb-1.5 block text-xs font-medium text-muted-foreground">Name</Label>
+            <Label className="mb-1.5 block text-xs font-medium text-muted-foreground">{uiText("Name")}</Label>
             <Input value={name} onChange={(e) => setName(e.target.value)} className="h-9" />
           </div>
           <div>
-            <Label className="mb-1.5 block text-xs font-medium text-muted-foreground">Email</Label>
+            <Label className="mb-1.5 block text-xs font-medium text-muted-foreground">{uiText("Email")}</Label>
             <Input value={email} disabled className="h-9 bg-muted/50" />
           </div>
           <Button size="sm" onClick={async () => {
             const res = await fetch("/api/auth/profile", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name }) });
             if (res.ok) notify.success("Profile updated");
-          }} className="gap-1.5"><Icon name="Save" className="h-3.5 w-3.5" /> Save profile</Button>
+          }} className="gap-1.5"><Icon name="Save" className="h-3.5 w-3.5" />{ uiText("Save profile")}</Button>
         </div>
       </SectionCard>
 
       {/* Security */}
-      <SectionCard title="Security" icon="Shield">
+      <SectionCard title={uiText("Security")} icon="Shield">
         <div className="space-y-4">
-          <ToggleRow icon="Smartphone" color="#10b981" title="Two-factor authentication" desc={twoFAEnabled ? "Enabled — requires code on login" : "Off — password only"} checked={twoFAEnabled} onChange={toggle2FA} />
+          <ToggleRow icon="Smartphone" color="#10b981" title={uiText("Two-factor authentication")} desc={twoFAEnabled ? "Enabled — requires code on login" : "Off — password only"} checked={twoFAEnabled} onChange={toggle2FA} />
           {show2FASetup && (
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="overflow-hidden">
               <div className="rounded-xl border border-violet-500/20 bg-violet-500/5 p-4">
-                <h4 className="mb-3 text-sm font-semibold text-violet-600">Set up 2FA</h4>
+                <h4 className="mb-3 text-sm font-semibold text-violet-600">{uiText("Set up 2FA")}</h4>
                 {qr2faUrl && <div className="mb-3 flex justify-center"><img src={qr2faUrl} alt="2FA QR" className="rounded-lg border-2 border-border" width={180} height={180} /></div>}
-                <p className="mb-2 text-[11px] text-muted-foreground">Scan with Google Authenticator, Authy, etc.:</p>
+                <p className="mb-2 text-[11px] text-muted-foreground">{uiText("Scan with Google Authenticator, Authy, etc.:")}</p>
                 <p className="mb-3 break-all rounded bg-muted/50 p-2 font-mono text-[10px]">{manualEntry}</p>
                 <div className="flex gap-2">
                   <Input value={verifyCode} onChange={(e) => setVerifyCode(e.target.value.replace(/\D/g, "").slice(0, 6))} placeholder="000000" className="h-9 text-center text-lg font-bold tracking-widest" />
                   <Button size="sm" onClick={confirm2FA} disabled={loading || verifyCode.length !== 6} className="gap-1.5">{loading ? <Icon name="Loader2" className="h-3.5 w-3.5 animate-spin" /> : "Confirm"}</Button>
-                  <Button size="sm" variant="ghost" onClick={() => { setShow2FASetup(false); setVerifyCode(""); }}>Cancel</Button>
+                  <Button size="sm" variant="ghost" onClick={() => { setShow2FASetup(false); setVerifyCode(""); }}>{uiText("Cancel")}</Button>
                 </div>
               </div>
             </motion.div>
@@ -240,7 +241,7 @@ export function SettingsView() {
           <div className="flex items-center justify-between rounded-xl border border-border/40 p-3">
             <div className="flex items-center gap-3">
               <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-500/10 text-violet-500"><Icon name="QrCode" className="h-4 w-4" /></span>
-              <div><p className="text-sm font-medium">Login on another device</p><p className="text-[11px] text-muted-foreground">Generate a QR code to sign in on your phone</p></div>
+              <div><p className="text-sm font-medium">{uiText("Login on another device")}</p><p className="text-[11px] text-muted-foreground">{uiText("Generate a QR code to sign in on your phone")}</p></div>
             </div>
             <Button size="sm" variant="outline" onClick={startQrLogin} disabled={qrLoading} className="gap-1.5">
               <Icon name={qrLoading ? "Loader2" : "QrCode"} className={`h-3.5 w-3.5 ${qrLoading ? "animate-spin" : ""}`} /> Generate QR
@@ -253,39 +254,39 @@ export function SettingsView() {
       <Dialog open={qrDialogOpen} onOpenChange={setQrDialogOpen}>
         <DialogContent className="max-w-sm p-0">
           <DialogHeader className="sr-only">
-            <DialogTitle>Login on another device</DialogTitle>
-            <DialogDescription>Scan this QR code on your phone.</DialogDescription>
+            <DialogTitle>{uiText("Login on another device")}</DialogTitle>
+            <DialogDescription>{uiText("Scan this QR code on your phone.")}</DialogDescription>
           </DialogHeader>
           <div className="p-6 text-center">
-            <h3 className="mb-1 text-lg font-semibold">Login on another device</h3>
-            <p className="mb-4 text-xs text-muted-foreground">Open your phone's camera and scan this code</p>
+            <h3 className="mb-1 text-lg font-semibold">{uiText("Login on another device")}</h3>
+            <p className="mb-4 text-xs text-muted-foreground">{uiText("Open your phone's camera and scan this code")}</p>
             {qrLoginUrl && <img src={qrLoginUrl} alt="Login QR Code" className="mx-auto rounded-xl border-2 border-border" width={240} height={240} />}
             <div className="mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground">
               <Icon name="Loader2" className="h-4 w-4 animate-spin" />
-              <span>Waiting for scan…</span>
+              <span>{uiText("Waiting for scan…")}</span>
             </div>
-            <p className="mt-2 text-[10px] text-muted-foreground">Expires in 5 minutes</p>
+            <p className="mt-2 text-[10px] text-muted-foreground">{uiText("Expires in 5 minutes")}</p>
           </div>
         </DialogContent>
       </Dialog>
 
       {/* AI Features */}
-      <SectionCard title="AI Features" icon="Bot">
+      <SectionCard title={uiText("AI Features")} icon="Bot">
         <div className="space-y-4">
-          <ToggleRow icon="Bot" color="#a78bfa" title="Enable AI features" desc="Master toggle for all AI-powered features" checked={prefs?.aiEnabled ?? true} onChange={(v) => updatePrefs({ aiEnabled: v })} />
+          <ToggleRow icon="Bot" color="#a78bfa" title={uiText("Enable AI features")} desc="Master toggle for all AI-powered features" checked={prefs?.aiEnabled ?? true} onChange={(v) => updatePrefs({ aiEnabled: v })} />
 
           {prefs?.aiEnabled && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
-              <ToggleRow icon="Inbox" color="#f59e0b" title="Smart Inbox Processing" desc="AI suggests type, domain & project for inbox items" checked={prefs?.aiSmartInbox ?? true} onChange={(v) => updatePrefs({ aiSmartInbox: v })} />
+              <ToggleRow icon="Inbox" color="#f59e0b" title={uiText("Smart Inbox Processing")} desc="AI suggests type, domain & project for inbox items" checked={prefs?.aiSmartInbox ?? true} onChange={(v) => updatePrefs({ aiSmartInbox: v })} />
 
               <div>
-                <Label className="mb-1.5 block text-xs font-medium text-muted-foreground">AI Provider</Label>
+                <Label className="mb-1.5 block text-xs font-medium text-muted-foreground">{uiText("AI Provider")}</Label>
                 <Select value={prefs?.aiProvider || "z-ai-sdk"} onValueChange={(v) => updatePrefs({ aiProvider: v })}>
                   <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="z-ai-sdk">Z.AI SDK (default, free)</SelectItem>
-                    <SelectItem value="openai-compatible">OpenAI-compatible (OpenAI, Groq, Together, etc.)</SelectItem>
-                    <SelectItem value="custom">Custom endpoint</SelectItem>
+                    <SelectItem value="z-ai-sdk">{uiText("Z.AI SDK (default, free)")}</SelectItem>
+                    <SelectItem value="openai-compatible">{uiText("OpenAI-compatible (OpenAI, Groq, Together, etc.)")}</SelectItem>
+                    <SelectItem value="custom">{uiText("Custom endpoint")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <p className="mt-1 text-[10px] text-muted-foreground">
@@ -302,14 +303,14 @@ export function SettingsView() {
                     <Input type="password" placeholder={prefs?.hasApiKey ? "•••••••• (saved)" : "sk-..."} onChange={(e) => { if (e.target.value) updatePrefs({ aiApiKey: e.target.value }); }} className="h-9" />
                   </div>
                   <div>
-                    <Label className="mb-1 block text-[11px] font-medium text-muted-foreground">Base URL</Label>
+                    <Label className="mb-1 block text-[11px] font-medium text-muted-foreground">{uiText("Base URL")}</Label>
                     <Input value={prefs?.aiBaseUrl || ""} onChange={(e) => updatePrefs({ aiBaseUrl: e.target.value })} placeholder="https://api.openai.com/v1" className="h-9" />
                   </div>
                   <div>
-                    <Label className="mb-1 block text-[11px] font-medium text-muted-foreground">Model</Label>
+                    <Label className="mb-1 block text-[11px] font-medium text-muted-foreground">{uiText("Model")}</Label>
                     <Input value={prefs?.aiModel || ""} onChange={(e) => updatePrefs({ aiModel: e.target.value })} placeholder="gpt-4o-mini" className="h-9" />
                   </div>
-                  <p className="text-[10px] text-muted-foreground">Works with: OpenAI, Groq, Together AI, Anyscale, Ollama, LM Studio, and any OpenAI-compatible API.</p>
+                  <p className="text-[10px] text-muted-foreground">{uiText("Works with: OpenAI, Groq, Together AI, Anyscale, Ollama, LM Studio, and any OpenAI-compatible API.")}</p>
                 </motion.div>
               )}
             </motion.div>
@@ -318,46 +319,46 @@ export function SettingsView() {
       </SectionCard>
 
       {/* Appearance & Notifications */}
-      <SectionCard title="Appearance & Notifications" icon="Palette">
+      <SectionCard title={uiText("Appearance & Notifications")} icon="Palette">
         <div className="space-y-3">
           <div>
-            <Label className="mb-1.5 block text-xs font-medium text-muted-foreground">Theme</Label>
+            <Label className="mb-1.5 block text-xs font-medium text-muted-foreground">{uiText("Theme")}</Label>
             <Select value={theme} onValueChange={(v) => applyTheme(v as any)}>
               <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
-              <SelectContent><SelectItem value="light">Light</SelectItem><SelectItem value="dark">Dark</SelectItem><SelectItem value="system">System</SelectItem></SelectContent>
+              <SelectContent><SelectItem value="light">{uiText("Light")}</SelectItem><SelectItem value="dark">{uiText("Dark")}</SelectItem><SelectItem value="system">{uiText("System")}</SelectItem></SelectContent>
             </Select>
           </div>
           <div className="flex items-center justify-between rounded-xl border border-border/40 p-3">
             <div className="flex items-center gap-3">
               <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600"><Icon name="Bell" className="h-4 w-4" /></span>
-              <div><p className="text-sm font-medium">Browser notifications</p><p className="text-[11px] text-muted-foreground">Overdue & due task alerts</p></div>
+              <div><p className="text-sm font-medium">{uiText("Browser notifications")}</p><p className="text-[11px] text-muted-foreground">Overdue & due task alerts</p></div>
             </div>
-            <Button size="sm" variant="outline" onClick={async () => { const g = await requestNotificationPermission(); if (g) { notify.success("Notifications enabled"); sendNotification("Life OS", "Enabled!"); } else notify.error("Permission denied"); }}>Enable</Button>
+            <Button size="sm" variant="outline" onClick={async () => { const g = await requestNotificationPermission(); if (g) { notify.success("Notifications enabled"); sendNotification("Life OS", "Enabled!"); } else notify.error("Permission denied"); }}>{uiText("Enable")}</Button>
           </div>
         </div>
       </SectionCard>
 
       {/* Database */}
-      <SectionCard title="Database" icon="Database">
+      <SectionCard title={uiText("Database")} icon="Database">
         <div className="space-y-3">
           <div className="flex items-center gap-2 rounded-lg border border-border/40 p-3">
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600"><Icon name="HardDrive" className="h-4 w-4" /></span>
             <div className="flex-1">
               <p className="text-sm font-medium">SQLite (local file)</p>
-              <p className="text-[11px] text-muted-foreground">Current database — stored at <code className="rounded bg-muted px-1 text-[10px]">db/custom.db</code></p>
+              <p className="text-[11px] text-muted-foreground">{uiText("Current database — stored at") }<code className="rounded bg-muted px-1 text-[10px]">db/custom.db</code></p>
             </div>
           </div>
 
           <div className="rounded-lg border border-border/40 p-3">
-            <p className="mb-2 text-xs font-medium">Want to use a cloud database?</p>
-            <p className="text-[11px] text-muted-foreground">Life OS supports any PostgreSQL database. To switch:</p>
+            <p className="mb-2 text-xs font-medium">{uiText("Want to use a cloud database?")}</p>
+            <p className="text-[11px] text-muted-foreground">{uiText("Life OS supports any PostgreSQL database. To switch:")}</p>
             <ol className="mt-1.5 space-y-1 text-[11px] text-muted-foreground">
-              <li>1. Create a free database on <a href="https://neon.tech" target="_blank" className="text-blue-500 hover:underline">Neon</a> or <a href="https://supabase.com" target="_blank" className="text-blue-500 hover:underline">Supabase</a></li>
-              <li>2. Set <code className="rounded bg-muted px-1">DATABASE_URL</code> in your <code className="rounded bg-muted px-1">.env</code> file</li>
-              <li>3. Change Prisma provider from <code className="rounded bg-muted px-1">sqlite</code> to <code className="rounded bg-muted px-1">postgresql</code></li>
-              <li>4. Run <code className="rounded bg-muted px-1">bun run db:push</code></li>
+              <li>{uiText("1. Create a free database on") }<a href="https://neon.tech" target="_blank" className="text-blue-500 hover:underline">Neon</a>{ uiText("or") }<a href="https://supabase.com" target="_blank" className="text-blue-500 hover:underline">Supabase</a></li>
+              <li>{uiText("2. Set") }<code className="rounded bg-muted px-1">DATABASE_URL</code>{ uiText("in your") }<code className="rounded bg-muted px-1">.env</code>{ uiText("file")}</li>
+              <li>{uiText("3. Change Prisma provider from") }<code className="rounded bg-muted px-1">sqlite</code>{ uiText("to") }<code className="rounded bg-muted px-1">postgresql</code></li>
+              <li>{uiText("4. Run") }<code className="rounded bg-muted px-1">bun run db:push</code></li>
             </ol>
-            <p className="mt-2 text-[10px] text-muted-foreground">PostgreSQL connection string format: <code className="rounded bg-muted px-1">postgresql://user:pass@host/dbname</code></p>
+            <p className="mt-2 text-[10px] text-muted-foreground">{uiText("PostgreSQL connection string format:") }<code className="rounded bg-muted px-1">postgresql://user:pass@host/dbname</code></p>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -373,33 +374,33 @@ export function SettingsView() {
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Reset all data?</AlertDialogTitle>
-                <AlertDialogDescription>This will permanently delete ALL items, projects, domains, reviews, and tags. Your user account will be preserved. This cannot be undone. Consider downloading a backup first.</AlertDialogDescription>
+                <AlertDialogTitle>{uiText("Reset all data?")}</AlertDialogTitle>
+                <AlertDialogDescription>{uiText("This will permanently delete ALL items, projects, domains, reviews, and tags. Your user account will be preserved. This cannot be undone. Consider downloading a backup first.")}</AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel>{uiText("Cancel")}</AlertDialogCancel>
                 <AlertDialogAction onClick={async () => {
                   const res = await fetch("/api/reset-db", { method: "POST" });
                   const data = await res.json();
                   if (res.ok) { notify.success("Database reset. Reloading…"); setTimeout(() => window.location.reload(), 1500); }
                   else notify.error(data.error || "Reset failed");
-                }} className="bg-rose-500 hover:bg-rose-600">Reset everything</AlertDialogAction>
+                }} className="bg-rose-500 hover:bg-rose-600">{uiText("Reset everything")}</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
           </div>
         </div>
       </SectionCard>
-      <SectionCard title="Data & Backup" icon="Archive">
+      <SectionCard title={uiText("Data & Backup")} icon="Archive">
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" className="gap-1.5" onClick={() => window.open("/api/export?type=items", "_blank")}><Icon name="Download" className="h-3.5 w-3.5" /> Export CSV</Button>
+          <Button variant="outline" size="sm" className="gap-1.5" onClick={() => window.open("/api/export?type=items", "_blank")}><Icon name="Download" className="h-3.5 w-3.5" />{ uiText("Export CSV")}</Button>
           <Button variant="outline" size="sm" className="gap-1.5" onClick={async () => {
             const res = await fetch("/api/backup"); const data = await res.json();
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
             const url = URL.createObjectURL(blob); const a = document.createElement("a");
             a.href = url; a.download = `lifeos-backup-${new Date().toISOString().slice(0, 10)}.json`; a.click();
             URL.revokeObjectURL(url); notify.success("Backup downloaded");
-          }}><Icon name="Download" className="h-3.5 w-3.5" /> Full backup (JSON)</Button>
+          }}><Icon name="Download" className="h-3.5 w-3.5" />{ uiText("Full backup (JSON)")}</Button>
           <Button variant="outline" size="sm" className="gap-1.5" onClick={() => {
             const input = document.createElement("input"); input.type = "file"; input.accept = ".json";
             input.onchange = async (e) => {
@@ -413,14 +414,14 @@ export function SettingsView() {
               } catch { notify.error("Invalid file"); }
             };
             input.click();
-          }}><Icon name="Upload" className="h-3.5 w-3.5" /> Restore backup</Button>
+          }}><Icon name="Upload" className="h-3.5 w-3.5" />{ uiText("Restore backup")}</Button>
         </div>
       </SectionCard>
 
       {/* Account */}
-      <SectionCard title="Account" icon="UserCog">
+      <SectionCard title={uiText("Account")} icon="UserCog">
         <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">Sign out of your account</p>
+          <p className="text-sm text-muted-foreground">{uiText("Sign out of your account")}</p>
           <Button variant="outline" size="sm" className="gap-1.5 text-rose-500 hover:bg-rose-500/10 hover:text-rose-600" onClick={async () => { await fetch("/api/auth/logout", { method: "POST" }); window.location.href = "/login"; }}>
             <Icon name="LogOut" className="h-3.5 w-3.5" /> Sign out
           </Button>
