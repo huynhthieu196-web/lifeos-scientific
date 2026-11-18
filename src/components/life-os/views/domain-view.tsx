@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useLifeOS } from "@/store/life-os";
 import { useItems, useDomains } from "@/lib/hooks";
@@ -89,10 +90,10 @@ export function DomainView({ domainKey }: { domainKey: string }) {
             ))
           ) : (
             <>
-              <Stat label="Total items" value={items.length} />
-              <Stat label="Done" value={items.filter((i) => i.status === "done").length} />
-              <Stat label="Active" value={items.filter((i) => i.status === "active").length} />
-              <Stat label="Types" value={types.length} />
+              <Stat label={uiText("Total items")} value={items.length} />
+              <Stat label={uiText("Done")} value={items.filter((i) => i.status === "done").length} />
+              <Stat label={uiText("Active")} value={items.filter((i) => i.status === "active").length} />
+              <Stat label={uiText("Types")} value={types.length} />
             </>
           )}
         </div>
@@ -111,8 +112,8 @@ export function DomainView({ domainKey }: { domainKey: string }) {
             <Icon name="Leaf" className="h-6 w-6" />
           </span>
           <div className="relative flex-1">
-            <h3 className="text-sm font-semibold">Enter the Sanctuary</h3>
-            <p className="text-xs text-muted-foreground">A guided breathing exercise, your daily affirmation, and your life visions in one calm space.</p>
+            <h3 className="text-sm font-semibold">{uiText("Enter the Sanctuary")}</h3>
+            <p className="text-xs text-muted-foreground">{uiText("A guided breathing exercise, your daily affirmation, and your life visions in one calm space.")}</p>
           </div>
           <Icon name="ArrowRight" className="relative h-4 w-4 text-violet-500 transition-transform group-hover:translate-x-1" />
         </motion.button>
