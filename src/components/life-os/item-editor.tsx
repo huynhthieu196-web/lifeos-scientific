@@ -202,7 +202,7 @@ export function ItemEditor() {
                       style={on ? { background: t.color } : {}}
                     >
                       <Icon name={t.icon} className="h-3 w-3" />
-                      {t.name}
+                      {uiText(t.name)}
                     </button>
                   );
                 })}
@@ -236,7 +236,7 @@ export function ItemEditor() {
                       <SelectItem key={d.key} value={domains.find((dd: any) => dd.key === d.key)?.id || d.key}>
                         <span className="inline-flex items-center gap-2">
                           <span className="h-2 w-2 rounded-full" style={{ background: d.color }} />
-                          {d.name}
+                          {uiText(d.name)}
                         </span>
                       </SelectItem>
                     ))}
@@ -370,7 +370,7 @@ export function ItemEditor() {
             )}
 
             {isBookmark && (
-              <MetadataSection icon="Bookmark" label={form.metadata?.medium === "book" ? "Book details" : form.metadata?.medium === "movie" || form.metadata?.medium === "video" ? "Watch list" : "Media details"} color={typeMeta.color}>
+              <MetadataSection icon="Bookmark" label={uiText(form.metadata?.medium === "book" ? "Book details" : form.metadata?.medium === "movie" || form.metadata?.medium === "video" ? "Watch list" : "Media details")} color={typeMeta.color}>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <FieldLabel>{uiText("Medium")}</FieldLabel>
