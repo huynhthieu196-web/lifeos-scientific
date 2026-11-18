@@ -13,35 +13,36 @@
  */
 
 import { toast } from "sonner";
+import { uiText } from "@/lib/ui-copy";
 
 const DEFAULT_DURATION = 4000;
 
 export const notify = {
   /** Green success toast */
   success: (message: string, description?: string) =>
-    toast.success(message, {
-      description,
+    toast.success(uiText(message), {
+      description: description ? uiText(description) : undefined,
       duration: DEFAULT_DURATION,
     }),
 
   /** Red error toast */
   error: (message: string, description?: string) =>
-    toast.error(message, {
-      description,
+    toast.error(uiText(message), {
+      description: description ? uiText(description) : undefined,
       duration: DEFAULT_DURATION + 2000, // errors stay longer
     }),
 
   /** Amber warning toast */
   warning: (message: string, description?: string) =>
-    toast.warning(message, {
-      description,
+    toast.warning(uiText(message), {
+      description: description ? uiText(description) : undefined,
       duration: DEFAULT_DURATION,
     }),
 
   /** Blue info toast */
   info: (message: string, description?: string) =>
-    toast.info(message, {
-      description,
+    toast.info(uiText(message), {
+      description: description ? uiText(description) : undefined,
       duration: DEFAULT_DURATION,
     }),
 
@@ -51,9 +52,9 @@ export const notify = {
     opts: { loading: string; success: string; error: string },
   ) =>
     toast.promise(promise, {
-      loading: opts.loading,
-      success: opts.success,
-      error: opts.error,
+      loading: uiText(opts.loading),
+      success: uiText(opts.success),
+      error: uiText(opts.error),
     }),
 
   /** Dismiss a specific or all toasts */
