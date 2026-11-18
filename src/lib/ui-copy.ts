@@ -5,6 +5,18 @@
  */
 import { useLifeOS } from "@/store/life-os";
 export const UI_VI_COPY: Readonly<Record<string,string>> = {
+  "Title is required": "Vui lòng nhập tiêu đề",
+  "min": "phút",
+  "e.g. 320": "Ví dụ: 320",
+  "friend, mentor…": "bạn bè, người hướng dẫn…",
+  "Daily goal set to {count} words": "Đã đặt mục tiêu viết {count} từ mỗi ngày",
+  "AI error:": "Lỗi AI:",
+  "AI analyzed {count} inbox items": "AI đã phân tích {count} mục trong hộp thư đến",
+  "Failed to run AI processing": "Không thể xử lý hộp thư bằng AI",
+  "Item processed": "Đã xử lý mục",
+  "Processed {count} items": "Đã xử lý {count} mục",
+  "Inbox cleared — all items activated": "Đã xử lý toàn bộ mục trong hộp thư đến",
+  "Activated": "Đã kích hoạt",
   "Your data stays on your server": "Dữ liệu của bạn được lưu an toàn trên máy chủ",
   "Bi-directional linking — everything connects": "Liên kết hai chiều — kết nối thông tin",
   "Quick capture with ⌘K anywhere": "Ghi nhanh mọi lúc bằng ⌘K",
