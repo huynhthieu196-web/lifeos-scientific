@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useGraph } from "@/lib/hooks";
@@ -236,8 +237,8 @@ export function GraphView() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Digital Brain"
-        subtitle="See how everything connects. Every line is a link or a project thread weaving your life together."
+        title={uiText("Digital Brain")}
+        subtitle={uiText("See how everything connects. Every line is a link or a project thread weaving your life together.")}
         icon="Network"
         color="#a78bfa"
         actions={
@@ -263,11 +264,11 @@ export function GraphView() {
                   <div className="absolute left-1/4 top-2/3 h-7 w-7 skeleton rounded-full bg-muted/30" />
                   <div className="absolute left-3/4 top-2/3 h-9 w-9 skeleton rounded-full bg-muted/40" />
                   <div className="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 skeleton rounded-full bg-muted/20" />
-                  <p className="absolute bottom-0 left-1/2 -translate-x-1/2 text-sm text-muted-foreground">Weaving your brain…</p>
+                  <p className="absolute bottom-0 left-1/2 -translate-x-1/2 text-sm text-muted-foreground">{uiText("Weaving your brain…")}</p>
                 </div>
               </div>
             ) : allNodes.length === 0 ? (
-              <EmptyState icon="Network" title="No connections yet" description="Link items to each other from the detail panel to see your digital brain bloom." />
+              <EmptyState icon="Network" title={uiText("No connections yet")} description={uiText("Link items to each other from the detail panel to see your digital brain bloom.")} />
             ) : (
               <svg
                 width={dims.w}
@@ -396,21 +397,21 @@ export function GraphView() {
                 <button
                   onClick={() => setZoom((z) => Math.min(3, z + 0.2))}
                   className="flex h-8 w-8 items-center justify-center rounded-lg border border-border/60 bg-background/80 text-foreground shadow-sm backdrop-blur transition-all hover:bg-background"
-                  title="Zoom in"
+                  title={uiText("Zoom in")}
                 >
                   <Icon name="Plus" className="h-4 w-4" />
                 </button>
                 <button
                   onClick={() => setZoom((z) => Math.max(0.3, z - 0.2))}
                   className="flex h-8 w-8 items-center justify-center rounded-lg border border-border/60 bg-background/80 text-foreground shadow-sm backdrop-blur transition-all hover:bg-background"
-                  title="Zoom out"
+                  title={uiText("Zoom out")}
                 >
                   <Icon name="Minus" className="h-4 w-4" />
                 </button>
                 <button
                   onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }}
                   className="flex h-8 w-8 items-center justify-center rounded-lg border border-border/60 bg-background/80 text-foreground shadow-sm backdrop-blur transition-all hover:bg-background"
-                  title="Reset view"
+                  title={uiText("Reset view")}
                 >
                   <Icon name="Maximize" className="h-4 w-4" />
                 </button>
@@ -430,7 +431,7 @@ export function GraphView() {
               <input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search nodes…"
+                placeholder={uiText("Search nodes…")}
                 className="w-full rounded-lg border border-border/60 bg-background py-1.5 pl-8 pr-7 text-xs outline-none focus:border-violet-500/40"
               />
               {searchQuery && (
@@ -449,29 +450,29 @@ export function GraphView() {
             )}
           </SectionCard>
 
-          <SectionCard title="Legend" icon="Info">
+          <SectionCard title={uiText("Legend")} icon="Info">
             <div className="space-y-2 text-xs">
               <div className="flex items-center gap-2">
                 <span className="h-4 w-4 rounded" style={{ background: "#a78bfa" }} />
-                <span>Project / Thread (square)</span>
+                <span>{uiText("Project / Thread (square)")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="h-4 w-4 rounded-full" style={{ background: "#f59e0b" }} />
-                <span>Item (circle, colored by type)</span>
+                <span>{uiText("Item (circle, colored by type)")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="h-4 w-4 rounded border-2 border-dashed border-muted-foreground" />
-                <span>Project membership (dashed)</span>
+                <span>{uiText("Project membership (dashed)")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="h-4 w-4 rounded border-2 border-emerald-500 border-dashed" />
-                <span>Completed (green ring)</span>
+                <span>{uiText("Completed (green ring)")}</span>
               </div>
             </div>
           </SectionCard>
 
           {presentTypes.length > 0 && (
-            <SectionCard title="Filter by type" icon="Filter">
+            <SectionCard title={uiText("Filter by type")} icon="Filter">
               <div className="flex flex-wrap gap-1.5">
                 {presentTypes.map((t) => {
                   const on = filterKinds.has(t.type);
@@ -512,7 +513,7 @@ export function GraphView() {
                   <span className="mx-1">·</span>
                   <kbd className="rounded border border-border bg-muted px-1">0</kbd> reset
                 </div>
-                <div>Scroll to zoom · drag to pan</div>
+                <div>{uiText("Scroll to zoom · drag to pan")}</div>
               </div>
             </SectionCard>
           )}
