@@ -384,7 +384,7 @@ export function JournalEditorView() {
                       autoFocus
                     />
                     <span className="text-[10px] text-muted-foreground">{uiText("words")}</span>
-                    <button onClick={handleGoalSave} className="text-[10px] text-violet-500 hover:underline">Set</button>
+                    <button onClick={handleGoalSave} className="text-[10px] text-violet-500 hover:underline">{uiText("Set")}</button>
                     <button onClick={() => setShowGoalInput(false)} className="text-[10px] text-muted-foreground hover:underline">{uiText("Cancel")}</button>
                   </div>
                 ) : (
