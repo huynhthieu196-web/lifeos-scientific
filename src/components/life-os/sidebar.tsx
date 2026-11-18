@@ -165,7 +165,7 @@ export function Sidebar() {
       <button
         onClick={() => setMobileOpen(true)}
         className="fixed left-3 top-3 z-40 flex h-10 w-10 items-center justify-center rounded-lg border border-border/60 bg-background/80 shadow-md backdrop-blur-md md:hidden"
-        aria-label="Open menu"
+        aria-label={uiText("Open menu")}
       >
         <Icon name="Menu" className="h-5 w-5" />
       </button>
@@ -174,8 +174,8 @@ export function Sidebar() {
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent side="left" className="w-72 p-0">
           <SheetHeader className="sr-only">
-            <SheetTitle>Navigation</SheetTitle>
-            <SheetDescription>Navigate between Life OS views and life domains.</SheetDescription>
+            <SheetTitle>{uiText("Navigation")}</SheetTitle>
+            <SheetDescription>{uiText("Navigate between Life OS views and life domains.")}</SheetDescription>
           </SheetHeader>
           <div className="flex h-full flex-col">
             <SidebarContent onNavigate={closeMobile} />
