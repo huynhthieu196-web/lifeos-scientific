@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useState } from "react";
 import {
@@ -187,7 +188,7 @@ export function ItemEditor() {
           <div className="space-y-5">
             {/* Type selector — horizontal chip grid */}
             <div>
-              <SectionLabel icon="Tag">Type</SectionLabel>
+              <SectionLabel icon="Tag">{uiText("Type")}</SectionLabel>
               <div className="flex flex-wrap gap-1.5">
                 {ITEM_TYPES.map((t) => {
                   const on = form.type === t.type;
@@ -210,7 +211,7 @@ export function ItemEditor() {
 
             {/* Title */}
             <div>
-              <SectionLabel icon="Type">Title</SectionLabel>
+              <SectionLabel icon="Type">{uiText("Title")}</SectionLabel>
               <Input
                 autoFocus
                 value={form.title}
@@ -225,12 +226,12 @@ export function ItemEditor() {
 
             {/* Section: Organization */}
             <div>
-              <SectionLabel icon="FolderTree">Organization</SectionLabel>
+              <SectionLabel icon="FolderTree">{uiText("Organization")}</SectionLabel>
               <div className="grid grid-cols-2 gap-2">
                 <Select value={form.domainId || "none"} onValueChange={(v) => set("domainId", v === "none" ? "" : v)}>
-                  <SelectTrigger className="h-9"><SelectValue placeholder="No domain" /></SelectTrigger>
+                  <SelectTrigger className="h-9"><SelectValue placeholder={uiText("No domain")} /></SelectTrigger>
                   <SelectContent className="max-h-72">
-                    <SelectItem value="none">No domain</SelectItem>
+                    <SelectItem value="none">{uiText("No domain")}</SelectItem>
                     {DOMAINS.map((d) => (
                       <SelectItem key={d.key} value={domains.find((dd: any) => dd.key === d.key)?.id || d.key}>
                         <span className="inline-flex items-center gap-2">
@@ -242,9 +243,9 @@ export function ItemEditor() {
                   </SelectContent>
                 </Select>
                 <Select value={form.projectId || "none"} onValueChange={(v) => set("projectId", v === "none" ? "" : v)}>
-                  <SelectTrigger className="h-9"><SelectValue placeholder="No project" /></SelectTrigger>
+                  <SelectTrigger className="h-9"><SelectValue placeholder={uiText("No project")} /></SelectTrigger>
                   <SelectContent className="max-h-72">
-                    <SelectItem value="none">No project</SelectItem>
+                    <SelectItem value="none">{uiText("No project")}</SelectItem>
                     {projects.map((p: any) => (
                       <SelectItem key={p.id} value={p.id}>
                         <span className="inline-flex items-center gap-2">
@@ -265,11 +266,11 @@ export function ItemEditor() {
                 <Select value={form.status} onValueChange={(v) => set("status", v)}>
                   <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="inbox">📥 Inbox</SelectItem>
-                    <SelectItem value="active">✓ Active</SelectItem>
-                    <SelectItem value="done">✓ Done</SelectItem>
-                    <SelectItem value="snoozed">⏰ Snoozed</SelectItem>
-                    <SelectItem value="archived">📦 Archived</SelectItem>
+                    <SelectItem value="inbox">{uiText("📥 Inbox")}</SelectItem>
+                    <SelectItem value="active">{uiText("✓ Active")}</SelectItem>
+                    <SelectItem value="done">{uiText("✓ Done")}</SelectItem>
+                    <SelectItem value="snoozed">{uiText("⏰ Snoozed")}</SelectItem>
+                    <SelectItem value="archived">{uiText("📦 Archived")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <Select value={String(form.priority)} onValueChange={(v) => set("priority", v)}>
@@ -291,15 +292,15 @@ export function ItemEditor() {
             {/* Section: Timing */}
             {(typeMeta.hasDate || form.type === "task" || form.type === "finance" || form.type === "event" || form.type === "journal") && (
               <div>
-                <SectionLabel icon="CalendarClock">Timing</SectionLabel>
+                <SectionLabel icon="CalendarClock">{uiText("Timing")}</SectionLabel>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <Input type="datetime-local" value={toDateInput(form.dueDate)} onChange={(e) => set("dueDate", e.target.value)} className="h-9" />
-                    <p className="mt-1 text-[10px] text-muted-foreground">Due date</p>
+                    <p className="mt-1 text-[10px] text-muted-foreground">{uiText("Due date")}</p>
                   </div>
                   <div>
                     <Input type="datetime-local" value={toDateInput(form.scheduledAt)} onChange={(e) => set("scheduledAt", e.target.value)} className="h-9" />
-                    <p className="mt-1 text-[10px] text-muted-foreground">Scheduled / logged at</p>
+                    <p className="mt-1 text-[10px] text-muted-foreground">{uiText("Scheduled / logged at")}</p>
                   </div>
                 </div>
               </div>
@@ -307,33 +308,33 @@ export function ItemEditor() {
 
             {/* Type-specific metadata */}
             {isFinance && (
-              <MetadataSection icon="Wallet" label="Finance details" color={typeMeta.color}>
+              <MetadataSection icon="Wallet" label={uiText("Finance details")} color={typeMeta.color}>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <FieldLabel>Kind</FieldLabel>
+                    <FieldLabel>{uiText("Kind")}</FieldLabel>
                     <Select value={form.metadata.kind || "expense"} onValueChange={(v) => setMeta("kind", v)}>
                       <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="expense">Expense</SelectItem>
-                        <SelectItem value="income">Income</SelectItem>
-                        <SelectItem value="goal">Savings goal</SelectItem>
+                        <SelectItem value="expense">{uiText("Expense")}</SelectItem>
+                        <SelectItem value="income">{uiText("Income")}</SelectItem>
+                        <SelectItem value="goal">{uiText("Savings goal")}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div>
-                    <FieldLabel>Amount ($)</FieldLabel>
+                    <FieldLabel>{uiText("Amount ($)")}</FieldLabel>
                     <Input type="number" step="0.01" value={form.metadata.amount || ""} onChange={(e) => setMeta("amount", e.target.value)} className="h-9" placeholder="0.00" />
                   </div>
                   {form.metadata.kind !== "goal" && (
                     <div className="col-span-2">
-                      <FieldLabel>Recurrence</FieldLabel>
+                      <FieldLabel>{uiText("Recurrence")}</FieldLabel>
                       <Select value={form.metadata.recurring || "one-time"} onValueChange={(v) => setMeta("recurring", v)}>
                         <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="one-time">One-time</SelectItem>
-                          <SelectItem value="monthly">Monthly</SelectItem>
-                          <SelectItem value="weekly">Weekly</SelectItem>
-                          <SelectItem value="yearly">Yearly</SelectItem>
+                          <SelectItem value="one-time">{uiText("One-time")}</SelectItem>
+                          <SelectItem value="monthly">{uiText("Monthly")}</SelectItem>
+                          <SelectItem value="weekly">{uiText("Weekly")}</SelectItem>
+                          <SelectItem value="yearly">{uiText("Yearly")}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -343,25 +344,25 @@ export function ItemEditor() {
             )}
 
             {isHabit && (
-              <MetadataSection icon="Repeat" label="Habit setup" color={typeMeta.color}>
+              <MetadataSection icon="Repeat" label={uiText("Habit setup")} color={typeMeta.color}>
                 <div className="grid grid-cols-3 gap-2">
                   <div className="col-span-1">
-                    <FieldLabel>Cadence</FieldLabel>
+                    <FieldLabel>{uiText("Cadence")}</FieldLabel>
                     <Select value={form.metadata.cadence || "daily"} onValueChange={(v) => setMeta("cadence", v)}>
                       <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="daily">Daily</SelectItem>
-                        <SelectItem value="weekly">Weekly</SelectItem>
-                        <SelectItem value="weekdays">Weekdays</SelectItem>
+                        <SelectItem value="daily">{uiText("Daily")}</SelectItem>
+                        <SelectItem value="weekly">{uiText("Weekly")}</SelectItem>
+                        <SelectItem value="weekdays">{uiText("Weekdays")}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div>
-                    <FieldLabel>Target</FieldLabel>
+                    <FieldLabel>{uiText("Target")}</FieldLabel>
                     <Input type="number" value={form.metadata.target || ""} onChange={(e) => setMeta("target", e.target.value)} className="h-9" placeholder="1" />
                   </div>
                   <div>
-                    <FieldLabel>Unit</FieldLabel>
+                    <FieldLabel>{uiText("Unit")}</FieldLabel>
                     <Input value={form.metadata.unit || ""} onChange={(e) => setMeta("unit", e.target.value)} className="h-9" placeholder="min" />
                   </div>
                 </div>
@@ -372,25 +373,25 @@ export function ItemEditor() {
               <MetadataSection icon="Bookmark" label={form.metadata?.medium === "book" ? "Book details" : form.metadata?.medium === "movie" || form.metadata?.medium === "video" ? "Watch list" : "Media details"} color={typeMeta.color}>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <FieldLabel>Medium</FieldLabel>
+                    <FieldLabel>{uiText("Medium")}</FieldLabel>
                     <Select value={form.metadata.medium || "book"} onValueChange={(v) => setMeta("medium", v)}>
                       <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="book">Book</SelectItem>
-                        <SelectItem value="article">Article</SelectItem>
-                        <SelectItem value="course">Course</SelectItem>
-                        <SelectItem value="movie">Movie</SelectItem>
-                        <SelectItem value="video">Video</SelectItem>
-                        <SelectItem value="podcast">Podcast</SelectItem>
+                        <SelectItem value="book">{uiText("Book")}</SelectItem>
+                        <SelectItem value="article">{uiText("Article")}</SelectItem>
+                        <SelectItem value="course">{uiText("Course")}</SelectItem>
+                        <SelectItem value="movie">{uiText("Movie")}</SelectItem>
+                        <SelectItem value="video">{uiText("Video")}</SelectItem>
+                        <SelectItem value="podcast">{uiText("Podcast")}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div>
-                    <FieldLabel>Author / Creator</FieldLabel>
-                    <Input value={form.metadata.author || ""} onChange={(e) => setMeta("author", e.target.value)} className="h-9" placeholder="Name…" />
+                    <FieldLabel>{uiText("Author / Creator")}</FieldLabel>
+                    <Input value={form.metadata.author || ""} onChange={(e) => setMeta("author", e.target.value)} className="h-9" placeholder={uiText("Name…")} />
                   </div>
                   <div className="col-span-2">
-                    <FieldLabel>URL</FieldLabel>
+                    <FieldLabel>{uiText("URL")}</FieldLabel>
                     <Input value={form.metadata.url || ""} onChange={(e) => setMeta("url", e.target.value)} className="h-9" placeholder="https://…" />
                   </div>
 
@@ -398,7 +399,7 @@ export function ItemEditor() {
                   {form.metadata?.medium === "book" && (
                     <>
                       <div>
-                        <FieldLabel>Current page</FieldLabel>
+                        <FieldLabel>{uiText("Current page")}</FieldLabel>
                         <Input
                           type="number"
                           min={0}
@@ -409,7 +410,7 @@ export function ItemEditor() {
                         />
                       </div>
                       <div>
-                        <FieldLabel>Total pages</FieldLabel>
+                        <FieldLabel>{uiText("Total pages")}</FieldLabel>
                         <Input
                           type="number"
                           min={1}
@@ -423,7 +424,7 @@ export function ItemEditor() {
                   )}
 
                   <div>
-                    <FieldLabel>Status</FieldLabel>
+                    <FieldLabel>{uiText("Status")}</FieldLabel>
                     <Select value={form.metadata.status || "queued"} onValueChange={(v) => setMeta("status", v)}>
                       <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
                       <SelectContent>
@@ -434,7 +435,7 @@ export function ItemEditor() {
                     </Select>
                   </div>
                   <div>
-                    <FieldLabel>Rating</FieldLabel>
+                    <FieldLabel>{uiText("Rating")}</FieldLabel>
                     <Select value={String(form.metadata.rating || 0)} onValueChange={(v) => setMeta("rating", Number(v))}>
                       <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
                       <SelectContent>
@@ -449,14 +450,14 @@ export function ItemEditor() {
             )}
 
             {isContact && (
-              <MetadataSection icon="User" label="Contact details" color={typeMeta.color}>
+              <MetadataSection icon="User" label={uiText("Contact details")} color={typeMeta.color}>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <FieldLabel>Relationship</FieldLabel>
+                    <FieldLabel>{uiText("Relationship")}</FieldLabel>
                     <Input value={form.metadata.relationship || ""} onChange={(e) => setMeta("relationship", e.target.value)} className="h-9" placeholder="friend, mentor…" />
                   </div>
                   <div>
-                    <FieldLabel>Birthday</FieldLabel>
+                    <FieldLabel>{uiText("Birthday")}</FieldLabel>
                     <Input type="date" value={form.metadata.birthday ? form.metadata.birthday.slice(0, 10) : ""} onChange={(e) => setMeta("birthday", e.target.value)} className="h-9" />
                   </div>
                 </div>
@@ -464,23 +465,23 @@ export function ItemEditor() {
             )}
 
             {isSymptom && (
-              <MetadataSection icon="Thermometer" label="Symptom details" color={typeMeta.color}>
+              <MetadataSection icon="Thermometer" label={uiText("Symptom details")} color={typeMeta.color}>
                 <div>
-                  <FieldLabel>Severity (1-5)</FieldLabel>
+                  <FieldLabel>{uiText("Severity (1-5)")}</FieldLabel>
                   <Input type="number" min={1} max={5} value={form.metadata.severity || ""} onChange={(e) => setMeta("severity", e.target.value)} className="h-9" />
                 </div>
               </MetadataSection>
             )}
 
             {isMedication && (
-              <MetadataSection icon="Pill" label="Medication details" color={typeMeta.color}>
+              <MetadataSection icon="Pill" label={uiText("Medication details")} color={typeMeta.color}>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <FieldLabel>Dose</FieldLabel>
+                    <FieldLabel>{uiText("Dose")}</FieldLabel>
                     <Input value={form.metadata.dose || ""} onChange={(e) => setMeta("dose", e.target.value)} className="h-9" placeholder="100mg" />
                   </div>
                   <div>
-                    <FieldLabel>Frequency</FieldLabel>
+                    <FieldLabel>{uiText("Frequency")}</FieldLabel>
                     <Input value={form.metadata.frequency || ""} onChange={(e) => setMeta("frequency", e.target.value)} className="h-9" placeholder="daily" />
                   </div>
                 </div>
@@ -489,19 +490,19 @@ export function ItemEditor() {
 
             {/* Section: Notes */}
             <div>
-              <SectionLabel icon="FileText">Notes</SectionLabel>
+              <SectionLabel icon="FileText">{uiText("Notes")}</SectionLabel>
               <Textarea
                 rows={4}
                 value={form.content || ""}
                 onChange={(e) => set("content", e.target.value)}
-                placeholder="Add details… (Markdown supported)"
+                placeholder={uiText("Add details… (Markdown supported)")}
                 className="resize-none"
               />
             </div>
 
             {/* Section: Tags */}
             <div>
-              <SectionLabel icon="Tags">Tags</SectionLabel>
+              <SectionLabel icon="Tags">{uiText("Tags")}</SectionLabel>
               <div className="flex flex-wrap gap-1.5 rounded-lg border border-border/60 bg-background p-2">
                 {form.tagNames?.map((t: string) => (
                   <span key={t} className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-xs font-medium">
@@ -521,7 +522,7 @@ export function ItemEditor() {
                     }
                   }}
                   list="tag-suggestions"
-                  placeholder="add tag…"
+                  placeholder={uiText("add tag…")}
                   className="min-w-[80px] flex-1 bg-transparent text-xs outline-none"
                 />
                 <datalist id="tag-suggestions">
@@ -536,7 +537,7 @@ export function ItemEditor() {
 
         {/* ── Sticky footer ── */}
         <div className="flex flex-shrink-0 items-center justify-end gap-2 border-t border-border/60 bg-background/95 px-6 py-3 backdrop-blur-md">
-          <Button variant="ghost" onClick={closeItemEditor} className="h-9">Cancel</Button>
+          <Button variant="ghost" onClick={closeItemEditor} className="h-9">{uiText("Cancel")}</Button>
           <Button
             onClick={save}
             disabled={create.isPending || update.isPending}
