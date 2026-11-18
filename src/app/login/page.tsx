@@ -214,7 +214,7 @@ export default function LoginPage() {
                       className="flex items-center gap-2 text-xs text-muted-foreground"
                     >
                       <f.icon className="h-3.5 w-3.5" style={{ color: f.color }} />
-                      <span>{f.text}</span>
+                      <span>{uiText(f.text)}</span>
                     </motion.div>
                   ))}
                 </div>
@@ -293,7 +293,7 @@ export default function LoginPage() {
                   </Button>
                 </form>
                 <button onClick={() => { setStep("auth"); window.history.replaceState({}, "", "/login"); }} className="mt-4 w-full text-center text-xs text-muted-foreground hover:text-foreground">
-                  ← Cancel
+                  ← {uiText("Cancel")}
                 </button>
               </motion.div>
             )}
