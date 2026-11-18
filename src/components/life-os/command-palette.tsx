@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useEffect, useState } from "react";
 import { useLifeOS, type ViewKey } from "@/store/life-os";
@@ -96,13 +97,13 @@ export function CommandPalette() {
     <Dialog open={commandOpen} onOpenChange={(o) => { setCommandOpen(o); if (!o) setQ(""); }}>
       <DialogContent className="overflow-hidden p-0 sm:max-w-[560px]">
         <DialogHeader className="sr-only">
-          <DialogTitle>Command Palette</DialogTitle>
-          <DialogDescription>Search and run commands across your Life OS.</DialogDescription>
+          <DialogTitle>{uiText("Command Palette")}</DialogTitle>
+          <DialogDescription>{uiText("Search and run commands across your Life OS.")}</DialogDescription>
         </DialogHeader>
         <Command shouldFilter={false} className="[&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5">
-          <CommandInput placeholder="Type a command, search, or jump to…" value={q} onValueChange={setQ} />
+          <CommandInput placeholder={uiText("Type a command, search, or jump to…")} value={q} onValueChange={setQ} />
           <CommandList className="max-h-[460px]">
-            {!hasResults && <CommandEmpty>No results found.</CommandEmpty>}
+            {!hasResults && <CommandEmpty>{uiText("No results found.")}</CommandEmpty>}
 
         {/* Quick actions */}
         {(!ql || matches("quick capture", "create", "new", "task", "note", "journal", "idea")) && (
@@ -110,33 +111,33 @@ export function CommandPalette() {
           {(!ql || matches("quick", "capture", "inbox")) && (
           <CommandItem value="quick capture inbox" onSelect={run(() => setQuickCaptureOpen(true))} className="gap-2">
             <Icon name="Zap" className="h-4 w-4 text-amber-500" />
-            <span>Quick Capture to inbox</span>
+            <span>{uiText("Quick Capture to inbox")}</span>
             <CommandShortcut>⌘K</CommandShortcut>
           </CommandItem>
           )}
           {(!ql || matches("create", "new", "task")) && (
           <CommandItem value="create new task" onSelect={run(() => openItemEditor({ type: "task" }))} className="gap-2">
             <Icon name="Plus" className="h-4 w-4 text-emerald-500" />
-            <span>Create new task</span>
+            <span>{uiText("Create new task")}</span>
           </CommandItem>
           )}
           {(!ql || matches("create", "new", "note")) && (
           <CommandItem value="create new note" onSelect={run(() => openItemEditor({ type: "note" }))} className="gap-2">
             <Icon name="StickyNote" className="h-4 w-4 text-yellow-500" />
-            <span>Create new note</span>
+            <span>{uiText("Create new note")}</span>
           </CommandItem>
           )}
           {(!ql || matches("capture", "idea")) && (
           <CommandItem value="capture an idea" onSelect={run(() => openItemEditor({ type: "idea" }))} className="gap-2">
             <Icon name="Lightbulb" className="h-4 w-4 text-pink-500" />
-            <span>Capture an idea</span>
+            <span>{uiText("Capture an idea")}</span>
           </CommandItem>
           )}
           {(!ql || matches("write", "journal", "entry")) && (
           <CommandItem value="write journal entry full editor" onSelect={run(() => useLifeOS.getState().openJournalEditor(null))} className="gap-2">
             <Icon name="PenLine" className="h-4 w-4 text-violet-500" />
-            <span>Write journal entry</span>
-            <CommandShortcut>Full editor</CommandShortcut>
+            <span>{uiText("Write journal entry")}</span>
+            <CommandShortcut>{uiText("Full editor")}</CommandShortcut>
           </CommandItem>
           )}
         </CommandGroup>
