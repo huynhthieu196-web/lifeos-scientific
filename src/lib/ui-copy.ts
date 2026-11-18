@@ -665,7 +665,22 @@ export const UI_VI_COPY: Readonly<Record<string,string>> = {
   "Your tasks": "Công việc của bạn",
   "All activities": "Tất cả hoạt động",
   "All domains": "Tất cả lĩnh vực",
-  "All projects": "Tất cả dự án"
+  "All projects": "Tất cả dự án",
+  "Running…": "Đang chạy…",
+  "Sync": "Đồng bộ",
+  "Log a daily reflection to see your mood trend.": "Hãy ghi đánh giá mỗi ngày để xem xu hướng tâm trạng.",
+  "No active habits yet. Create one in Time & Action.": "Chưa có thói quen đang thực hiện. Hãy tạo tại Thời gian và hành động.",
+  "Monthly subscriptions": "Dịch vụ đăng ký hằng tháng",
+  "tasks": "công việc",
+  "overdue": "quá hạn",
+  "Target:": "Mục tiêu:",
+  "done": "hoàn thành",
+  "No data yet": "Chưa có dữ liệu",
+  "No matches": "Không có kết quả phù hợp",
+  "Sessions": "Phiên hoạt động",
+  "Tasks this week": "Công việc tuần này",
+  "Add new task": "Thêm công việc mới",
+  "Open": "Mở"
 };
 export function translateLegacy(locale:"vi"|"en",english:string):string {
   return locale==="vi"?(UI_VI_COPY[english]??english):english;
