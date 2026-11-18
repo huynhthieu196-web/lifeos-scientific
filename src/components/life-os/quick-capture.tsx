@@ -152,7 +152,7 @@ export function QuickCapture() {
               }
             }
           }}
-          placeholder="What's on your mind? Press Enter to capture to inbox…"
+          placeholder={uiText("What's on your mind? Press Enter to capture to inbox…")}
           rows={3}
           className="w-full resize-none bg-transparent px-4 py-3 text-base outline-none placeholder:text-muted-foreground/60"
         />
