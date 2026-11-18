@@ -726,7 +726,11 @@ export const UI_VI_COPY: Readonly<Record<string,string>> = {
   "Maximize": "Phóng to toàn màn hình",
   "Go back": "Quay lại",
   "Pick a domain": "Chọn lĩnh vực",
-  "Custom focus": "Tập trung tùy chỉnh"
+  "Custom focus": "Tập trung tùy chỉnh",
+  "Hold": "Giữ hơi",
+  "Rest": "Nghỉ",
+  "Add affirmation": "Thêm lời khẳng định",
+  "Repeat": "Lặp lại"
 };
 export function translateLegacy(locale:"vi"|"en",english:string):string {
   return locale==="vi"?(UI_VI_COPY[english]??english):english;
