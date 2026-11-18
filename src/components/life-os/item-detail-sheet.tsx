@@ -56,13 +56,13 @@ export function ItemDetailSheet() {
   async function saveContent() {
     await update.mutateAsync({ id: item.id, content: contentDraft });
     setEditingContent(false);
-    notify.success("Notes saved");
+    notify.success(uiText("Notes saved"));
   }
 
   async function addLink(toId: string) {
     await createLink.mutateAsync({ fromId: item.id, toId, type: "related" });
     setLinkSearch("");
-    notify.success("Connected");
+    notify.success(uiText("Connected"));
   }
 
   async function removeLink(linkId: string, direction: "out" | "in") {
@@ -71,13 +71,13 @@ export function ItemDetailSheet() {
     } else {
       await deleteLink.mutateAsync({ fromId: linkId, toId: item.id });
     }
-    notify.success("Link removed");
+    notify.success(uiText("Link removed"));
   }
 
   async function handleDelete() {
     await del.mutateAsync(item.id);
     closeItemDetail();
-    notify.success("Deleted");
+    notify.success(uiText("Deleted"));
   }
 
   return (
@@ -152,7 +152,7 @@ export function ItemDetailSheet() {
                     }}
                   >
                     <span className="h-1.5 w-1.5 rounded-full" style={{ background: (STATUS_META as any)[item.status]?.color }} />
-                    {(STATUS_META as any)[item.status]?.name || item.status}
+                    {uiText((STATUS_META as any)[item.status]?.name || item.status)}
                   </span>
                   {item.priority > 0 && (
                     <span
@@ -160,7 +160,7 @@ export function ItemDetailSheet() {
                       style={{ background: `${PRIORITY_META[item.priority]?.color}20`, color: PRIORITY_META[item.priority]?.color }}
                     >
                       <Icon name="Flag" className="h-2.5 w-2.5" />
-                      {PRIORITY_META[item.priority]?.name}
+                      {uiText(PRIORITY_META[item.priority]?.name ?? "")}
                     </span>
                   )}
                   {item.dueDate && (
@@ -373,7 +373,7 @@ export function ItemDetailSheet() {
                   <Button
                     size="sm"
                     variant={isDone ? "outline" : "default"}
-                    onClick={() => { update.mutate({ id: item.id, status: isDone ? "active" : "done" }); notify.success(isDone ? "Reopened" : "Completed"); }}
+                    onClick={() => { update.mutate({ id: item.id, status: isDone ? "active" : "done" }); notify.success(uiText(isDone ? "Reopened" : "Completed")); }}
                     className="gap-1.5"
                   >
                     <Icon name={isDone ? "RotateCcw" : "Check"} className="h-3.5 w-3.5" />
@@ -754,7 +754,7 @@ function ReadingProgressUpdater({ item, currentPage, totalPages, accentColor }: 
     // also update bookmark status to finished if done
     if (isFinished) {
       update.mutate({ id: item.id, metadata: { ...newMeta, status: "finished" }, status: "done" });
-      notify.success("Finished reading!");
+      notify.success(uiText("Finished reading!"));
     }
     setPageInput(String(clamped));
   }
