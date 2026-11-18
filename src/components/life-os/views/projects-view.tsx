@@ -94,7 +94,7 @@ export function ProjectsView() {
           icon="FolderPlus"
           title={uiText("No projects yet")}
           description={uiText("Create a thread to unify related tasks, notes, journal entries, and deadlines.")}
-          action={{ label: "Create project", onClick: () => setCreateOpen(true) }}
+          action={{ label: uiText("Create project"), onClick: () => setCreateOpen(true) }}
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -298,7 +298,7 @@ function CreateProjectDialog({ open, onOpenChange }: { open: boolean; onOpenChan
   const [form, setForm] = useState({ name: "", description: "", color: COLORS[0], icon: ICONS[0], domainId: "", targetDate: "" });
 
   async function save() {
-    if (!form.name.trim()) { notify.error("Name required"); return; }
+    if (!form.name.trim()) { notify.error(uiText("Name required")); return; }
     await create.mutateAsync({
       name: form.name.trim(),
       description: form.description,
@@ -307,7 +307,7 @@ function CreateProjectDialog({ open, onOpenChange }: { open: boolean; onOpenChan
       domainId: form.domainId || null,
       targetDate: form.targetDate ? new Date(form.targetDate).toISOString() : null,
     });
-    notify.success("Project created");
+    notify.success(uiText("Project created"));
     setForm({ name: "", description: "", color: COLORS[0], icon: ICONS[0], domainId: "", targetDate: "" });
     onOpenChange(false);
   }
