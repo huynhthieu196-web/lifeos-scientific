@@ -86,7 +86,7 @@ export function JournalEditorView() {
     if (val > 0) {
       setDailyGoal(val);
       localStorage.setItem(GOAL_STORAGE_KEY, String(val));
-      notify.success(uiText("Daily goal set to").replace("{count}", String(val)));
+      notify.success(uiText("Daily goal set to {count} words").replace("{count}", String(val)));
     }
     setShowGoalInput(false);
   }, [goalInput]);
