@@ -1,0 +1,81 @@
+// Power BI DAX measure library for the imported CSV tables.
+// Import FactDaily[Date] as Date, numerical columns as Decimal/Whole Number,
+// FactSessions[IsPrimary] as True/False, and all IDs as Text.
+// Measures intentionally return BLANK() for insufficient source data.
+// Do not use numeric zero as a proxy for "not recorded".
+
+Daily Recorded Days = COUNTROWS(FactDaily)
+
+Sleep Recorded Days = COUNTROWS(
+    FILTER(FactDaily, NOT ISBLANK(FactDaily[SleepHours]))
+)
+
+Average Sleep Hours = IF(
+    [Sleep Recorded Days] > 0,
+    AVERAGE(FactDaily[SleepHours]),
+    BLANK()
+)
+
+Nights Under 7h = COUNTROWS(
+    FILTER(FactDaily, NOT ISBLANK(FactDaily[SleepHours]) && FactDaily[SleepHours] < 7)
+)
+
+// These measures use the last recorded date as their endpoint.
+// In the LifeOS web dashboard, the exact window is 7 calendar days ending today.
+// Set a matching date filter in Power BI before comparing values.
+Exercise Covered Days (Last 7 Records) =
+VAR LastDay = MAX(FactDaily[Date])
+VAR WeekRows = FILTER(
+    ALL(FactDaily),
+    FactDaily[Date] > LastDay - 7 && FactDaily[Date] <= LastDay
+)
+RETURN COUNTROWS(
+    FILTER(WeekRows,
+        NOT ISBLANK(FactDaily[ModerateMinutes]) &&
+        NOT ISBLANK(FactDaily[VigorousMinutes])
+    )
+)
+
+Moderate Equivalent Minutes (Last 7 Records) =
+VAR LastDay = MAX(FactDaily[Date])
+VAR WeekRows = FILTER(ALL(FactDaily), FactDaily[Date] > LastDay - 7 && FactDaily[Date] <= LastDay)
+VAR Coverage = COUNTROWS(FILTER(WeekRows,
+    NOT ISBLANK(FactDaily[ModerateMinutes]) &&
+    NOT ISBLANK(FactDaily[VigorousMinutes])))
+RETURN IF(Coverage = 7,
+    SUMX(WeekRows, FactDaily[ModerateMinutes] + 2 * FactDaily[VigorousMinutes]),
+    BLANK()
+)
+
+Paid Work Covered Days (Last 7 Records) =
+VAR LastDay = MAX(FactDaily[Date])
+VAR WeekRows = FILTER(ALL(FactDaily), FactDaily[Date] > LastDay - 7 && FactDaily[Date] <= LastDay)
+RETURN COUNTROWS(FILTER(WeekRows, NOT ISBLANK(FactDaily[PaidWorkMinutes])))
+
+Paid Work Hours (Last 7 Records) =
+VAR LastDay = MAX(FactDaily[Date])
+VAR WeekRows = FILTER(ALL(FactDaily), FactDaily[Date] > LastDay - 7 && FactDaily[Date] <= LastDay)
+VAR Covered = COUNTROWS(FILTER(WeekRows, NOT ISBLANK(FactDaily[PaidWorkMinutes])))
+RETURN IF(Covered = 7, DIVIDE(SUMX(WeekRows, FactDaily[PaidWorkMinutes]),60),BLANK())
+
+Completed Tasks = CALCULATE(COUNTROWS(FactTasks), FactTasks[Status] = "done")
+
+Active Tasks = CALCULATE(COUNTROWS(FactTasks), FactTasks[Status] = "active")
+
+Quadrant I (Do) = CALCULATE(COUNTROWS(FactTasks), FactTasks[Quadrant] = "do", FactTasks[Status] <> "done")
+
+Quadrant II (Schedule) = CALCULATE(COUNTROWS(FactTasks), FactTasks[Quadrant] = "schedule", FactTasks[Status] <> "done")
+
+Primary Tracked Hours = DIVIDE(
+    CALCULATE(SUM(FactSessions[Minutes]), FactSessions[IsPrimary] = TRUE()),
+    60
+)
+
+Sourced Recommendation Count = COUNTROWS(FactRecommendations)
+
+// Show citations by joining FactRecommendations[EvidenceId] --> DimEvidence[EvidenceId].
+// DO NOT write new claims or diagnosis logic in DAX without reviewing evidence.
+// AASM guideline: >=7 h/night for adults 18-60;
+// WHO activity: >=150 moderate-equivalent minutes/week;
+// WHO/ILO comparison: >=55 paid-work hours/week associated with higher risk at population scale.
+// "Five nights/three low nights" is a LifeOS display rule, NOT an AASM diagnostic threshold.

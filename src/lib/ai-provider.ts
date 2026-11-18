@@ -13,7 +13,7 @@ export interface AIPrefs {
 }
 
 const DEFAULT_PREFS: AIPrefs = {
-  aiEnabled: true,
+  aiEnabled: false,
   aiProvider: "z-ai-sdk",
   aiApiKey: "",
   aiBaseUrl: "",
@@ -22,12 +22,17 @@ const DEFAULT_PREFS: AIPrefs = {
 
 export async function getAIPrefs(req: NextRequest): Promise<AIPrefs> {
   const session = await getUserFromRequest(req);
-  if (!session) return DEFAULT_PREFS;
+  if (!session || !session.twoFactorVerified) return DEFAULT_PREFS;
 
   const setting = await db.setting.findUnique({ where: { id: `prefs-${session.userId}` } });
   if (!setting) return DEFAULT_PREFS;
 
-  return { ...DEFAULT_PREFS, ...JSON.parse(setting.value) };
+  try {
+    const parsed = JSON.parse(setting.value);
+    return { ...DEFAULT_PREFS, ...parsed };
+  } catch {
+    return DEFAULT_PREFS;
+  }
 }
 
 export async function aiChatCompletion(

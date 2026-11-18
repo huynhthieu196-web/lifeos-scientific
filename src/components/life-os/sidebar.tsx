@@ -14,10 +14,14 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { t, type TranslationKey } from "@/lib/i18n";
+import { uiText } from "@/lib/ui-copy";
 
 const NAV = [
   { key: "dashboard", name: "Dashboard", icon: "LayoutDashboard" },
+  { key: "eisenhower", name: "Ma trận Eisenhower", icon: "Grid2X2" },
+  { key: "scientific", name: "Phân tích khoa học", icon: "ChartNoAxesCombined" },
   { key: "inbox", name: "Inbox", icon: "Inbox" },
   { key: "calendar", name: "Calendar", icon: "CalendarDays" },
   { key: "agenda", name: "Agenda", icon: "CalendarRange" },
@@ -30,7 +34,8 @@ const NAV = [
 ] as const;
 
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
-  const { view, setView } = useLifeOS();
+  const { view, setView, locale, setLocale, hydrateLocale } = useLifeOS();
+  useEffect(() => { hydrateLocale(); }, [hydrateLocale]);
   const { data: stats } = useStats();
   const { data: inbox } = useInbox();
   const inboxCount = stats?.inboxCount ?? inbox?.items?.length ?? 0;
@@ -72,7 +77,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                   <motion.span layoutId="nav-active" className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-emerald-500" />
                 )}
                 <Icon name={n.icon} className="h-4 w-4" />
-                <span className="flex-1 text-left">{n.name}</span>
+                <span className="flex-1 text-left">{t(locale, n.key as TranslationKey)}</span>
                 {badge && (
                   <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-bold text-amber-600">{badge}</span>
                 )}
@@ -81,7 +86,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           })}
         </div>
 
-        <div className="mt-4 mb-2 px-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">Life Domains</div>
+        <div className="mt-4 mb-2 px-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">{t(locale, "domains")}</div>
         <div className="space-y-0.5">
           {DOMAINS.map((d) => {
             const active = view === d.key;
@@ -98,7 +103,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                 <span className="flex h-5 w-5 items-center justify-center rounded-md" style={{ background: `${d.color}1a`, color: d.color }}>
                   <Icon name={d.icon} className="h-3 w-3" />
                 </span>
-                <span className="flex-1 text-left text-[13px] font-medium">{d.short}</span>
+                <span className="flex-1 text-left text-[13px] font-medium">{uiText(d.short)}</span>
                 {count ? <span className="text-[10px] text-muted-foreground/60">{count}</span> : null}
               </button>
             );
@@ -106,6 +111,18 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         </div>
       </ScrollArea>
 
+      {/* Language is a browser UI preference; personal data is never saved locally. */}
+      <div className="border-t border-border/40 px-3 py-2">
+        <label htmlFor="lifeos-language" className="mb-1 flex items-center gap-2 text-xs text-muted-foreground">
+          <Icon name="Languages" className="h-3.5 w-3.5" /> {t(locale, "language")}
+        </label>
+        <select id="lifeos-language" aria-label={t(locale, "language")} value={locale}
+          onChange={(event) => setLocale(event.target.value === "en" ? "en" : "vi")}
+          className="w-full rounded-lg border border-border bg-background px-2 py-1.5 text-xs">
+          <option value="vi">Tiếng Việt</option>
+          <option value="en">English</option>
+        </select>
+      </div>
       {/* Footer — Settings + Sign out */}
       <div className="flex-shrink-0 border-t border-border/40 p-2">
         <button
@@ -116,14 +133,14 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           )}
         >
           <Icon name="Settings" className="h-3.5 w-3.5" />
-          Settings
+          {t(locale, "settings")}
         </button>
         <button
           onClick={async () => { await fetch("/api/auth/logout", { method: "POST" }); window.location.href = "/login"; }}
           className="flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-rose-500/10 hover:text-rose-500"
         >
           <Icon name="LogOut" className="h-3.5 w-3.5" />
-          Sign out
+          {t(locale, "signout")}
         </button>
       </div>
     </>
@@ -148,7 +165,7 @@ export function Sidebar() {
       <button
         onClick={() => setMobileOpen(true)}
         className="fixed left-3 top-3 z-40 flex h-10 w-10 items-center justify-center rounded-lg border border-border/60 bg-background/80 shadow-md backdrop-blur-md md:hidden"
-        aria-label="Open menu"
+        aria-label={uiText("Open menu")}
       >
         <Icon name="Menu" className="h-5 w-5" />
       </button>
@@ -157,8 +174,8 @@ export function Sidebar() {
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent side="left" className="w-72 p-0">
           <SheetHeader className="sr-only">
-            <SheetTitle>Navigation</SheetTitle>
-            <SheetDescription>Navigate between Life OS views and life domains.</SheetDescription>
+            <SheetTitle>{uiText("Navigation")}</SheetTitle>
+            <SheetDescription>{uiText("Navigate between Life OS views and life domains.")}</SheetDescription>
           </SheetHeader>
           <div className="flex h-full flex-col">
             <SidebarContent onNavigate={closeMobile} />

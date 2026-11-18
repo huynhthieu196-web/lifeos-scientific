@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useState, useEffect } from "react";
 import { useLifeOS } from "@/store/life-os";
@@ -40,7 +41,7 @@ export function InboxView() {
       const res = await fetch("/api/ai/smart-inbox", { method: "POST" });
       const data = await res.json();
       if (data.error) {
-        notify.error(`AI error: ${data.error}`);
+        notify.error(`${uiText("AI error:")} ${data.error}`);
         return;
       }
       const mapped: Record<string, any> = {};
@@ -48,9 +49,9 @@ export function InboxView() {
         mapped[s.itemId] = s;
       }
       setAiSuggestions(mapped);
-      notify.success(`AI analyzed ${data.count} inbox items`);
+      notify.success(uiText("AI analyzed {count} inbox items").replace("{count}",String(data.count)));
     } catch {
-      notify.error("Failed to run AI processing");
+      notify.error(uiText("Failed to run AI processing"));
     } finally {
       setAiLoading(false);
     }
@@ -71,7 +72,7 @@ export function InboxView() {
       delete next[itemId];
       return next;
     });
-    notify.success("Item processed");
+    notify.success(uiText("Item processed"));
   }
 
   function toggle(id: string) {
@@ -87,19 +88,19 @@ export function InboxView() {
     const ids = selected.size ? Array.from(selected) : items.map((i) => i.id);
     await Promise.all(ids.map((id) => update.mutateAsync({ id, [field]: value || null })));
     setSelected(new Set());
-    notify.success(`Processed ${ids.length} item${ids.length > 1 ? "s" : ""}`);
+    notify.success(uiText("Processed {count} items").replace("{count}",String(ids.length)));
   }
 
   async function clearInbox() {
     await Promise.all(items.map((i) => update.mutateAsync({ id: i.id, status: "active" })));
-    notify.success("Inbox cleared — all items activated");
+    notify.success(uiText("Inbox cleared — all items activated"));
   }
 
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Inbox"
-        subtitle="Process your captures. Decide what each one is and where it belongs."
+        title={uiText("Inbox")}
+        subtitle={uiText("Process your captures. Decide what each one is and where it belongs.")}
         icon="Inbox"
         color="#f59e0b"
         actions={
@@ -130,17 +131,17 @@ export function InboxView() {
             {selected.size > 0 ? `${selected.size} selected` : `${items.length} to process`}
           </span>
           <div className="ml-auto flex flex-wrap items-center gap-1.5">
-            <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Set:</span>
+            <span className="text-[10px] uppercase tracking-wide text-muted-foreground">{uiText("Set:")}</span>
             <select onChange={(e) => e.target.value && processAll("type", e.target.value)} className="rounded-md border border-border/60 bg-background px-2 py-1 text-xs" defaultValue="">
-              <option value="">type…</option>
+              <option value="">{uiText("type…")}</option>
               {ITEM_TYPES.map((t) => <option key={t.type} value={t.type}>{t.name}</option>)}
             </select>
             <select onChange={(e) => e.target.value && processAll("domainId", e.target.value)} className="rounded-md border border-border/60 bg-background px-2 py-1 text-xs" defaultValue="">
-              <option value="">domain…</option>
+              <option value="">{uiText("domain…")}</option>
               {domains.map((d: any) => <option key={d.id} value={d.id}>{DOMAINS.find((dd) => dd.key === d.key)?.name}</option>)}
             </select>
             <select onChange={(e) => e.target.value && processAll("projectId", e.target.value)} className="rounded-md border border-border/60 bg-background px-2 py-1 text-xs" defaultValue="">
-              <option value="">project…</option>
+              <option value="">{uiText("project…")}</option>
               {projects.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
             <Button size="sm" variant="default" onClick={() => processAll("status", "active")} className="h-7 gap-1">
@@ -173,8 +174,8 @@ export function InboxView() {
       ) : items.length === 0 ? (
         <EmptyState
           icon="Inbox"
-          title="Inbox zero"
-          description="Your mind is clear. Capture a thought anytime with ⌘K and process it here later."
+          title={uiText("Inbox zero")}
+          description={uiText("Your mind is clear. Capture a thought anytime with ⌘K and process it here later.")}
           action={{ label: "Quick Capture", onClick: () => setQuickCaptureOpen(true) }}
         />
       ) : (
@@ -228,23 +229,23 @@ export function InboxView() {
                   </div>
                   <div className="flex flex-shrink-0 gap-1">
                     <button
-                      onClick={() => { update.mutate({ id: item.id, status: "active" }); notify.success("Activated"); }}
+                      onClick={() => { update.mutate({ id: item.id, status: "active" }); notify.success(uiText("Activated")); }}
                       className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-emerald-500/10 hover:text-emerald-500"
-                      title="Activate"
+                      title={uiText("Activate")}
                     >
                       <Icon name="Check" className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => { openItemEditor(item); }}
                       className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted"
-                      title="Edit"
+                      title={uiText("Edit")}
                     >
                       <Icon name="Pencil" className="h-4 w-4" />
                     </button>
                     <button
-                      onClick={() => { del.mutate(item.id); notify.success("Deleted"); }}
+                      onClick={() => { del.mutate(item.id); notify.success(uiText("Deleted")); }}
                       className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-rose-500/10 hover:text-rose-500"
-                      title="Delete"
+                      title={uiText("Delete")}
                     >
                       <Icon name="Trash2" className="h-4 w-4" />
                     </button>

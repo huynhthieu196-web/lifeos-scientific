@@ -1,17 +1,22 @@
 import { db } from "@/lib/db";
 import { ok } from "@/lib/api";
+import { currentUserId, unauthorizedResponse } from "@/lib/require-user";
+import type { NextRequest } from "next/server";
 
 export const dynamic = "force-dynamic";
 
 // POST /api/scheduler — generates next instances for recurring items whose due date has passed.
 // This is a simple "run on demand" scheduler. In production this would be a cron job.
-export async function POST() {
+export async function POST(req: NextRequest) {
+  const ownerId = await currentUserId(req);
+  if (!ownerId) return unauthorizedResponse();
   const now = new Date();
   const results: { type: string; created: number; details: string[] }[] = [];
 
   // 1. Recurring finance items (monthly/weekly/yearly) past their due date
   const recurringFinances = await db.item.findMany({
     where: {
+      ownerId,
       type: "finance",
       status: "active",
       dueDate: { lt: now },
@@ -41,7 +46,7 @@ export async function POST() {
     // Update the existing item's due date to the next occurrence
     // (rather than creating duplicates — recurring items are "rolling")
     await db.item.update({
-      where: { id: f.id },
+      where: { id: f.id, ownerId },
       data: { dueDate: nextDue },
     });
     financeDetails.push(`${f.title} → ${nextDue.toISOString().slice(0, 10)}`);
@@ -51,7 +56,7 @@ export async function POST() {
   // 2. Mark overdue tasks as still active (no auto-complete, but we could add streak resets for habits)
   // 3. Update habit streaks — if a habit wasn't logged yesterday, reset streak to 0
   const habits = await db.item.findMany({
-    where: { type: "habit", status: "active" },
+    where: { ownerId, type: "habit", status: "active" },
     include: { habitLogs: { orderBy: { date: "desc" }, take: 2 } },
   });
 
@@ -66,7 +71,7 @@ export async function POST() {
       const daysSince = Math.floor((now.getTime() - new Date(lastLog.date).getTime()) / 86400000);
       if (daysSince > 2) {
         await db.item.update({
-          where: { id: h.id },
+          where: { id: h.id, ownerId },
           data: { metadata: JSON.stringify({ ...meta, streak: 0 }) },
         });
         streaksReset++;

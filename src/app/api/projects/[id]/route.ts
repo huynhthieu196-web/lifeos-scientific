@@ -1,20 +1,23 @@
 import { db } from "@/lib/db";
 import { ok, notFound, parseBody, parseMeta } from "@/lib/api";
 import type { NextRequest } from "next/server";
+import { currentUserId, unauthorizedResponse } from "@/lib/require-user";
 
 export const dynamic = "force-dynamic";
 
 // GET /api/projects/[id] — unified dashboard
-export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const { id } = await ctx.params;
-  const project = await db.project.findUnique({
-    where: { id },
+  const ownerId = await currentUserId(req);
+  if (!ownerId) return unauthorizedResponse();
+  const project = await db.project.findFirst({
+    where: { id, ownerId },
     include: { domain: true },
   });
   if (!project) return notFound();
 
   const items = await db.item.findMany({
-    where: { projectId: id },
+    where: { projectId: id, ownerId },
     include: { tags: { include: { tag: true } }, domain: true },
   });
 
@@ -44,16 +47,24 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
 }
 
 export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
+  const ownerId = await currentUserId(req);
+  if (!ownerId) return unauthorizedResponse();
   const { id } = await ctx.params;
+  const current = await db.project.findFirst({ where: { id, ownerId }, select: { id: true } });
+  if (!current) return notFound();
   const body = await parseBody(req);
-  const project = await db.project.update({ where: { id }, data: body, include: { domain: true } });
+  const project = await db.project.update({ where: { id, ownerId }, data: { ...body, ownerId }, include: { domain: true } });
   return ok(parseMeta(project as any));
 }
 
-export async function DELETE(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const { id } = await ctx.params;
+  const ownerId = await currentUserId(req);
+  if (!ownerId) return unauthorizedResponse();
+  const current = await db.project.findFirst({ where: { id, ownerId }, select: { id: true } });
+  if (!current) return notFound();
   // unlink items first
-  await db.item.updateMany({ where: { projectId: id }, data: { projectId: null } });
-  await db.project.delete({ where: { id } }).catch(() => {});
+  await db.item.updateMany({ where: { projectId: id, ownerId }, data: { projectId: null } });
+  await db.project.delete({ where: { id, ownerId } }).catch(() => {});
   return ok({ deleted: true });
 }

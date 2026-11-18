@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useLifeOS } from "@/store/life-os";
 import { useItems, useDomains } from "@/lib/hooks";
@@ -52,7 +53,7 @@ export function DomainView({ domainKey }: { domainKey: string }) {
   return (
     <div className="space-y-6" aria-busy={isLoading}>
       <PageHeader
-        title={domainMeta.name}
+        title={uiText(domainMeta.name)}
         subtitle={domainMeta.description}
         icon={domainMeta.icon}
         color={domainMeta.color}
@@ -63,7 +64,7 @@ export function DomainView({ domainKey }: { domainKey: string }) {
               return (
                 <Button key={t} variant="outline" size="sm" onClick={() => openItemEditor({ type: t, domainId: domainRecord?.id })} className="gap-1.5">
                   <Icon name={m.icon} className="h-3.5 w-3.5" style={{ color: m.color }} />
-                  <span className="hidden sm:inline">{m.name}</span>
+                  <span className="hidden sm:inline">{uiText(m.name)}</span>
                 </Button>
               );
             })}
@@ -89,10 +90,10 @@ export function DomainView({ domainKey }: { domainKey: string }) {
             ))
           ) : (
             <>
-              <Stat label="Total items" value={items.length} />
-              <Stat label="Done" value={items.filter((i) => i.status === "done").length} />
-              <Stat label="Active" value={items.filter((i) => i.status === "active").length} />
-              <Stat label="Types" value={types.length} />
+              <Stat label={uiText("Total items")} value={items.length} />
+              <Stat label={uiText("Done")} value={items.filter((i) => i.status === "done").length} />
+              <Stat label={uiText("Active")} value={items.filter((i) => i.status === "active").length} />
+              <Stat label={uiText("Types")} value={types.length} />
             </>
           )}
         </div>
@@ -111,8 +112,8 @@ export function DomainView({ domainKey }: { domainKey: string }) {
             <Icon name="Leaf" className="h-6 w-6" />
           </span>
           <div className="relative flex-1">
-            <h3 className="text-sm font-semibold">Enter the Sanctuary</h3>
-            <p className="text-xs text-muted-foreground">A guided breathing exercise, your daily affirmation, and your life visions in one calm space.</p>
+            <h3 className="text-sm font-semibold">{uiText("Enter the Sanctuary")}</h3>
+            <p className="text-xs text-muted-foreground">{uiText("A guided breathing exercise, your daily affirmation, and your life visions in one calm space.")}</p>
           </div>
           <Icon name="ArrowRight" className="relative h-4 w-4 text-violet-500 transition-transform group-hover:translate-x-1" />
         </motion.button>
@@ -164,7 +165,7 @@ export function DomainView({ domainKey }: { domainKey: string }) {
       ) : filteredItems.length === 0 ? (
         <EmptyState
           icon={domainMeta.icon}
-          title={`Nothing in ${domainMeta.short} yet`}
+          title={uiText("No items in domain").replace("{domain}", uiText(domainMeta.short))}
           description={`Start capturing ${domainMeta.name.toLowerCase()} items. They'll appear here and connect to your projects.`}
           action={{ label: "Add item", onClick: () => openItemEditor({ type: qtypes[0], domainId: domainRecord?.id }) }}
         />

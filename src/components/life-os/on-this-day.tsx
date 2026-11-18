@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useOnThisDay } from "@/lib/hooks";
 import { useLifeOS } from "@/store/life-os";
@@ -33,8 +34,8 @@ export function OnThisDay() {
     return (
       <div className="rounded-2xl border border-dashed border-border/60 bg-card/30 p-4 text-center">
         <Icon name="CalendarHeart" className="mx-auto mb-1.5 h-5 w-5 text-muted-foreground/50" />
-        <p className="text-xs font-medium text-muted-foreground">No memories on this day yet</p>
-        <p className="mt-0.5 text-[11px] text-muted-foreground/70">Keep journaling — future you will thank you.</p>
+        <p className="text-xs font-medium text-muted-foreground">{uiText("No memories on this day yet")}</p>
+        <p className="mt-0.5 text-[11px] text-muted-foreground/70">{uiText("Keep journaling — future you will thank you.")}</p>
       </div>
     );
   }
@@ -50,7 +51,7 @@ export function OnThisDay() {
           <Icon name="CalendarHeart" className="h-3.5 w-3.5" />
         </span>
         <div>
-          <h3 className="text-sm font-semibold">On this day</h3>
+          <h3 className="text-sm font-semibold">{uiText("On this day")}</h3>
           <p className="text-[10px] text-muted-foreground">{total} memor{total === 1 ? "y" : "ies"} from the past</p>
         </div>
       </div>

@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useState } from "react";
 import { useLifeOS } from "@/store/life-os";
@@ -39,8 +40,8 @@ export function ProjectsView() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Projects & Threads"
-        subtitle="Unified dashboards that weave together every related task, note, journal, and deadline."
+        title={uiText("Projects & Threads")}
+        subtitle={uiText("Unified dashboards that weave together every related task, note, journal, and deadline.")}
         icon="FolderKanban"
         color="#06b6d4"
         actions={
@@ -91,9 +92,9 @@ export function ProjectsView() {
       ) : projects.length === 0 ? (
         <EmptyState
           icon="FolderPlus"
-          title="No projects yet"
-          description="Create a thread to unify related tasks, notes, journal entries, and deadlines."
-          action={{ label: "Create project", onClick: () => setCreateOpen(true) }}
+          title={uiText("No projects yet")}
+          description={uiText("Create a thread to unify related tasks, notes, journal entries, and deadlines.")}
+          action={{ label: uiText("Create project"), onClick: () => setCreateOpen(true) }}
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -200,19 +201,19 @@ function ProjectDetail({ id }: { id: string }) {
       {/* Stats row */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div className="rounded-xl border border-border/60 bg-card/40 p-3">
-          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Tasks done</p>
+          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{uiText("Tasks done")}</p>
           <p className="mt-1 text-xl font-bold">{stats.tasksDone}</p>
         </div>
         <div className="rounded-xl border border-border/60 bg-card/40 p-3">
-          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Active tasks</p>
+          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{uiText("Active tasks")}</p>
           <p className="mt-1 text-xl font-bold">{stats.tasksActive}</p>
         </div>
         <div className="rounded-xl border border-border/60 bg-card/40 p-3">
-          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Income</p>
+          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{uiText("Income")}</p>
           <p className="mt-1 text-xl font-bold text-emerald-500">${stats.income.toLocaleString()}</p>
         </div>
         <div className="rounded-xl border border-border/60 bg-card/40 p-3">
-          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Expense</p>
+          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{uiText("Expense")}</p>
           <p className="mt-1 text-xl font-bold text-rose-500">${stats.expense.toLocaleString()}</p>
         </div>
       </div>
@@ -220,9 +221,9 @@ function ProjectDetail({ id }: { id: string }) {
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Tasks */}
         <div className="space-y-6 lg:col-span-2">
-          <SectionCard title="Tasks" icon="CheckSquare" action={<Button variant="ghost" size="sm" onClick={() => openItemEditor({ type: "task", projectId: id })}><Icon name="Plus" className="mr-1 h-3.5 w-3.5" />Add</Button>}>
+          <SectionCard title={uiText("Tasks")} icon="CheckSquare" action={<Button variant="ghost" size="sm" onClick={() => openItemEditor({ type: "task", projectId: id })}><Icon name="Plus" className="mr-1 h-3.5 w-3.5" />{uiText("Add")}</Button>}>
             {tasks.length === 0 ? (
-              <p className="py-6 text-center text-sm text-muted-foreground">No tasks yet.</p>
+              <p className="py-6 text-center text-sm text-muted-foreground">{uiText("No tasks yet.")}</p>
             ) : (
               <div className="space-y-2">
                 {tasks.map((t) => <ItemCard key={t.id} item={t} onClick={() => openItemDetail(t.id)} />)}
@@ -231,7 +232,7 @@ function ProjectDetail({ id }: { id: string }) {
           </SectionCard>
 
           {notes.length > 0 && (
-            <SectionCard title="Notes" icon="StickyNote">
+            <SectionCard title={uiText("Notes")} icon="StickyNote">
               <div className="space-y-2">
                 {notes.map((n) => <ItemCard key={n.id} item={n} onClick={() => openItemDetail(n.id)} />)}
               </div>
@@ -239,7 +240,7 @@ function ProjectDetail({ id }: { id: string }) {
           )}
 
           {others.length > 0 && (
-            <SectionCard title="More" icon="Layers">
+            <SectionCard title={uiText("More")} icon="Layers">
               <div className="space-y-2">
                 {others.map((o) => <ItemCard key={o.id} item={o} onClick={() => openItemDetail(o.id)} />)}
               </div>
@@ -250,9 +251,9 @@ function ProjectDetail({ id }: { id: string }) {
         {/* Right column */}
         <div className="space-y-6">
           {finances.length > 0 && (
-            <SectionCard title="Budget" icon="Wallet">
+            <SectionCard title={uiText("Budget")} icon="Wallet">
               <div className="mb-3 flex items-center justify-between rounded-lg bg-muted/40 p-2.5">
-                <span className="text-xs text-muted-foreground">Net</span>
+                <span className="text-xs text-muted-foreground">{uiText("Net")}</span>
                 <span className="font-bold" style={{ color: stats.net >= 0 ? "#10b981" : "#f43f5e" }}>
                   {stats.net >= 0 ? "+" : "−"}${Math.abs(stats.net).toLocaleString()}
                 </span>
@@ -264,7 +265,7 @@ function ProjectDetail({ id }: { id: string }) {
           )}
 
           {journals.length > 0 && (
-            <SectionCard title="Journal" icon="BookHeart">
+            <SectionCard title={uiText("Journal")} icon="BookHeart">
               <div className="max-h-80 space-y-2 overflow-y-auto">
                 {journals.map((j) => (
                   <button key={j.id} onClick={() => openItemDetail(j.id)} className="w-full rounded-lg border border-border/60 p-3 text-left hover:bg-muted/40">
@@ -278,7 +279,7 @@ function ProjectDetail({ id }: { id: string }) {
           )}
 
           {habits.length > 0 && (
-            <SectionCard title="Habits" icon="Repeat">
+            <SectionCard title={uiText("Habits")} icon="Repeat">
               <div className="space-y-2">
                 {habits.map((h) => <ItemCard key={h.id} item={h} compact onClick={() => openItemDetail(h.id)} />)}
               </div>
@@ -297,7 +298,7 @@ function CreateProjectDialog({ open, onOpenChange }: { open: boolean; onOpenChan
   const [form, setForm] = useState({ name: "", description: "", color: COLORS[0], icon: ICONS[0], domainId: "", targetDate: "" });
 
   async function save() {
-    if (!form.name.trim()) { notify.error("Name required"); return; }
+    if (!form.name.trim()) { notify.error(uiText("Name required")); return; }
     await create.mutateAsync({
       name: form.name.trim(),
       description: form.description,
@@ -306,7 +307,7 @@ function CreateProjectDialog({ open, onOpenChange }: { open: boolean; onOpenChan
       domainId: form.domainId || null,
       targetDate: form.targetDate ? new Date(form.targetDate).toISOString() : null,
     });
-    notify.success("Project created");
+    notify.success(uiText("Project created"));
     setForm({ name: "", description: "", color: COLORS[0], icon: ICONS[0], domainId: "", targetDate: "" });
     onOpenChange(false);
   }
@@ -315,27 +316,27 @@ function CreateProjectDialog({ open, onOpenChange }: { open: boolean; onOpenChan
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[480px]">
         <DialogHeader>
-          <DialogTitle>New project / thread</DialogTitle>
-          <DialogDescription>A thread unifies related items across domains into one dashboard.</DialogDescription>
+          <DialogTitle>{uiText("New project / thread")}</DialogTitle>
+          <DialogDescription>{uiText("A thread unifies related items across domains into one dashboard.")}</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-2">
           <div>
-            <Label className="mb-1.5 block text-xs font-medium text-muted-foreground">Name</Label>
-            <Input autoFocus value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Japan Trip 2025" />
+            <Label className="mb-1.5 block text-xs font-medium text-muted-foreground">{uiText("Name")}</Label>
+            <Input autoFocus value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder={uiText("e.g. Japan Trip 2025")} />
           </div>
           <div>
-            <Label className="mb-1.5 block text-xs font-medium text-muted-foreground">Description</Label>
+            <Label className="mb-1.5 block text-xs font-medium text-muted-foreground">{uiText("Description")}</Label>
             <Textarea rows={2} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
           </div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <Label className="mb-1.5 block text-xs font-medium text-muted-foreground">Life domain</Label>
+              <Label className="mb-1.5 block text-xs font-medium text-muted-foreground">{uiText("Life domain")}</Label>
               <Select value={form.domainId || "none"} onValueChange={(value) => setForm({ ...form, domainId: value === "none" ? "" : value })}>
                 <SelectTrigger>
-                  <SelectValue placeholder="No domain" />
+                  <SelectValue placeholder={uiText("No domain")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">No domain</SelectItem>
+                  <SelectItem value="none">{uiText("No domain")}</SelectItem>
                   {domains.map((domain: any) => (
                     <SelectItem key={domain.id} value={domain.id}>
                       <span className="inline-flex items-center gap-2">
@@ -348,12 +349,12 @@ function CreateProjectDialog({ open, onOpenChange }: { open: boolean; onOpenChan
               </Select>
             </div>
             <div>
-              <Label className="mb-1.5 block text-xs font-medium text-muted-foreground">Target date</Label>
+              <Label className="mb-1.5 block text-xs font-medium text-muted-foreground">{uiText("Target date")}</Label>
               <Input type="date" value={form.targetDate} onChange={(e) => setForm({ ...form, targetDate: e.target.value })} />
             </div>
           </div>
           <div>
-            <Label className="mb-1.5 block text-xs font-medium text-muted-foreground">Color</Label>
+            <Label className="mb-1.5 block text-xs font-medium text-muted-foreground">{uiText("Color")}</Label>
             <div className="flex flex-wrap gap-2">
               {COLORS.map((c) => (
                 <button
@@ -366,7 +367,7 @@ function CreateProjectDialog({ open, onOpenChange }: { open: boolean; onOpenChan
             </div>
           </div>
           <div>
-            <Label className="mb-1.5 block text-xs font-medium text-muted-foreground">Icon</Label>
+            <Label className="mb-1.5 block text-xs font-medium text-muted-foreground">{uiText("Icon")}</Label>
             <div className="flex flex-wrap gap-2">
               {ICONS.map((ic) => (
                 <button
@@ -382,8 +383,8 @@ function CreateProjectDialog({ open, onOpenChange }: { open: boolean; onOpenChan
           </div>
         </div>
         <DialogFooter>
-          <Button variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button onClick={save} disabled={create.isPending}>Create</Button>
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>{uiText("Cancel")}</Button>
+          <Button onClick={save} disabled={create.isPending}>{uiText("Create")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

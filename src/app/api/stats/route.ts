@@ -1,10 +1,14 @@
 import { db } from "@/lib/db";
 import { ok } from "@/lib/api";
+import { currentUserId, unauthorizedResponse } from "@/lib/require-user";
+import type { NextRequest } from "next/server";
 
 export const dynamic = "force-dynamic";
 
 // GET /api/stats — dashboard overview
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const ownerId = await currentUserId(req);
+  if (!ownerId) return unauthorizedResponse();
   const now = new Date();
   const startOfToday = new Date(now);
   startOfToday.setHours(0, 0, 0, 0);
@@ -30,18 +34,18 @@ export async function GET() {
     completedToday,
     upcomingFinance,
   ] = await Promise.all([
-    db.item.count({ where: { status: "inbox" } }),
-    db.item.count({ where: { type: "task", status: "active", dueDate: { gte: startOfToday, lte: endOfToday } } }),
-    db.item.count({ where: { type: "task", status: "active", dueDate: { lt: startOfToday } } }),
-    db.item.count({ where: { type: "task", status: "active", dueDate: { gte: startOfWeek, lte: endOfWeek } } }),
-    db.project.count({ where: { status: "active" } }),
-    db.item.findMany({ where: { type: "habit", status: "active" }, include: { habitLogs: { where: { date: { gte: startOfWeek } } } } }),
-    db.review.findMany({ orderBy: { date: "desc" }, take: 7 }),
-    db.item.groupBy({ by: ["domainId"], where: { status: { not: "archived" } }, _count: true }),
-    db.item.groupBy({ by: ["type"], where: { status: { not: "archived" } }, _count: true }),
-    db.item.count({ where: { status: "done", completedAt: { gte: startOfToday, lte: endOfToday } } }),
+    db.item.count({ where: { ownerId, status: "inbox" } }),
+    db.item.count({ where: { ownerId, type: "task", status: "active", dueDate: { gte: startOfToday, lte: endOfToday } } }),
+    db.item.count({ where: { ownerId, type: "task", status: "active", dueDate: { lt: startOfToday } } }),
+    db.item.count({ where: { ownerId, type: "task", status: "active", dueDate: { gte: startOfWeek, lte: endOfWeek } } }),
+    db.project.count({ where: { ownerId, status: "active" } }),
+    db.item.findMany({ where: { ownerId, type: "habit", status: "active" }, include: { habitLogs: { where: { date: { gte: startOfWeek } } } } }),
+    db.review.findMany({ where: { ownerId }, orderBy: { date: "desc" }, take: 7 }),
+    db.item.groupBy({ by: ["domainId"], where: { ownerId, status: { not: "archived" } }, _count: true }),
+    db.item.groupBy({ by: ["type"], where: { ownerId, status: { not: "archived" } }, _count: true }),
+    db.item.count({ where: { ownerId, status: "done", completedAt: { gte: startOfToday, lte: endOfToday } } }),
     db.item.findMany({
-      where: { type: "finance", status: "active", dueDate: { gte: startOfWeek, lte: endOfWeek } },
+      where: { ownerId, type: "finance", status: "active", dueDate: { gte: startOfWeek, lte: endOfWeek } },
     }),
   ]);
 

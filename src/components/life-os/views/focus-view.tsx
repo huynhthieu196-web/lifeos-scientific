@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useLifeOS } from "@/store/life-os";
@@ -65,27 +66,53 @@ export function FocusView() {
   const [todayMinutes, setTodayMinutes] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const [loaded, setLoaded] = useState(false);
+  const completedRef = useRef(false);
 
-  // load today's stats + sound pref from localStorage (once)
-  if (!loaded) {
-    setLoaded(true);
+  // Focus counts belong to the signed-in account and load from PostgreSQL.
+  // Local storage is retained only for the non-sensitive sound preference.
+  const refreshFocusStats = useCallback(async () => {
+    const response = await fetch("/api/activity-sessions", { cache: "no-store" });
+    if (!response.ok) throw new Error("Cannot load cloud focus history");
+    const payload = await response.json();
+    const today = new Date().toISOString().slice(0, 10);
+    const sessions = (payload.sessions || []).filter((session: { startedAt: string; label: string; minutes: number }) =>
+      new Date(session.startedAt).toISOString().slice(0, 10) === today &&
+      session.label.startsWith("Focus: "),
+    );
+    setCompletedSessions(sessions.length);
+    setTodayMinutes(sessions.reduce((total: number, session: { minutes: number }) =>
+      total + session.minutes, 0));
+  }, []);
+
+  useEffect(() => {
     try {
-      const today = new Date().toISOString().slice(0, 10);
-      const stored = localStorage.getItem(`lifeos-focus-${today}`);
-      if (stored) {
-        const { sessions, minutes } = JSON.parse(stored);
-        setCompletedSessions(sessions || 0);
-        setTodayMinutes(minutes || 0);
-      }
       const soundPref = localStorage.getItem("lifeos-focus-sound");
       if (soundPref !== null) setSoundEnabled(soundPref === "true");
     } catch {}
-  }
+    void refreshFocusStats().catch(() => {
+      notify.error(uiText("Focus history unavailable"), uiText("Check your cloud connection and try again."));
+    });
+  }, [refreshFocusStats]);
 
-  function persist(sessions: number, minutes: number) {
-    const today = new Date().toISOString().slice(0, 10);
-    localStorage.setItem(`lifeos-focus-${today}`, JSON.stringify({ sessions, minutes }));
+  async function persistFocusSession(minutes: number, title: string) {
+    const endedAt = new Date();
+    const startedAt = new Date(endedAt.getTime() - minutes * 60_000);
+    try {
+      const res = await fetch("/api/activity-sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          label: `Focus: ${title}`,
+          startedAt: startedAt.toISOString(),
+          endedAt: endedAt.toISOString(),
+          isPrimary: true,
+        }),
+      });
+      if (!res.ok) throw new Error("Cloud save failed");
+      await refreshFocusStats();
+    } catch {
+      notify.error(uiText("Could not save focus session"), uiText("Your progress has not been stored on cloud. Check your connection."));
+    }
   }
 
   function toggleSound() {
@@ -101,6 +128,7 @@ export function FocusView() {
     setDuration(mins * 60);
     setRemaining(mins * 60);
     setRunning(false);
+    completedRef.current = false;
   }, [customMins]);
 
   // apply custom duration
@@ -123,6 +151,9 @@ export function FocusView() {
     intervalRef.current = setInterval(() => {
       setRemaining((r) => {
         if (r <= 1) {
+          // Avoid duplicate writes when React re-runs state updater callbacks.
+          if (completedRef.current) return 0;
+          completedRef.current = true;
           // session complete
           setRunning(false);
           if (soundEnabled) playChime();
@@ -133,7 +164,11 @@ export function FocusView() {
             const newMinutes = todayMinutes + elapsedMins;
             setCompletedSessions(newSessions);
             setTodayMinutes(newMinutes);
-            persist(newSessions, newMinutes);
+            void persistFocusSession(elapsedMins, selectedItemType === "task"
+              ? tasks.find((task) => task.id === selectedItemId)?.title || "Task"
+              : selectedItemType === "habit"
+                ? habits.find((habit) => habit.id === selectedItemId)?.title || "Habit"
+                : "Deep Work");
 
             // Log habit if a habit was selected
             if (selectedItemType === "habit" && selectedItemId) {
@@ -141,19 +176,19 @@ export function FocusView() {
               toggleHabit.mutate({ id: selectedItemId, date: todayKey });
               const habitName = habits.find((h) => h.id === selectedItemId)?.title;
               notify.success(
-                `Focus complete! ${elapsedMins} min`,
-                `✓ ${habitName} logged for today. Take a break!`,
+                `${uiText("Focus complete!")} ${elapsedMins} ${uiText("minutes")}`,
+                `✓ ${habitName} ${uiText("logged for today. Take a break!")}`,
               );
             } else if (selectedItemType === "task" && selectedItemId) {
-              notify.success(`Focus complete! ${elapsedMins} min`, "Great work. Take a short break.");
+              notify.success(`${uiText("Focus complete!")} ${elapsedMins} ${uiText("minutes")}`, uiText("Great work. Take a short break."));
             } else {
-              notify.success(`Focus complete! ${elapsedMins} min`, "Take a short break.");
+              notify.success(`${uiText("Focus complete!")} ${elapsedMins} ${uiText("minutes")}`, uiText("Take a short break."));
             }
 
             // auto-suggest break
             setTimeout(() => switchMode(newSessions % 4 === 0 ? "long" : "short"), 800);
           } else {
-            notify.success("Break over — back to focus!", "You've got this.");
+            notify.success(uiText("Break over — back to focus!"), uiText("You've got this."));
             setTimeout(() => switchMode("focus"), 800);
           }
           return 0;
@@ -164,7 +199,7 @@ export function FocusView() {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [running, mode, duration, completedSessions, todayMinutes, selectedItemId, selectedItemType, soundEnabled, switchMode, habits, toggleHabit]);
+  }, [running, mode, duration, completedSessions, todayMinutes, selectedItemId, selectedItemType, soundEnabled, switchMode, tasks, habits, toggleHabit]);
 
   function selectItem(id: string, type: "task" | "habit") {
     if (id === "none") {
@@ -196,8 +231,8 @@ export function FocusView() {
     return (
       <div className="space-y-6">
         <PageHeader
-          title="Focus & Deep Work"
-          subtitle="Protect your attention. Run a pomodoro, connect it to a habit, and watch your practice grow."
+          title={uiText("Focus & Deep Work")}
+          subtitle={uiText("Protect your attention. Run a pomodoro, connect it to a habit, and watch your practice grow.")}
           icon="Brain"
           color="#f59e0b"
         />
@@ -255,8 +290,8 @@ export function FocusView() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Focus & Deep Work"
-        subtitle="Protect your attention. Run a pomodoro, connect it to a habit, and watch your practice grow."
+        title={uiText("Focus & Deep Work")}
+        subtitle={uiText("Protect your attention. Run a pomodoro, connect it to a habit, and watch your practice grow.")}
         icon="Brain"
         color="#f59e0b"
         actions={
@@ -283,7 +318,7 @@ export function FocusView() {
                 style={mode === m ? { color: PRESETS[m].color } : {}}
               >
                 <Icon name={PRESETS[m].icon} className="h-3.5 w-3.5" />
-                {PRESETS[m].label}
+                {uiText(PRESETS[m].label)}
               </button>
             ))}
           </div>
@@ -299,7 +334,7 @@ export function FocusView() {
                 onChange={(e) => applyCustomMins(Number(e.target.value) || 1)}
                 className="h-9 w-20 text-center text-lg font-bold"
               />
-              <span className="text-sm text-muted-foreground">minutes</span>
+              <span className="text-sm text-muted-foreground">{uiText("minutes")}</span>
               {[10, 20, 30, 45, 60].map((m) => (
                 <button
                   key={m}
@@ -366,8 +401,8 @@ export function FocusView() {
               size="lg"
               variant="outline"
               className="h-12 w-12 p-0"
-              onClick={() => { setRunning(false); setRemaining(duration); }}
-              title="Reset"
+              onClick={() => { setRunning(false); setRemaining(duration); completedRef.current = false; }}
+              title={uiText("Reset")}
             >
               <Icon name="RotateCcw" className="h-5 w-5" />
             </Button>
@@ -376,7 +411,7 @@ export function FocusView() {
               variant="ghost"
               className="h-12 px-4"
               onClick={() => switchMode(mode)}
-              title="Skip"
+              title={uiText("Skip")}
             >
               <Icon name="SkipForward" className="h-5 w-5" />
             </Button>
@@ -386,15 +421,15 @@ export function FocusView() {
         {/* Right column */}
         <div className="space-y-6">
           {/* Today's stats */}
-          <SectionCard title="Today" icon="Flame">
+          <SectionCard title={uiText("Today")} icon="Flame">
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-xl bg-amber-500/10 p-4 text-center">
                 <div className="text-3xl font-bold text-amber-500">{completedSessions}</div>
-                <div className="mt-1 text-[11px] uppercase tracking-wide text-muted-foreground">sessions</div>
+                <div className="mt-1 text-[11px] uppercase tracking-wide text-muted-foreground">{uiText("sessions")}</div>
               </div>
               <div className="rounded-xl bg-emerald-500/10 p-4 text-center">
                 <div className="text-3xl font-bold text-emerald-500">{todayMinutes}</div>
-                <div className="mt-1 text-[11px] uppercase tracking-wide text-muted-foreground">focus minutes</div>
+                <div className="mt-1 text-[11px] uppercase tracking-wide text-muted-foreground">{uiText("focus minutes")}</div>
               </div>
             </div>
             {completedSessions > 0 && (
@@ -416,14 +451,14 @@ export function FocusView() {
           </SectionCard>
 
           {/* Task / Habit selector */}
-          <SectionCard title="Focus on" icon="Target">
+          <SectionCard title={uiText("Focus on")} icon="Target">
             {tasks.length > 0 && (
               <div className="mb-3">
-                <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-amber-500">Tasks</p>
+                <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-amber-500">{uiText("Tasks")}</p>
                 <Select value={selectedItemType === "task" ? selectedItemId : "none"} onValueChange={(v) => selectItem(v, "task")}>
-                  <SelectTrigger className="h-9"><SelectValue placeholder="Pick a task…" /></SelectTrigger>
+                  <SelectTrigger className="h-9"><SelectValue placeholder={uiText("Pick a task…")} /></SelectTrigger>
                   <SelectContent className="max-h-60">
-                    <SelectItem value="none">No task</SelectItem>
+                    <SelectItem value="none">{uiText("No task")}</SelectItem>
                     {tasks.map((t) => (
                       <SelectItem key={t.id} value={t.id}>
                         <span className="line-clamp-1">{t.title}</span>
@@ -436,11 +471,11 @@ export function FocusView() {
 
             {habits.length > 0 && (
               <div className="mb-3">
-                <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-500">Habits</p>
+                <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-500">{uiText("Habits")}</p>
                 <Select value={selectedItemType === "habit" ? selectedItemId : "none"} onValueChange={(v) => selectItem(v, "habit")}>
-                  <SelectTrigger className="h-9"><SelectValue placeholder="Pick a habit…" /></SelectTrigger>
+                  <SelectTrigger className="h-9"><SelectValue placeholder={uiText("Pick a habit…")} /></SelectTrigger>
                   <SelectContent className="max-h-60">
-                    <SelectItem value="none">No habit</SelectItem>
+                    <SelectItem value="none">{uiText("No habit")}</SelectItem>
                     {habits.map((h) => (
                       <SelectItem key={h.id} value={h.id}>
                         <span className="line-clamp-1">Leaf {h.title}</span>

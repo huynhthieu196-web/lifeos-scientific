@@ -13,7 +13,13 @@ function daysFromNow(n: number, h = 9, m = 0) {
 }
 
 async function main() {
-  console.log("🌱 Seeding Life OS…");
+  const ownerId = process.env.LIFEOS_SEED_OWNER_ID;
+  if (process.env.NODE_ENV === "production") throw new Error("Seeding is disabled in production");
+  if (!ownerId) throw new Error("Set LIFEOS_SEED_OWNER_ID to an existing test account first");
+  const owner = await db.user.findUnique({ where: { id: ownerId }, select: { id: true } });
+  if (!owner) throw new Error("Seed account does not exist");
+  if (await db.item.count({ where: { ownerId } }) > 0) throw new Error("Account already has data");
+  console.log("🌱 Seeding isolated Life OS test account…");
 
   // Domains
   for (const dom of DOMAINS) {
@@ -92,7 +98,7 @@ async function main() {
         progress: 50,
         targetDate: daysFromNow(180),
       },
-    ].map((p) => db.project.create({ data: p as any })),
+    ].map((p) => db.project.create({ data: { ...p, ownerId } })),
   );
   const pmap = Object.fromEntries(projects.map((p) => [p.name, p.id]));
 
@@ -100,7 +106,7 @@ async function main() {
   async function item(data: Record<string, any>) {
     const meta = data.metadata ? { metadata: JSON.stringify(data.metadata) } : {};
     const { metadata, ...rest } = data;
-    return db.item.create({ data: { ...rest, ...meta } as any });
+    return db.item.create({ data: { ...rest, ...meta, ownerId } as any });
   }
 
   // ── Tasks (Time & Action) ──
@@ -209,11 +215,11 @@ async function main() {
   await item({ type: "document", title: "Passport scan", domainId: dmap.admin, status: "active", metadata: { category: "identity" } });
 
   // ── Bi-directional links ──
-  const debtJournal = await db.item.findFirst({ where: { title: "Stress about money" } });
-  const debtProject = await db.project.findFirst({ where: { name: "Get out of Debt" } });
-  const financialVision = await db.item.findFirst({ where: { title: "Financial peace" } });
-  const halfGoal = await db.item.findFirst({ where: { title: "Run a half-marathon" } });
-  const healthProject = await db.project.findFirst({ where: { name: "Health Transformation" } });
+  const debtJournal = await db.item.findFirst({ where: { title: "Stress about money", ownerId } });
+  const debtProject = await db.project.findFirst({ where: { name: "Get out of Debt", ownerId } });
+  const financialVision = await db.item.findFirst({ where: { title: "Financial peace", ownerId } });
+  const halfGoal = await db.item.findFirst({ where: { title: "Run a half-marathon", ownerId } });
+  const healthProject = await db.project.findFirst({ where: { name: "Health Transformation", ownerId } });
   if (debtJournal && financialVision) {
     await db.link.create({ data: { fromId: debtJournal.id, toId: financialVision.id, type: "related", note: "journal references the vision" } }).catch(() => {});
   }
@@ -227,6 +233,7 @@ async function main() {
   // ── Reviews ──
   await db.review.create({
     data: {
+      ownerId,
       type: "daily",
       date: daysFromNow(-1, 21),
       status: "completed",
@@ -242,6 +249,7 @@ async function main() {
   });
   await db.review.create({
     data: {
+      ownerId,
       type: "daily",
       date: daysFromNow(-2, 21),
       status: "completed",
@@ -256,6 +264,7 @@ async function main() {
   });
   await db.review.create({
     data: {
+      ownerId,
       type: "weekly",
       date: daysFromNow(-4, 20),
       status: "completed",

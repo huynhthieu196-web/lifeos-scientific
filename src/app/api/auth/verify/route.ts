@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { ok, bad, parseBody, verifyTOTP, verifySession, createSession } from "@/lib/auth-utils";
 import type { NextRequest } from "next/server";
+import { isAllowedAccount } from "@/lib/account-policy";
 
 export const dynamic = "force-dynamic";
 
@@ -17,12 +18,12 @@ export async function POST(req: NextRequest) {
   if (!match) return bad("No active session", 401);
 
   const session = verifySession(match[1]);
-  if (!session) return bad("Invalid or expired session", 401);
+  if (!session || session.twoFactorVerified || !isAllowedAccount(session.email)) return bad("Invalid or expired session", 401);
 
   const user = await db.user.findUnique({ where: { id: session.userId } });
-  if (!user) return bad("User not found", 401);
+  if (!user || user.email.toLowerCase() !== session.email.toLowerCase()) return bad("User not found", 401);
 
-  if (!user.totpSecret) return bad("2FA is not set up. Please set up 2FA first.");
+  if (!user.totpVerified || !user.totpSecret) return bad("2FA is not set up. Please set up 2FA first.");
 
   const valid = verifyTOTP(token, user.totpSecret);
   if (!valid) return bad("Invalid verification code. Please try again.", 401);
@@ -30,6 +31,6 @@ export async function POST(req: NextRequest) {
   // Upgrade session to verified
   const newSession = createSession(user.id, user.email, true);
   const res = ok({ authenticated: true, email: user.email });
-  res.headers.set("Set-Cookie", `lifeos-session=${newSession}; Path=/; HttpOnly; SameSite=Lax; Max-Age=604800`);
+  res.headers.set("Set-Cookie", `lifeos-session=${newSession}; Path=/; HttpOnly; SameSite=Lax; Max-Age=604800${process.env.NODE_ENV === "production" ? "; Secure" : ""}`);
   return res;
 }

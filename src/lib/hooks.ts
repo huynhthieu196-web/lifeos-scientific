@@ -57,6 +57,7 @@ export function useCreateItem() {
       qc.invalidateQueries({ queryKey: ["items"] });
       qc.invalidateQueries({ queryKey: qk.inbox });
       qc.invalidateQueries({ queryKey: qk.stats });
+      qc.invalidateQueries({ queryKey: ["lifeos-analytics"] });
       qc.invalidateQueries({ queryKey: ["project"] });
       qc.invalidateQueries({ queryKey: qk.calendar() });
     },
@@ -73,6 +74,7 @@ export function useUpdateItem() {
       qc.invalidateQueries({ queryKey: qk.item(vars.id) });
       qc.invalidateQueries({ queryKey: qk.inbox });
       qc.invalidateQueries({ queryKey: qk.stats });
+      qc.invalidateQueries({ queryKey: ["lifeos-analytics"] });
       qc.invalidateQueries({ queryKey: ["project"] });
       qc.invalidateQueries({ queryKey: qk.calendar() });
     },
@@ -87,6 +89,7 @@ export function useDeleteItem() {
       qc.invalidateQueries({ queryKey: ["items"] });
       qc.invalidateQueries({ queryKey: qk.inbox });
       qc.invalidateQueries({ queryKey: qk.stats });
+      qc.invalidateQueries({ queryKey: ["lifeos-analytics"] });
       qc.invalidateQueries({ queryKey: ["project"] });
       qc.invalidateQueries({ queryKey: qk.calendar() });
     },
@@ -105,6 +108,7 @@ export function useQuickCapture() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: qk.inbox });
       qc.invalidateQueries({ queryKey: qk.stats });
+      qc.invalidateQueries({ queryKey: ["lifeos-analytics"] });
     },
   });
 }
@@ -126,7 +130,10 @@ export function useCreateProject() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (body: any) => jfetch<any>("/api/projects", { method: "POST", body: JSON.stringify(body) }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: qk.projects }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: qk.projects });
+      qc.invalidateQueries({ queryKey: ["lifeos-analytics"] });
+    },
   });
 }
 
@@ -138,6 +145,7 @@ export function useUpdateProject() {
     onSuccess: (_d, vars) => {
       qc.invalidateQueries({ queryKey: qk.projects });
       qc.invalidateQueries({ queryKey: qk.project(vars.id) });
+      qc.invalidateQueries({ queryKey: ["lifeos-analytics"] });
     },
   });
 }
@@ -146,7 +154,10 @@ export function useDeleteProject() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => jfetch<any>(`/api/projects/${id}`, { method: "DELETE" }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: qk.projects }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: qk.projects });
+      qc.invalidateQueries({ queryKey: ["lifeos-analytics"] });
+    },
   });
 }
 
@@ -168,7 +179,9 @@ export function useCreateReview() {
     mutationFn: (body: any) => jfetch<any>("/api/reviews", { method: "POST", body: JSON.stringify(body) }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["reviews"] });
+      qc.invalidateQueries({ queryKey: ["lifeos-analytics"] });
       qc.invalidateQueries({ queryKey: qk.stats });
+      qc.invalidateQueries({ queryKey: ["lifeos-analytics"] });
     },
   });
 }
@@ -178,7 +191,11 @@ export function useUpdateReview() {
   return useMutation({
     mutationFn: ({ id, ...body }: any) =>
       jfetch<any>(`/api/reviews/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["reviews"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["reviews"] });
+      qc.invalidateQueries({ queryKey: ["lifeos-analytics"] });
+      qc.invalidateQueries({ queryKey: ["lifeos-analytics"] });
+    },
   });
 }
 
@@ -186,7 +203,11 @@ export function useDeleteReview() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => jfetch<any>(`/api/reviews/${id}`, { method: "DELETE" }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["reviews"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["reviews"] });
+      qc.invalidateQueries({ queryKey: ["lifeos-analytics"] });
+      qc.invalidateQueries({ queryKey: ["lifeos-analytics"] });
+    },
   });
 }
 
@@ -239,6 +260,7 @@ export function useRunScheduler() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["items"] });
       qc.invalidateQueries({ queryKey: qk.stats });
+      qc.invalidateQueries({ queryKey: ["lifeos-analytics"] });
       qc.invalidateQueries({ queryKey: qk.calendar() });
       qc.invalidateQueries({ queryKey: qk.insights });
     },
@@ -264,6 +286,7 @@ export function useToggleHabit() {
       qc.invalidateQueries({ queryKey: qk.item(vars.id) });
       qc.invalidateQueries({ queryKey: qk.habitLogs(vars.id) });
       qc.invalidateQueries({ queryKey: qk.stats });
+      qc.invalidateQueries({ queryKey: ["lifeos-analytics"] });
       qc.invalidateQueries({ queryKey: ["items"] });
     },
   });

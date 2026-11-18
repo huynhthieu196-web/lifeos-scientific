@@ -1,10 +1,14 @@
 import { db } from "@/lib/db";
 import { ok } from "@/lib/api";
+import { currentUserId, unauthorizedResponse } from "@/lib/require-user";
+import type { NextRequest } from "next/server";
 
 export const dynamic = "force-dynamic";
 
 // GET /api/insights — aggregated data for the Insights view
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const ownerId = await currentUserId(req);
+  if (!ownerId) return unauthorizedResponse();
   const now = new Date();
   const thirtyDaysAgo = new Date(now);
   thirtyDaysAgo.setDate(now.getDate() - 30);
@@ -12,21 +16,21 @@ export async function GET() {
 
   const [reviews, habits, finances, items, projects] = await Promise.all([
     db.review.findMany({
-      where: { date: { gte: thirtyDaysAgo } },
+      where: { ownerId, date: { gte: thirtyDaysAgo } },
       orderBy: { date: "asc" },
     }),
     db.item.findMany({
-      where: { type: "habit", status: "active" },
+      where: { ownerId, type: "habit", status: "active" },
       include: { habitLogs: { where: { date: { gte: thirtyDaysAgo } }, orderBy: { date: "asc" } } },
     }),
     db.item.findMany({
-      where: { type: "finance", status: "active" },
+      where: { ownerId, type: "finance", status: "active" },
     }),
     db.item.findMany({
-      where: { createdAt: { gte: thirtyDaysAgo } },
+      where: { ownerId, createdAt: { gte: thirtyDaysAgo } },
       select: { id: true, type: true, status: true, createdAt: true, completedAt: true },
     }),
-    db.project.findMany({ where: { status: "active" } }),
+    db.project.findMany({ where: { ownerId, status: "active" } }),
   ]);
 
   // mood trend (last 30 days)
@@ -95,7 +99,7 @@ export async function GET() {
   const projectHealth = await Promise.all(
     projects.map(async (p) => {
       const pItems = await db.item.findMany({
-        where: { projectId: p.id, type: "task" },
+        where: { ownerId, projectId: p.id, type: "task" },
         select: { status: true, dueDate: true },
       });
       const done = pItems.filter((i) => i.status === "done").length;

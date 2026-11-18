@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useState } from "react";
 import { useCreateReview, useReviews } from "@/lib/hooks";
@@ -45,7 +46,7 @@ export function MoodCheckIn() {
             <Icon name={MOODS.find((m) => m.value === todayReview.mood)?.icon || "Smile"} className="h-5 w-5" />
           </span>
           <div className="flex-1">
-            <p className="text-sm font-semibold">Checked in today</p>
+            <p className="text-sm font-semibold">{uiText("Checked in today")}</p>
             <p className="text-xs text-muted-foreground">
               Mood {MOODS.find((m) => m.value === todayReview.mood)?.label} · Energy {ENERGY.find((e) => e.value === todayReview.energy)?.label}
             </p>
@@ -70,8 +71,8 @@ export function MoodCheckIn() {
         >
           <Icon name="Check" className="h-5 w-5" strokeWidth={3} />
         </motion.div>
-        <p className="text-sm font-semibold">Thanks for checking in</p>
-        <p className="mt-0.5 text-xs text-muted-foreground">Your reflection is saved.</p>
+        <p className="text-sm font-semibold">{uiText("Thanks for checking in")}</p>
+        <p className="mt-0.5 text-xs text-muted-foreground">{uiText("Your reflection is saved.")}</p>
       </motion.div>
     );
   }
@@ -98,12 +99,12 @@ export function MoodCheckIn() {
     <div className="rounded-2xl border border-border/60 bg-gradient-to-br from-violet-500/5 to-transparent p-4">
       <div className="mb-3 flex items-center gap-2">
         <Icon name="Smile" className="h-4 w-4 text-violet-500" />
-        <h3 className="text-sm font-semibold">How are you feeling?</h3>
+        <h3 className="text-sm font-semibold">{uiText("How are you feeling?")}</h3>
       </div>
 
       {/* Mood selector */}
       <div className="mb-3">
-        <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Mood</p>
+        <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">{uiText("Mood")}</p>
         <div className="flex justify-between gap-1">
           {MOODS.map((m) => (
             <motion.button
@@ -127,7 +128,7 @@ export function MoodCheckIn() {
 
       {/* Energy selector */}
       <div className="mb-4">
-        <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Energy</p>
+        <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">{uiText("Energy")}</p>
         <div className="flex gap-1">
           {ENERGY.map((e) => (
             <motion.button

@@ -1,9 +1,12 @@
 "use client";
 
 import { create } from "zustand";
+import { DEFAULT_LOCALE, LOCALE_STORAGE_KEY, isLocale, type Locale } from "@/lib/i18n";
 
 export type ViewKey =
   | "dashboard"
+  | "eisenhower"
+  | "scientific"
   | "inbox"
   | "calendar"
   | "projects"
@@ -27,6 +30,9 @@ export type ViewKey =
 
 interface LifeOSState {
   view: ViewKey;
+  locale: Locale;
+  setLocale: (v: Locale) => void;
+  hydrateLocale: () => void;
   selectedProjectId: string | null;
   quickCaptureOpen: boolean;
   itemDetailId: string | null;
@@ -52,6 +58,9 @@ interface LifeOSState {
 
 export const useLifeOS = create<LifeOSState>((set) => ({
   view: "dashboard",
+  locale: DEFAULT_LOCALE,
+  setLocale: (v) => { if (typeof window !== "undefined") { try { window.localStorage.setItem(LOCALE_STORAGE_KEY, v); } catch {} document.documentElement.lang = v; } set({ locale: v }); },
+  hydrateLocale: () => { if (typeof window === "undefined") return; let v: Locale = DEFAULT_LOCALE; try { const saved = window.localStorage.getItem(LOCALE_STORAGE_KEY); if (isLocale(saved)) v = saved; } catch {} document.documentElement.lang = v; set({ locale: v }); },
   selectedProjectId: null,
   quickCaptureOpen: false,
   itemDetailId: null,

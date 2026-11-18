@@ -1,23 +1,26 @@
 import { db } from "@/lib/db";
 import { ok, bad } from "@/lib/api";
 import { getAIPrefs, aiChatCompletion } from "@/lib/ai-provider";
+import { currentUserId, unauthorizedResponse } from "@/lib/require-user";
 
 export const dynamic = "force-dynamic";
 
 // POST /api/ai/smart-inbox — AI suggests type, domain, and project for inbox items
 export async function POST(req: Request) {
+  const ownerId = await currentUserId(req);
+  if (!ownerId) return unauthorizedResponse();
   const prefs = await getAIPrefs(req as any);
   if (!prefs.aiEnabled) return ok({ suggestions: [], error: "AI features are disabled. Enable them in Settings." });
 
   const inboxItems = await db.item.findMany({
-    where: { status: "inbox" },
+    where: { ownerId, status: "inbox" },
     take: 20,
   });
 
   if (inboxItems.length === 0) return ok({ suggestions: [], message: "Inbox is empty" });
 
   const domains = await db.domain.findMany();
-  const projects = await db.project.findMany({ where: { status: "active" } });
+  const projects = await db.project.findMany({ where: { ownerId, status: "active" } });
 
   const itemsText = inboxItems.map((i, idx) => `${idx + 1}. "${i.title}"${i.content ? ` — ${i.content.slice(0, 100)}` : ""}`).join("\n");
   const domainsText = domains.map((d) => `${d.key} (${d.name})`).join(", ");
@@ -56,7 +59,7 @@ Respond with ONLY a JSON array. Each element: { "index": number, "type": string,
         suggestedType: s.type,
         suggestedDomainKey: s.domainKey,
         suggestedDomainId: domain?.id || null,
-        suggestedProjectId: s.projectId || null,
+        suggestedProjectId: projects.some((p) => p.id === s.projectId) ? s.projectId : null,
         reason: s.reason,
       };
     }).filter(Boolean);

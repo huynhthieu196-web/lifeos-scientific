@@ -12,6 +12,8 @@ import { NotificationManager } from "./notifications";
 import { OnboardingFlow } from "./onboarding-flow";
 import { AnimatePresence, motion } from "framer-motion";
 import { DashboardView } from "./views/dashboard-view";
+import { EisenhowerView } from "./views/eisenhower-view";
+import { ScientificView } from "./views/scientific-view";
 import { InboxView } from "./views/inbox-view";
 import { CalendarView } from "./views/calendar-view";
 import { ProjectsView } from "./views/projects-view";
@@ -26,10 +28,11 @@ import { SanctuaryView } from "./views/sanctuary-view";
 import { JournalEditorView } from "./views/journal-editor-view";
 import { SettingsView } from "./views/settings-view";
 import { Icon } from "./icon";
+import { uiText } from "@/lib/ui-copy";
 import { useEffect } from "react";
 
 export function Shell() {
-  const { view, setQuickCaptureOpen, setCommandOpen, setView } = useLifeOS();
+  const { view, setQuickCaptureOpen, setCommandOpen, setView, locale } = useLifeOS();
 
   // global hotkeys: "/" focuses search, "g + key" Vim-style navigation
   useEffect(() => {
@@ -51,7 +54,7 @@ export function Shell() {
       // g + key navigation
       if (gPressed) {
         const map: Record<string, any> = {
-          d: "dashboard", i: "inbox", c: "calendar", a: "agenda",
+          d: "dashboard", e: "eisenhower", z: "scientific", i: "inbox", c: "calendar", a: "agenda",
           f: "focus", p: "projects", g: "graph", r: "reviews", s: "insights", n: "sanctuary",
         };
         const target = map[e.key.toLowerCase()];
@@ -90,7 +93,7 @@ export function Shell() {
           <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
             <AnimatePresence mode="wait">
               <motion.div
-                key={view}
+                key={`${view}:${locale}`}
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -4 }}
@@ -117,6 +120,8 @@ export function Shell() {
 
 function ViewSwitcher({ view }: { view: string }) {
   if (view === "dashboard") return <DashboardView />;
+  if (view === "eisenhower") return <EisenhowerView />;
+  if (view === "scientific") return <ScientificView />;
   if (view === "inbox") return <InboxView />;
   if (view === "calendar") return <CalendarView />;
   if (view === "agenda") return <AgendaView />;
@@ -141,22 +146,22 @@ function Footer({ onQuickCapture, onCommand }: { onQuickCapture: () => void; onC
           <Icon name="Brain" className="h-3.5 w-3.5 text-emerald-500" />
           <span className="font-medium">Life OS</span>
           <span className="text-muted-foreground/60">·</span>
-          <span>Your digital brain, interconnected.</span>
+          <span>{uiText("Your digital brain, interconnected.")}</span>
         </div>
         <div className="flex items-center gap-3">
           <button onClick={onCommand} className="hidden items-center gap-1 hover:text-foreground sm:inline-flex">
-            <kbd className="rounded border border-border bg-muted px-1">⌘P</kbd> command
+            <kbd className="rounded border border-border bg-muted px-1">⌘P</kbd> {uiText("command")}
           </button>
           <span className="hidden text-muted-foreground/60 sm:inline">·</span>
           <span className="hidden sm:inline">
-            <kbd className="rounded border border-border bg-muted px-1">⌘K</kbd> capture
+            <kbd className="rounded border border-border bg-muted px-1">⌘K</kbd> {uiText("capture")}
             <span className="mx-1">·</span>
-            <kbd className="rounded border border-border bg-muted px-1">⌘P</kbd> command
+            <kbd className="rounded border border-border bg-muted px-1">⌘P</kbd> {uiText("command")}
             <span className="mx-1">·</span>
-            <kbd className="rounded border border-border bg-muted px-1">?</kbd> help
+            <kbd className="rounded border border-border bg-muted px-1">?</kbd> {uiText("help")}
           </span>
           <button onClick={onQuickCapture} className="inline-flex items-center gap-1 text-emerald-600 hover:underline dark:text-emerald-400">
-            <Icon name="Zap" className="h-3 w-3" /> Quick Capture
+            <Icon name="Zap" className="h-3 w-3" /> {uiText("Quick Capture")}
           </button>
         </div>
       </div>

@@ -101,7 +101,14 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 }
 
 // ─── Session management (signed cookie) ───────────────────────────────────
-const SESSION_SECRET = process.env.SESSION_SECRET || "lifeos-dev-secret-change-in-production";
+function getSessionSecret(): string {
+  const key = process.env.SESSION_SECRET;
+  if (process.env.NODE_ENV === "production" &&
+      (!key || key.length < 32 || key === "lifeos-dev-secret-change-in-production")) {
+    throw new Error("SESSION_SECRET must be securely configured in production");
+  }
+  return key || "lifeos-dev-secret-change-in-production";
+}
 
 export interface SessionData {
   userId: string;
@@ -117,10 +124,10 @@ export function createSession(userId: string, email: string, twoFactorVerified: 
     email,
     twoFactorVerified,
     createdAt: Date.now(),
-    expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7 days
+    expiresAt: Date.now() + (twoFactorVerified ? 7 * 24 * 60 * 60 * 1000 : 10 * 60 * 1000), // 7d normal / 10m pending 2FA
   };
   const payload = JSON.stringify(data);
-  const signature = crypto.createHmac("sha256", SESSION_SECRET).update(payload).digest("hex");
+  const signature = crypto.createHmac("sha256", getSessionSecret()).update(payload).digest("hex");
   return Buffer.from(`${payload}.${signature}`).toString("base64url");
 }
 
@@ -133,11 +140,17 @@ export function verifySession(token: string): SessionData | null {
     const payload = decoded.substring(0, lastDot);
     const signature = decoded.substring(lastDot + 1);
 
-    const expectedSig = crypto.createHmac("sha256", SESSION_SECRET).update(payload).digest("hex");
-    if (signature !== expectedSig) return null;
+    const expectedSig = crypto.createHmac("sha256", getSessionSecret()).update(payload).digest("hex");
+    if (!/^[0-9a-f]{64}$/.test(signature)) return null;
+    const provided = Buffer.from(signature, "hex");
+    const expected = Buffer.from(expectedSig, "hex");
+    if (provided.length !== expected.length || !crypto.timingSafeEqual(provided, expected)) return null;
 
     const data: SessionData = JSON.parse(payload);
-    if (Date.now() > data.expiresAt) return null;
+    if (!data || typeof data.userId !== "string" || typeof data.email !== "string" ||
+        typeof data.twoFactorVerified !== "boolean" ||
+        !Number.isFinite(data.createdAt) || !Number.isFinite(data.expiresAt) ||
+        data.createdAt > Date.now() || Date.now() >= data.expiresAt) return null;
 
     return data;
   } catch {

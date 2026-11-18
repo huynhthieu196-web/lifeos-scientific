@@ -1,13 +1,16 @@
 import { db } from "@/lib/db";
 import { ok, bad, parseBody } from "@/lib/api";
 import type { NextRequest } from "next/server";
+import { currentUserId, unauthorizedResponse } from "@/lib/require-user";
 
 export const dynamic = "force-dynamic";
 
 // GET /api/reviews?type=daily|weekly
 export async function GET(req: NextRequest) {
+  const ownerId = await currentUserId(req);
+  if (!ownerId) return unauthorizedResponse();
   const sp = req.nextUrl.searchParams;
-  const where: any = {};
+  const where: any = { ownerId };
   if (sp.get("type")) where.type = sp.get("type");
   const reviews = await db.review.findMany({
     where,
@@ -24,11 +27,14 @@ export async function GET(req: NextRequest) {
 
 // POST /api/reviews
 export async function POST(req: NextRequest) {
+  const ownerId = await currentUserId(req);
+  if (!ownerId) return unauthorizedResponse();
   const body = await parseBody(req);
   if (!body.type) return bad("type is required");
   const date = body.date ? new Date(body.date) : new Date();
   const review = await db.review.create({
     data: {
+      ownerId,
       type: body.type,
       date,
       status: body.status || "completed",

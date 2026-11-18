@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { cn } from "@/lib/utils";
 import { Icon } from "./icon";
@@ -27,7 +28,7 @@ export function ItemCard({ item, onClick, compact, showProject, className }: Ite
 
   function toggleDone(e: React.MouseEvent) {
     e.stopPropagation();
-    update.mutate({ id: item.id, status: done ? "active" : "done" }); notify.success(done ? "Reopened" : "Completed");
+    update.mutate({ id: item.id, status: done ? "active" : "done" }); notify.success(uiText(done ? "Reopened" : "Completed"));
   }
 
   return (
@@ -50,7 +51,7 @@ export function ItemCard({ item, onClick, compact, showProject, className }: Ite
       {/* checkbox or type icon */}
       <div className="ml-1.5 flex-shrink-0 pt-0.5">
         {completable ? (
-          <button onClick={toggleDone} className="flex h-5 w-5 items-center justify-center" aria-label="toggle complete">
+          <button onClick={toggleDone} className="flex h-5 w-5 items-center justify-center" aria-label={uiText("toggle complete")}>
             <div
               className={cn(
                 "flex h-[18px] w-[18px] items-center justify-center rounded-md border-2 transition-all",
@@ -86,7 +87,7 @@ export function ItemCard({ item, onClick, compact, showProject, className }: Ite
               className="mt-0.5 flex-shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
               style={{ background: `${PRIORITY_META[item.priority]?.color}1a`, color: PRIORITY_META[item.priority]?.color }}
             >
-              {PRIORITY_META[item.priority]?.name}
+              {uiText(PRIORITY_META[item.priority]?.name ?? "")}
             </span>
           )}
         </div>
@@ -105,7 +106,7 @@ export function ItemCard({ item, onClick, compact, showProject, className }: Ite
           {domain && (
             <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
               <span className="h-2 w-2 rounded-full" style={{ background: domain.color }} />
-              {domain.short}
+              {uiText(domain.short)}
             </span>
           )}
           {showProject && item.project && (

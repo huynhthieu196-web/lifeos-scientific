@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useState, useMemo } from "react";
 import { useCalendar, useItems } from "@/lib/hooks";
@@ -11,6 +12,7 @@ import {
   startOfWeek, addDays, format, isSameDay, isToday, addWeeks, subWeeks,
 } from "date-fns";
 import { cn } from "@/lib/utils";
+import { fmtDate } from "@/lib/dates";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function AgendaView() {
@@ -37,8 +39,8 @@ export function AgendaView() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Weekly Agenda"
-        subtitle="A calm, time-blocked view of your week. See everything ahead at a glance."
+        title={uiText("Weekly Agenda")}
+        subtitle={uiText("A calm, time-blocked view of your week. See everything ahead at a glance.")}
         icon="CalendarRange"
         color="#06b6d4"
         actions={
@@ -60,7 +62,7 @@ export function AgendaView() {
       <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-border/60 bg-gradient-to-r from-cyan-500/5 to-transparent p-4">
         <div>
           <p className="text-sm font-semibold">
-            {format(weekStart, "MMM d")} – {format(addDays(weekStart, 6), "MMM d, yyyy")}
+            {fmtDate(weekStart, "MMM d")} – {fmtDate(addDays(weekStart, 6), "MMM d, yyyy")}
           </p>
           <p className="text-xs text-muted-foreground">
             {days.reduce((s, d) => s + d.items.length, 0)} items this week
@@ -73,7 +75,7 @@ export function AgendaView() {
                 "flex h-9 w-9 flex-col items-center justify-center rounded-lg text-xs",
                 isToday(d.date) ? "bg-primary text-primary-foreground" : "bg-muted/50",
               )}>
-                <span className="text-[9px] uppercase">{format(d.date, "EEEEE")}</span>
+                <span className="text-[9px] uppercase">{fmtDate(d.date, "EEEEE")}</span>
                 <span className="text-sm font-bold leading-none">{format(d.date, "d")}</span>
               </div>
               {d.items.length > 0 && (
@@ -92,8 +94,8 @@ export function AgendaView() {
       ) : days.every((d) => d.items.length === 0) ? (
         <EmptyState
           icon="CalendarRange"
-          title="An open week"
-          description="Nothing scheduled this week. Capture a thought or plan something meaningful."
+          title={uiText("An open week")}
+          description={uiText("Nothing scheduled this week. Capture a thought or plan something meaningful.")}
         />
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-7">
@@ -111,7 +113,7 @@ export function AgendaView() {
               {/* day header */}
               <div className="mb-2 flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{format(d.date, "EEE")}</p>
+                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{fmtDate(d.date, "EEE")}</p>
                   <p className={cn("text-lg font-bold leading-none", isToday(d.date) && "text-primary")}>
                     {format(d.date, "d")}
                   </p>

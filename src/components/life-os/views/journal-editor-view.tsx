@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useState, useEffect, useCallback } from "react";
 import { useLifeOS } from "@/store/life-os";
@@ -85,7 +86,7 @@ export function JournalEditorView() {
     if (val > 0) {
       setDailyGoal(val);
       localStorage.setItem(GOAL_STORAGE_KEY, String(val));
-      notify.success(`Daily goal set to ${val} words`);
+      notify.success(uiText("Daily goal set to {count} words").replace("{count}", String(val)));
     }
     setShowGoalInput(false);
   }, [goalInput]);
@@ -140,7 +141,7 @@ export function JournalEditorView() {
 
   async function save() {
     if (!title.trim()) {
-      notify.error("Add a title first");
+      notify.error(uiText("Add a title first"));
       return;
     }
     try {
@@ -152,7 +153,7 @@ export function JournalEditorView() {
           domainId: domainId || null,
           projectId: projectId || null,
         });
-        notify.success("Entry saved");
+        notify.success(uiText("Entry saved"));
       } else {
         await create.mutateAsync({
           type: "journal",
@@ -164,7 +165,7 @@ export function JournalEditorView() {
           scheduledAt: new Date().toISOString(),
         });
         localStorage.removeItem("lifeos-journal-draft");
-        notify.success("Journal entry created");
+        notify.success(uiText("Journal entry created"));
       }
       setSaved(true);
       setTimeout(() => setView("mind_soul"), 600);
@@ -178,7 +179,7 @@ export function JournalEditorView() {
     try {
       await del.mutateAsync(journalEditId);
       localStorage.removeItem("lifeos-journal-draft");
-      notify.success("Journal entry deleted");
+      notify.success(uiText("Journal entry deleted"));
       setView("mind_soul");
     } catch (e: any) {
       notify.error(e.message || "Failed to delete");
@@ -187,7 +188,7 @@ export function JournalEditorView() {
 
   if (journalEditId && isLoading) {
     return (
-      <div aria-busy="true" aria-label="Loading journal entry">
+      <div aria-busy="true" aria-label={uiText("Loading journal entry")}>
         <div className="sticky top-0 z-20 -mx-4 mb-4 flex items-center justify-between border-b border-border/40 bg-background/80 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6">
           <div className="skeleton h-4 w-14 rounded" />
           <div className="flex items-center gap-2">
@@ -248,13 +249,13 @@ export function JournalEditorView() {
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Delete this journal entry?</AlertDialogTitle>
+                  <AlertDialogTitle>{uiText("Delete this journal entry?")}</AlertDialogTitle>
                   <AlertDialogDescription>
                     This will permanently remove &ldquo;{title || "Untitled entry"}&rdquo; and all its data. This action cannot be undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogCancel>{uiText("Cancel")}</AlertDialogCancel>
                   <AlertDialogAction onClick={handleDelete} className="bg-rose-500 hover:bg-rose-600">
                     Delete
                   </AlertDialogAction>
@@ -298,7 +299,7 @@ export function JournalEditorView() {
             {fmtDate(new Date(), "EEEE, MMMM d · p")}
           </div>
           <div className="flex items-center gap-1">
-            <span className="mr-1 text-[10px] text-muted-foreground">Mood:</span>
+            <span className="mr-1 text-[10px] text-muted-foreground">{uiText("Mood:")}</span>
             {[
               { v: 1, e: "Frown", c: "#f43f5e" },
               { v: 2, e: "Meh", c: "#f59e0b" },
@@ -325,7 +326,7 @@ export function JournalEditorView() {
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Give your entry a title…"
+            placeholder={uiText("Give your entry a title…")}
             className="w-full border-0 bg-transparent text-2xl font-bold tracking-tight outline-none placeholder:text-muted-foreground/40"
             autoFocus={!journalEditId}
           />
@@ -340,14 +341,14 @@ export function JournalEditorView() {
                   <ReactMarkdown>{content}</ReactMarkdown>
                 </div>
               ) : (
-                <p className="text-muted-foreground/50">Nothing to preview yet.</p>
+                <p className="text-muted-foreground/50">{uiText("Nothing to preview yet.")}</p>
               )}
             </div>
           ) : (
             <RichTextEditor
               value={content}
               onChange={setContent}
-              placeholder="Start writing… Express yourself freely. This is your space."
+              placeholder={uiText("Start writing… Express yourself freely. This is your space.")}
             />
           )}
         </div>
@@ -356,11 +357,11 @@ export function JournalEditorView() {
         <div className="border-t border-border/40 bg-muted/20 px-5 py-3">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Domain</span>
+              <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">{uiText("Domain")}</span>
               <Select value={domainId || "none"} onValueChange={(v) => setDomainId(v === "none" ? "" : v)}>
-                <SelectTrigger className="h-7 w-36 text-xs"><SelectValue placeholder="None" /></SelectTrigger>
+                <SelectTrigger className="h-7 w-36 text-xs"><SelectValue placeholder={uiText("None")} /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">None</SelectItem>
+                  <SelectItem value="none">{uiText("None")}</SelectItem>
                   {domains.map((d: any) => (
                     <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
                   ))}
@@ -382,15 +383,15 @@ export function JournalEditorView() {
                       min={1}
                       autoFocus
                     />
-                    <span className="text-[10px] text-muted-foreground">words</span>
-                    <button onClick={handleGoalSave} className="text-[10px] text-violet-500 hover:underline">Set</button>
-                    <button onClick={() => setShowGoalInput(false)} className="text-[10px] text-muted-foreground hover:underline">Cancel</button>
+                    <span className="text-[10px] text-muted-foreground">{uiText("words")}</span>
+                    <button onClick={handleGoalSave} className="text-[10px] text-violet-500 hover:underline">{uiText("Set")}</button>
+                    <button onClick={() => setShowGoalInput(false)} className="text-[10px] text-muted-foreground hover:underline">{uiText("Cancel")}</button>
                   </div>
                 ) : (
                   <button
                     onClick={() => setShowGoalInput(true)}
                     className="group flex items-center gap-1.5 text-[10px] text-muted-foreground transition-colors hover:text-foreground"
-                    title="Click to change daily writing goal"
+                    title={uiText("Click to change daily writing goal")}
                   >
                     <Icon name="Target" className="h-3 w-3" />
                     <span>{dailyGoal} word goal</span>

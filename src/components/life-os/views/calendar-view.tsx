@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useState, useMemo } from "react";
 import { useLifeOS } from "@/store/life-os";
@@ -45,15 +46,15 @@ export function CalendarView() {
     return m;
   }, [data]);
 
-  const layers = calendarLayerMode === "type" ? ITEM_TYPES.map((t) => ({ id: t.type, name: t.name, color: t.color, icon: t.icon })) : DOMAINS.map((d) => ({ id: d.key, name: d.name, color: d.color, icon: d.icon }));
+  const layers = calendarLayerMode === "type" ? ITEM_TYPES.map((t) => ({ id: t.type, name: uiText(t.name), color: t.color, icon: t.icon })) : DOMAINS.map((d) => ({ id: d.key, name: uiText(d.name), color: d.color, icon: d.icon }));
 
   const selectedDayItems = selectedDay ? dayMap[format(selectedDay, "yyyy-MM-dd")] || [] : [];
 
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Master Calendar"
-        subtitle="Everything with a date — tasks, bills, appointments, birthdays — in one view."
+        title={uiText("Master Calendar")}
+        subtitle={uiText("Everything with a date — tasks, bills, appointments, birthdays — in one view.")}
         icon="CalendarDays"
         color="#06b6d4"
         actions={
@@ -76,7 +77,7 @@ export function CalendarView() {
         <SectionCard className="overflow-hidden p-0">
           {/* Month header */}
           <div className="flex items-center justify-between border-b border-border/60 px-4 py-3">
-            <h2 className="text-lg font-semibold">{format(cursor, "MMMM yyyy")}</h2>
+            <h2 className="text-lg font-semibold">{fmtDate(cursor, "MMMM yyyy")}</h2>
             <span className="text-xs text-muted-foreground">
               {Object.values(dayMap).reduce((s, v) => s + v.length, 0)} items this view
             </span>
@@ -157,7 +158,7 @@ export function CalendarView() {
         {/* Right column: layers + selected day */}
         <div className="space-y-6">
           {/* Layers */}
-          <SectionCard title="Layers" icon="Layers">
+          <SectionCard title={uiText("Layers")} icon="Layers">
             <div className="mb-3 flex gap-1 rounded-lg bg-muted p-1">
               <button
                 onClick={() => setCalendarLayerMode("type")}
@@ -203,11 +204,11 @@ export function CalendarView() {
 
           {/* Selected day detail */}
           <SectionCard
-            title={selectedDay ? format(selectedDay, "EEEE, MMM d") : "Select a day"}
+            title={selectedDay ? fmtDate(selectedDay, "EEEE, MMM d") : uiText("Select a day")}
             icon="CalendarClock"
           >
             {selectedDayItems.length === 0 ? (
-              <p className="py-6 text-center text-sm text-muted-foreground">Nothing scheduled.</p>
+              <p className="py-6 text-center text-sm text-muted-foreground">{uiText("Nothing scheduled.")}</p>
             ) : (
               <div className="max-h-96 space-y-2 overflow-y-auto">
                 {selectedDayItems.map((it) => {

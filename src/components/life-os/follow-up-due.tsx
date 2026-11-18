@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useItems } from "@/lib/hooks";
 import { useLifeOS } from "@/store/life-os";
@@ -46,9 +47,9 @@ export function FollowUpDue() {
           <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-cyan-500/15 text-cyan-600">
             <Icon name="Users" className="h-3.5 w-3.5" />
           </span>
-          <h3 className="text-sm font-semibold">Stay connected</h3>
+          <h3 className="text-sm font-semibold">{uiText("Stay connected")}</h3>
         </div>
-        <p className="text-xs text-muted-foreground">Add contacts to get gentle reminders when it's time to reach out.</p>
+        <p className="text-xs text-muted-foreground">{uiText("Add contacts to get gentle reminders when it's time to reach out.")}</p>
         <button
           onClick={() => openItemEditor({ type: "contact" })}
           className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-cyan-600 hover:underline"
@@ -71,7 +72,7 @@ export function FollowUpDue() {
             <Icon name="Users" className="h-3.5 w-3.5" />
           </span>
           <div>
-            <h3 className="text-sm font-semibold">Reconnect</h3>
+            <h3 className="text-sm font-semibold">{uiText("Reconnect")}</h3>
             <p className="text-[10px] text-muted-foreground">
               {dueContacts.length > 0
                 ? `${dueContacts.length} ${dueContacts.length === 1 ? "person" : "people"} to reach out to`

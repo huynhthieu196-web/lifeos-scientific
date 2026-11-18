@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useState, useSyncExternalStore } from "react";
 import { useLifeOS } from "@/store/life-os";
@@ -44,7 +45,7 @@ export function Topbar() {
               value={q}
               onChange={(e) => updateSearch(e.target.value)}
               onFocus={() => setOpen(q.length > 0)}
-              placeholder="Search your brain…"
+              placeholder={uiText("Search your brain…")}
               className="h-9 bg-muted/50 pl-9 pr-16"
             />
             <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded border border-border bg-background px-1.5 py-0.5 text-[10px] text-muted-foreground">
@@ -60,12 +61,12 @@ export function Topbar() {
         >
           <div className="max-h-[420px] overflow-y-auto p-2">
             {results.items.length === 0 && results.projects.length === 0 && results.tags.length === 0 ? (
-              <div className="py-8 text-center text-sm text-muted-foreground">No results for “{q}”</div>
+              <div className="py-8 text-center text-sm text-muted-foreground">{uiText("No results for")} “{q}”</div>
             ) : (
               <>
                 {results.projects.length > 0 && (
                   <div className="mb-2">
-                    <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Projects</div>
+                    <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">{uiText("Projects")}</div>
                     {results.projects.map((p: any) => (
                       <button
                         key={p.id}
@@ -80,7 +81,7 @@ export function Topbar() {
                 )}
                 {results.items.length > 0 && (
                   <div>
-                    <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Items</div>
+                    <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">{uiText("Items")}</div>
                     {results.items.map((i: any) => {
                       const m = ITEM_TYPE_MAP[i.type] || {};
                       return (
@@ -92,7 +93,7 @@ export function Topbar() {
                           <Icon name={(m as any).icon || "Circle"} className="h-3.5 w-3.5" style={{ color: (m as any).color }} />
                           <span className="flex-1 truncate">{i.title}</span>
                           {i.domainId && DOMAIN_MAP[i.domainId] && (
-                            <span className="text-[10px] text-muted-foreground">{DOMAIN_MAP[i.domainId].short}</span>
+                            <span className="text-[10px] text-muted-foreground">{uiText(DOMAIN_MAP[i.domainId].short)}</span>
                           )}
                         </button>
                       );
@@ -112,7 +113,7 @@ export function Topbar() {
           className="h-9 w-9"
           onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
           disabled={!mounted}
-          aria-label={mounted && resolvedTheme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+          aria-label={uiText(mounted && resolvedTheme === "dark" ? "Switch to light theme" : "Switch to dark theme")}
         >
           <Icon name={mounted && resolvedTheme === "dark" ? "Sun" : "Moon"} className="h-4 w-4" />
         </Button>
@@ -122,7 +123,7 @@ export function Topbar() {
           className="h-9 gap-1.5 bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-sm hover:from-emerald-600 hover:to-teal-700"
         >
           <Icon name="Zap" className="h-4 w-4" />
-          <span className="hidden sm:inline">Quick Capture</span>
+          <span className="hidden sm:inline">{uiText("Quick Capture")}</span>
           <kbd className="hidden rounded border border-white/30 px-1 text-[10px] sm:inline">⌘K</kbd>
         </Button>
       </div>

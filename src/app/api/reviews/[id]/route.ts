@@ -1,17 +1,23 @@
 import { db } from "@/lib/db";
-import { ok, parseBody } from "@/lib/api";
+import { ok, parseBody, notFound } from "@/lib/api";
 import type { NextRequest } from "next/server";
+import { currentUserId, unauthorizedResponse } from "@/lib/require-user";
 
 export const dynamic = "force-dynamic";
 
 export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
+  const ownerId = await currentUserId(req);
+  if (!ownerId) return unauthorizedResponse();
   const { id } = await ctx.params;
+  const current = await db.review.findFirst({ where: { id, ownerId }, select: { id: true } });
+  if (!current) return notFound();
   const body = await parseBody(req);
-  const { priorities, ...rest } = body;
+  const { priorities, ownerId: _ignoredOwnerId, owner: _ignoredOwner, ...rest } = body;
   const review = await db.review.update({
-    where: { id },
+    where: { id, ownerId },
     data: {
       ...rest,
+      ownerId,
       ...(priorities !== undefined
         ? { priorities: typeof priorities === "string" ? priorities : JSON.stringify(priorities) }
         : {}),
@@ -20,8 +26,10 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
   return ok(review);
 }
 
-export async function DELETE(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const { id } = await ctx.params;
-  await db.review.delete({ where: { id } }).catch(() => {});
+  const ownerId = await currentUserId(req);
+  if (!ownerId) return unauthorizedResponse();
+  await db.review.deleteMany({ where: { id, ownerId } });
   return ok({ deleted: true });
 }

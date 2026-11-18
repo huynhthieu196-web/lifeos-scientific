@@ -1,12 +1,15 @@
 import { db } from "@/lib/db";
 import { ok } from "@/lib/api";
 import type { NextRequest } from "next/server";
+import { currentUserId, unauthorizedResponse } from "@/lib/require-user";
 
 export const dynamic = "force-dynamic";
 
 // GET /api/graph?center=<itemId>&depth=1|2&limit=80
 // Returns nodes (items + projects) and edges (links + project memberships)
 export async function GET(req: NextRequest) {
+  const ownerId = await currentUserId(req);
+  if (!ownerId) return unauthorizedResponse();
   const sp = req.nextUrl.searchParams;
   const centerId = sp.get("center");
   const depth = Number(sp.get("depth") || 2);
@@ -23,7 +26,7 @@ export async function GET(req: NextRequest) {
     for (let d = 0; d < depth && frontier.length; d++) {
       const next: string[] = [];
       const links = await db.link.findMany({
-        where: { OR: [{ fromId: { in: frontier } }, { toId: { in: frontier } }] },
+        where: { OR: [{ fromId: { in: frontier } }, { toId: { in: frontier } }], from: { ownerId }, to: { ownerId } },
       });
       for (const l of links) {
         if (!visited.has(l.fromId)) { visited.add(l.fromId); next.push(l.fromId); }
@@ -40,8 +43,8 @@ export async function GET(req: NextRequest) {
   // Fetch items (optionally filtered by center BFS)
   const items = await db.item.findMany({
     where: centerId
-      ? { id: { in: Array.from(itemIds) } }
-      : { status: { not: "archived" } },
+      ? { id: { in: Array.from(itemIds) }, ownerId }
+      : { status: { not: "archived" }, ownerId },
     take: limit,
     include: { domain: true, project: { select: { id: true, name: true, color: true } } },
   });
@@ -54,12 +57,12 @@ export async function GET(req: NextRequest) {
   // links among the fetched items
   const itemIdSet = new Set(items.map((i) => i.id));
   const links = await db.link.findMany({
-    where: { AND: [{ fromId: { in: Array.from(itemIdSet) } }, { toId: { in: Array.from(itemIdSet) } }] },
+    where: { AND: [{ fromId: { in: Array.from(itemIdSet) } }, { toId: { in: Array.from(itemIdSet) } }], from: { ownerId }, to: { ownerId } },
   });
 
   // fetch projects
   const projects = await db.project.findMany({
-    where: projectIds.size ? { id: { in: Array.from(projectIds) } } : { status: "active" },
+    where: projectIds.size ? { id: { in: Array.from(projectIds) }, ownerId } : { status: "active", ownerId },
     take: 30,
   });
 

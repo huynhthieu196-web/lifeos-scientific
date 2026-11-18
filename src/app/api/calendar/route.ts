@@ -1,12 +1,15 @@
 import { db } from "@/lib/db";
 import { ok, parseMeta } from "@/lib/api";
 import type { NextRequest } from "next/server";
+import { currentUserId, unauthorizedResponse } from "@/lib/require-user";
 
 export const dynamic = "force-dynamic";
 
 // GET /api/calendar?from=ISO&to=ISO&layers=type,type
 // Aggregates anything with a date (dueDate, scheduledAt, startDate) into day buckets.
 export async function GET(req: NextRequest) {
+  const ownerId = await currentUserId(req);
+  if (!ownerId) return unauthorizedResponse();
   const sp = req.nextUrl.searchParams;
   const from = sp.get("from") ? new Date(sp.get("from")!) : new Date(new Date().getFullYear(), new Date().getMonth(), 1);
   const to = sp.get("to") ? new Date(sp.get("to")!) : new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 59);
@@ -14,6 +17,7 @@ export async function GET(req: NextRequest) {
   const layerMode = (sp.get("layerMode") || "type") as "type" | "domain";
 
   const where: any = {
+    ownerId,
     AND: [
       {
         OR: [
