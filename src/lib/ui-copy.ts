@@ -643,7 +643,9 @@ export const UI_VI_COPY: Readonly<Record<string,string>> = {
   "What 3 things matter most next week?": "Ba ưu tiên quan trọng nhất cho tuần tới là gì?",
   "Book details": "Chi tiết sách",
   "Watch list": "Danh sách xem",
-  "Media details": "Chi tiết nội dung"
+  "Media details": "Chi tiết nội dung",
+  "No items in domain": "Chưa có mục trong {domain}",
+  "Capture items in this domain to see them here and link them to projects.": "Hãy tạo mục trong lĩnh vực này để hiển thị và liên kết với dự án."
 };
 export function translateLegacy(locale:"vi"|"en",english:string):string {
   return locale==="vi"?(UI_VI_COPY[english]??english):english;
