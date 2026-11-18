@@ -77,7 +77,7 @@ export function ItemEditor() {
 
   async function save() {
     if (!form.title?.trim()) {
-      notify.error("Title is required");
+      notify.error(uiText("Title is required"));
       return;
     }
     const payload: any = {
@@ -119,10 +119,10 @@ export function ItemEditor() {
     try {
       if (form.id) {
         await update.mutateAsync({ id: form.id, ...payload });
-        notify.success("Updated");
+        notify.success(uiText("Updated"));
       } else {
         await create.mutateAsync(payload);
-        notify.success("Created");
+        notify.success(uiText("Created"));
       }
       closeItemEditor();
     } catch (e: any) {
@@ -363,7 +363,7 @@ export function ItemEditor() {
                   </div>
                   <div>
                     <FieldLabel>{uiText("Unit")}</FieldLabel>
-                    <Input value={form.metadata.unit || ""} onChange={(e) => setMeta("unit", e.target.value)} className="h-9" placeholder="min" />
+                    <Input value={form.metadata.unit || ""} onChange={(e) => setMeta("unit", e.target.value)} className="h-9" placeholder={uiText("min")} />
                   </div>
                 </div>
               </MetadataSection>
@@ -417,7 +417,7 @@ export function ItemEditor() {
                           value={form.metadata.totalPages || ""}
                           onChange={(e) => setMeta("totalPages", Number(e.target.value) || 0)}
                           className="h-9"
-                          placeholder="e.g. 320"
+                          placeholder={uiText("e.g. 320")}
                         />
                       </div>
                     </>
@@ -454,7 +454,7 @@ export function ItemEditor() {
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <FieldLabel>{uiText("Relationship")}</FieldLabel>
-                    <Input value={form.metadata.relationship || ""} onChange={(e) => setMeta("relationship", e.target.value)} className="h-9" placeholder="friend, mentor…" />
+                    <Input value={form.metadata.relationship || ""} onChange={(e) => setMeta("relationship", e.target.value)} className="h-9" placeholder={uiText("friend, mentor…")} />
                   </div>
                   <div>
                     <FieldLabel>{uiText("Birthday")}</FieldLabel>
@@ -482,7 +482,7 @@ export function ItemEditor() {
                   </div>
                   <div>
                     <FieldLabel>{uiText("Frequency")}</FieldLabel>
-                    <Input value={form.metadata.frequency || ""} onChange={(e) => setMeta("frequency", e.target.value)} className="h-9" placeholder="daily" />
+                    <Input value={form.metadata.frequency || ""} onChange={(e) => setMeta("frequency", e.target.value)} className="h-9" placeholder={uiText("daily")} />
                   </div>
                 </div>
               </MetadataSection>
