@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useState, useEffect, useRef } from "react";
 import { useLifeOS } from "@/store/life-os";
@@ -71,8 +72,8 @@ export function SanctuaryView() {
     return (
       <div className="space-y-6">
         <PageHeader
-          title="Sanctuary"
-          subtitle="A quiet space for your mind. Breathe, reflect, reconnect with what matters."
+          title={uiText("Sanctuary")}
+          subtitle={uiText("A quiet space for your mind. Breathe, reflect, reconnect with what matters.")}
           icon="Leaf"
           color="#a78bfa"
           actions={
@@ -104,15 +105,15 @@ export function SanctuaryView() {
           {/* Breathing exercise — renders immediately, no skeleton needed */}
           <SectionCard className="overflow-hidden">
             <div className="flex flex-col items-center justify-center py-8">
-              <h3 className="mb-1 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Box Breathing</h3>
-              <p className="mb-8 text-xs text-muted-foreground">4-4-6-2 pattern to calm your nervous system</p>
+              <h3 className="mb-1 text-sm font-semibold uppercase tracking-wide text-muted-foreground">{uiText("Box Breathing")}</h3>
+              <p className="mb-8 text-xs text-muted-foreground">{uiText("4-4-6-2 pattern to calm your nervous system")}</p>
               <div className="h-40 w-40 skeleton rounded-full bg-muted/30" />
               <div className="mt-8 h-10 w-36 skeleton rounded-lg bg-muted/40" />
             </div>
           </SectionCard>
 
           {/* Vision board skeleton */}
-          <SectionCard title="Your visions" icon="Eye">
+          <SectionCard title={uiText("Your visions")} icon="Eye">
             <div className="space-y-3">
               {Array.from({ length: 3 }).map((_, i) => (
                 <div key={i} className="rounded-xl border border-border/40 bg-gradient-to-br from-violet-500/5 to-transparent p-4">
@@ -130,7 +131,7 @@ export function SanctuaryView() {
         </div>
 
         {/* Recent reflections skeleton */}
-        <SectionCard title="Recent reflections" icon="BookHeart">
+        <SectionCard title={uiText("Recent reflections")} icon="BookHeart">
           <div className="grid gap-3 sm:grid-cols-2">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="rounded-xl border border-border/40 p-4">
@@ -151,8 +152,8 @@ export function SanctuaryView() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Sanctuary"
-        subtitle="A quiet space for your mind. Breathe, reflect, reconnect with what matters."
+        title={uiText("Sanctuary")}
+        subtitle={uiText("A quiet space for your mind. Breathe, reflect, reconnect with what matters.")}
         icon="Leaf"
         color="#a78bfa"
         actions={
@@ -177,7 +178,7 @@ export function SanctuaryView() {
           <div className="pointer-events-none absolute -left-16 -top-16 h-48 w-48 rounded-full bg-violet-500/10 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-16 -right-16 h-48 w-48 rounded-full bg-fuchsia-500/10 blur-3xl" />
           <div className="relative">
-            <p className="text-xs font-semibold uppercase tracking-widest text-violet-500">Today's affirmation</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-violet-500">{uiText("Today's affirmation")}</p>
             <motion.blockquote
               key={dailyAffirmation.id}
               initial={{ opacity: 0 }}
@@ -265,7 +266,7 @@ export function SanctuaryView() {
         </SectionCard>
 
         {/* Vision Board */}
-        <SectionCard title="Your visions" icon="Eye" action={
+        <SectionCard title={uiText("Your visions")} icon="Eye" action={
           <Button variant="ghost" size="sm" onClick={() => openItemEditor({ type: "vision" })} className="gap-1">
             <Icon name="Plus" className="h-3.5 w-3.5" /> Add
           </Button>
@@ -273,7 +274,7 @@ export function SanctuaryView() {
           {visions.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-center">
               <Icon name="Eye" className="mb-2 h-8 w-8 text-muted-foreground/40" />
-              <p className="text-sm text-muted-foreground">What do you want your life to look like?</p>
+              <p className="text-sm text-muted-foreground">{uiText("What do you want your life to look like?")}</p>
               <Button variant="outline" size="sm" className="mt-3" onClick={() => openItemEditor({ type: "vision" })}>
                 Write a vision
               </Button>
@@ -309,7 +310,7 @@ export function SanctuaryView() {
       </div>
 
       {/* Recent journal entries */}
-      <SectionCard title="Recent reflections" icon="BookHeart" action={
+      <SectionCard title={uiText("Recent reflections")} icon="BookHeart" action={
         <Button variant="ghost" size="sm" onClick={() => openJournalEditor(null)} className="gap-1 text-violet-600 hover:bg-violet-500/10">
           <Icon name="PenLine" className="h-3.5 w-3.5" /> Write
         </Button>
@@ -320,8 +321,8 @@ export function SanctuaryView() {
               <span className="mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-violet-500/10 text-violet-500 transition-all group-hover:scale-105 group-hover:bg-violet-500/20">
                 <Icon name="PenLine" className="h-6 w-6" />
               </span>
-              <p className="text-sm font-medium">Start your first journal entry</p>
-              <p className="mt-0.5 text-xs text-muted-foreground">A full-page editor with rich text formatting awaits.</p>
+              <p className="text-sm font-medium">{uiText("Start your first journal entry")}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">{uiText("A full-page editor with rich text formatting awaits.")}</p>
             </button>
           </div>
         ) : (
