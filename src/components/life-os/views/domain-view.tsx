@@ -53,7 +53,7 @@ export function DomainView({ domainKey }: { domainKey: string }) {
   return (
     <div className="space-y-6" aria-busy={isLoading}>
       <PageHeader
-        title={domainMeta.name}
+        title={uiText(domainMeta.name)}
         subtitle={domainMeta.description}
         icon={domainMeta.icon}
         color={domainMeta.color}
@@ -64,7 +64,7 @@ export function DomainView({ domainKey }: { domainKey: string }) {
               return (
                 <Button key={t} variant="outline" size="sm" onClick={() => openItemEditor({ type: t, domainId: domainRecord?.id })} className="gap-1.5">
                   <Icon name={m.icon} className="h-3.5 w-3.5" style={{ color: m.color }} />
-                  <span className="hidden sm:inline">{m.name}</span>
+                  <span className="hidden sm:inline">{uiText(m.name)}</span>
                 </Button>
               );
             })}
@@ -165,7 +165,7 @@ export function DomainView({ domainKey }: { domainKey: string }) {
       ) : filteredItems.length === 0 ? (
         <EmptyState
           icon={domainMeta.icon}
-          title={`Nothing in ${domainMeta.short} yet`}
+          title={uiText("No items in domain").replace("{domain}", uiText(domainMeta.short))}
           description={`Start capturing ${domainMeta.name.toLowerCase()} items. They'll appear here and connect to your projects.`}
           action={{ label: "Add item", onClick: () => openItemEditor({ type: qtypes[0], domainId: domainRecord?.id }) }}
         />
