@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/sheet";
 import { useEffect, useState } from "react";
 import { t, type TranslationKey } from "@/lib/i18n";
+import { uiText } from "@/lib/ui-copy";
 
 const NAV = [
   { key: "dashboard", name: "Dashboard", icon: "LayoutDashboard" },
@@ -102,7 +103,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                 <span className="flex h-5 w-5 items-center justify-center rounded-md" style={{ background: `${d.color}1a`, color: d.color }}>
                   <Icon name={d.icon} className="h-3 w-3" />
                 </span>
-                <span className="flex-1 text-left text-[13px] font-medium">{d.short}</span>
+                <span className="flex-1 text-left text-[13px] font-medium">{uiText(d.short)}</span>
                 {count ? <span className="text-[10px] text-muted-foreground/60">{count}</span> : null}
               </button>
             );
