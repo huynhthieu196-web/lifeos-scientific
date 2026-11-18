@@ -227,7 +227,7 @@ export function QuickCapture() {
               <Kbd>⇧↵</Kbd> new line
             </span>
             <span className="inline-flex items-center gap-1">
-              <Kbd>Esc</Kbd> close
+              <Kbd>Esc</Kbd> {uiText("close")}
             </span>
             <span className="hidden items-center gap-1 sm:inline-flex">
               <Kbd>1</Kbd>–<Kbd>{QUICK_TYPES.length}</Kbd> switch type
