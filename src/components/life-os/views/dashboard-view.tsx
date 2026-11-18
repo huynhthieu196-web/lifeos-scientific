@@ -15,6 +15,7 @@ import { DOMAINS, ITEM_TYPE_MAP } from "@/lib/constants";
 import { fmtDate, smartDate } from "@/lib/dates";
 import { motion } from "framer-motion";
 import { t } from "@/lib/i18n";
+import { AnalyticsDashboardPanel } from "../analytics-dashboard-panel";
 
 export function DashboardView() {
   const { setView, openItemDetail, openProject, openItemEditor, setQuickCaptureOpen, locale } = useLifeOS();
@@ -222,6 +223,9 @@ export function DashboardView() {
           </span>
         </span><Icon name="ArrowRight" className="h-4 w-4 text-blue-600" />
       </button>
+      {/* Native cloud analytics; all existing LifeOS sections remain below. */}
+      <AnalyticsDashboardPanel />
+
       {/* Stat pills */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <button onClick={() => setView("inbox")} className="text-left">
