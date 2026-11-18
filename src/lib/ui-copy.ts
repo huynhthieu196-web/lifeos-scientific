@@ -5,6 +5,14 @@
  */
 import { useLifeOS } from "@/store/life-os";
 export const UI_VI_COPY: Readonly<Record<string,string>> = {
+  "Your data stays on your server": "Dữ liệu của bạn được lưu an toàn trên máy chủ",
+  "Bi-directional linking — everything connects": "Liên kết hai chiều — kết nối thông tin",
+  "Quick capture with ⌘K anywhere": "Ghi nhanh mọi lúc bằng ⌘K",
+  "logged for today. Take a break!": "đã được ghi nhận hôm nay. Hãy nghỉ ngắn!",
+  "You're all set.": "Mọi thứ đã sẵn sàng.",
+  "Morning": "Buổi sáng",
+  "Afternoon": "Buổi chiều",
+  "Evening": "Buổi tối",
   "It's been a while since you reflected. Take a moment to close the loop on your week.": "Bạn đã lâu chưa đánh giá lại tuần của mình. Hãy dành ít phút để nhìn lại.",
   "No results for": "Không tìm thấy kết quả cho",
   "Switch to light theme": "Chuyển sang giao diện sáng",
