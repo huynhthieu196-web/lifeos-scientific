@@ -169,10 +169,10 @@ function ReviewForm({ type, onDone }: { type: "daily" | "weekly"; onDone: () => 
             </div>
           </div>
 
-          <ReviewField label={prompts.wins} icon="Trophy" color="#f59e0b" value={form.wins} onChange={(v) => set("wins", v)} placeholder={uiText("Even small wins count…")} />
-          <ReviewField label={prompts.challenges} icon="AlertCircle" color="#f43f5e" value={form.challenges} onChange={(v) => set("challenges", v)} placeholder={uiText("What got in the way?")} />
-          <ReviewField label={prompts.learnings} icon="Lightbulb" color="#3b82f6" value={form.learnings} onChange={(v) => set("learnings", v)} placeholder={uiText("A lesson, an insight…")} />
-          <ReviewField label={prompts.gratitude} icon="Heart" color="#ec4899" value={form.gratitude} onChange={(v) => set("gratitude", v)} placeholder={uiText("Who or what are you thankful for?")} />
+          <ReviewField label={uiText(prompts.wins)} icon="Trophy" color="#f59e0b" value={form.wins} onChange={(v) => set("wins", v)} placeholder={uiText("Even small wins count…")} />
+          <ReviewField label={uiText(prompts.challenges)} icon="AlertCircle" color="#f43f5e" value={form.challenges} onChange={(v) => set("challenges", v)} placeholder={uiText("What got in the way?")} />
+          <ReviewField label={uiText(prompts.learnings)} icon="Lightbulb" color="#3b82f6" value={form.learnings} onChange={(v) => set("learnings", v)} placeholder={uiText("A lesson, an insight…")} />
+          <ReviewField label={uiText(prompts.gratitude)} icon="Heart" color="#ec4899" value={form.gratitude} onChange={(v) => set("gratitude", v)} placeholder={uiText("Who or what are you thankful for?")} />
 
           {/* Priorities */}
           <div>
@@ -184,7 +184,7 @@ function ReviewForm({ type, onDone }: { type: "daily" | "weekly"; onDone: () => 
               {form.priorities.map((p, i) => (
                 <div key={i} className="flex items-center gap-2">
                   <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/10 text-xs font-bold text-emerald-600">{i + 1}</span>
-                  <Input value={p} onChange={(e) => setPriority(i, e.target.value)} placeholder={`Priority ${i + 1}`} />
+                  <Input value={p} onChange={(e) => setPriority(i, e.target.value)} placeholder={uiText("Priority") + ` ${i + 1}`} />
                 </div>
               ))}
             </div>
