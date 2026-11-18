@@ -28,10 +28,11 @@ import { SanctuaryView } from "./views/sanctuary-view";
 import { JournalEditorView } from "./views/journal-editor-view";
 import { SettingsView } from "./views/settings-view";
 import { Icon } from "./icon";
+import { uiText } from "@/lib/ui-copy";
 import { useEffect } from "react";
 
 export function Shell() {
-  const { view, setQuickCaptureOpen, setCommandOpen, setView } = useLifeOS();
+  const { view, setQuickCaptureOpen, setCommandOpen, setView, locale } = useLifeOS();
 
   // global hotkeys: "/" focuses search, "g + key" Vim-style navigation
   useEffect(() => {
@@ -92,7 +93,7 @@ export function Shell() {
           <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
             <AnimatePresence mode="wait">
               <motion.div
-                key={view}
+                key={`${view}:${locale}`}
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -4 }}
@@ -145,7 +146,7 @@ function Footer({ onQuickCapture, onCommand }: { onQuickCapture: () => void; onC
           <Icon name="Brain" className="h-3.5 w-3.5 text-emerald-500" />
           <span className="font-medium">Life OS</span>
           <span className="text-muted-foreground/60">·</span>
-          <span>Your digital brain, interconnected.</span>
+          <span>{uiText("Your digital brain, interconnected.")}</span>
         </div>
         <div className="flex items-center gap-3">
           <button onClick={onCommand} className="hidden items-center gap-1 hover:text-foreground sm:inline-flex">
