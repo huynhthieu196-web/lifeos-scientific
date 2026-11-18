@@ -9,7 +9,7 @@ test("the main LifeOS modules have stable Vietnamese and English UI labels",()=>
     ["Reviews & Reflections","Đánh giá và nhìn lại"],
     ["Master Calendar","Lịch tổng hợp"],
     ["Focus & Deep Work","Tập trung và làm việc sâu"],
-    ["Scientific Insights","Scientific Insights"],
+    ["Scientific Insights","Phân tích khoa học"],
     ["PostgreSQL (Supabase cloud)","PostgreSQL (đám mây Supabase)"],
     ["Create new task","Tạo công việc mới"],
     ["Save","Lưu"],["Cancel","Hủy"],
