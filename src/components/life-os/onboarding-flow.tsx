@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useState, useEffect } from "react";
 import {
@@ -84,8 +85,8 @@ export function OnboardingFlow() {
     <Dialog open={open} onOpenChange={(o) => { if (!o) skip(); }}>
       <DialogContent className="max-w-md overflow-hidden p-0">
         <DialogHeader className="sr-only">
-          <DialogTitle>Welcome to Life OS</DialogTitle>
-          <DialogDescription>A quick tour of your digital brain.</DialogDescription>
+          <DialogTitle>{uiText("Welcome to Life OS")}</DialogTitle>
+          <DialogDescription>{uiText("A quick tour of your digital brain.")}</DialogDescription>
         </DialogHeader>
 
         <div className="relative">
@@ -139,7 +140,7 @@ export function OnboardingFlow() {
               </div>
               <div className="flex items-center gap-2">
                 {step < STEPS.length - 1 && (
-                  <Button variant="ghost" size="sm" onClick={skip}>Skip</Button>
+                  <Button variant="ghost" size="sm" onClick={skip}>{uiText("Skip")}</Button>
                 )}
                 <Button size="sm" onClick={next} className="gap-1.5" style={{ background: current.color, color: "white" }}>
                   {step < STEPS.length - 1 ? "Next" : "Get started"}
