@@ -211,7 +211,7 @@ export function SanctuaryView() {
               {breathing ? `${cycleCount} cycle${cycleCount !== 1 ? "s" : ""} complete` : "Box Breathing"}
             </h3>
             <p className="relative mb-8 text-xs text-muted-foreground">
-              {breathing ? "Follow the circle" : "4-4-6-2 pattern to calm your nervous system"}
+              {uiText(breathing ? "Follow the circle" : "4-4-6-2 pattern to calm your nervous system")}
             </p>
 
             <div className="relative flex h-64 w-64 items-center justify-center">
@@ -243,7 +243,7 @@ export function SanctuaryView() {
                       transition={{ duration: 0.3 }}
                       className="text-center text-white"
                     >
-                      <div className="text-lg font-semibold">{currentBreath.label}</div>
+                      <div className="text-lg font-semibold">{uiText(currentBreath.label)}</div>
                       <div className="text-xs opacity-80">{currentBreath.secs}s</div>
                     </motion.div>
                   )}
