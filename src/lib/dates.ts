@@ -1,31 +1,42 @@
 import { format, formatDistanceToNow, isToday, isTomorrow, isYesterday, isThisWeek, parseISO, differenceInCalendarDays } from "date-fns";
+import { enUS, vi } from "date-fns/locale";
+
+/** Read the document language (kept in sync by the LifeOS language selector).
+ * Document is absent during SSR, where Vietnamese is the deterministic default.
+ */
+function currentLocale() {
+  return typeof document !== "undefined" && document.documentElement.lang === "en" ? enUS : vi;
+}
+function isEnglish() {
+  return typeof document !== "undefined" && document.documentElement.lang === "en";
+}
 
 export function fmtDate(d: string | Date | null | undefined, fmt = "MMM d") {
   if (!d) return "";
   const date = typeof d === "string" ? parseISO(d) : d;
   if (isNaN(date.getTime())) return "";
-  return format(date, fmt);
+  return format(date, fmt, { locale: currentLocale() });
 }
 
 export function fmtRelative(d: string | Date | null | undefined) {
   if (!d) return "";
   const date = typeof d === "string" ? parseISO(d) : d;
   if (isNaN(date.getTime())) return "";
-  return formatDistanceToNow(date, { addSuffix: true });
+  return formatDistanceToNow(date, { addSuffix: true, locale: currentLocale() });
 }
 
 export function smartDate(d: string | Date | null | undefined) {
   if (!d) return "";
   const date = typeof d === "string" ? parseISO(d) : d;
   if (isNaN(date.getTime())) return "";
-  if (isToday(date)) return "Today";
-  if (isTomorrow(date)) return "Tomorrow";
-  if (isYesterday(date)) return "Yesterday";
-  if (isThisWeek(date)) return format(date, "EEEE");
+  if (isToday(date)) return isEnglish() ? "Today" : "Hôm nay";
+  if (isTomorrow(date)) return isEnglish() ? "Tomorrow" : "Ngày mai";
+  if (isYesterday(date)) return isEnglish() ? "Yesterday" : "Hôm qua";
+  if (isThisWeek(date)) return format(date, "EEEE", { locale: currentLocale() });
   const diff = differenceInCalendarDays(date, new Date());
-  if (diff > 0 && diff < 30) return `In ${diff} days`;
-  if (diff < 0 && diff > -30) return `${Math.abs(diff)} days ago`;
-  return format(date, "MMM d");
+  if (diff > 0 && diff < 30) return isEnglish() ? `In ${diff} days` : `Sau ${diff} ngày`;
+  if (diff < 0 && diff > -30) return isEnglish() ? `${Math.abs(diff)} days ago` : `${Math.abs(diff)} ngày trước`;
+  return format(date, "MMM d", { locale: currentLocale() });
 }
 
 export function dateColor(d: string | Date | null | undefined): string {
