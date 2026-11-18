@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useState, useMemo } from "react";
 import { useCalendar, useItems } from "@/lib/hooks";
@@ -37,8 +38,8 @@ export function AgendaView() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Weekly Agenda"
-        subtitle="A calm, time-blocked view of your week. See everything ahead at a glance."
+        title={uiText("Weekly Agenda")}
+        subtitle={uiText("A calm, time-blocked view of your week. See everything ahead at a glance.")}
         icon="CalendarRange"
         color="#06b6d4"
         actions={
@@ -92,8 +93,8 @@ export function AgendaView() {
       ) : days.every((d) => d.items.length === 0) ? (
         <EmptyState
           icon="CalendarRange"
-          title="An open week"
-          description="Nothing scheduled this week. Capture a thought or plan something meaningful."
+          title={uiText("An open week")}
+          description={uiText("Nothing scheduled this week. Capture a thought or plan something meaningful.")}
         />
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-7">
