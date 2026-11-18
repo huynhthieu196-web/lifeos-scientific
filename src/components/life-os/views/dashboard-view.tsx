@@ -184,17 +184,17 @@ export function DashboardView() {
         className="relative overflow-hidden rounded-3xl border border-border/60 bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-transparent p-6"
       >
         <div className="relative z-10">
-          <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">{greeting}.</p>
+          <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">{uiText(greeting)}.</p>
           <h1 className="mt-1 text-3xl font-semibold tracking-tight">
             {tasksToday.length > 0
-              ? `You have ${tasksToday.length} task${tasksToday.length > 1 ? "s" : ""} due today.`
+              ? (locale === "vi" ? `Hôm nay bạn có ${tasksToday.length} công việc đến hạn.` : `You have ${tasksToday.length} task${tasksToday.length > 1 ? "s" : ""} due today.`)
               : overdue.length > 0
-                ? `${overdue.length} task${overdue.length > 1 ? "s" : ""} overdue.`
-                : "Your day is open. What matters most?"}
+                ? (locale === "vi" ? `Bạn có ${overdue.length} công việc quá hạn.` : `${overdue.length} task${overdue.length > 1 ? "s" : ""} overdue.`)
+                : uiText("Your day is open. What matters most?")}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            {today.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}
-            {stats?.completedToday ? ` · ${stats.completedToday} completed today` : ""}
+            {today.toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US", { weekday: "long", month: "long", day: "numeric" })}
+            {stats?.completedToday ? (locale === "vi" ? ` · ${stats.completedToday} việc hoàn thành hôm nay` : ` · ${stats.completedToday} completed today`) : ""}
           </p>
         </div>
         <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-emerald-500/10 blur-3xl" />
