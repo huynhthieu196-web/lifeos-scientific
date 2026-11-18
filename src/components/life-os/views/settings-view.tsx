@@ -66,7 +66,7 @@ export function SettingsView() {
     });
     const data = await res.json();
     setPrefs(data);
-    notify.success("Settings saved");
+    notify.success(uiText("Settings saved"));
   }
 
   async function toggle2FA(enabled: boolean) {
@@ -84,7 +84,7 @@ export function SettingsView() {
       finally { setLoading(false); }
     } else {
       const res = await fetch("/api/auth/disable-2fa", { method: "POST" });
-      if (res.ok) { setTwoFAEnabled(false); notify.success("2FA disabled"); }
+      if (res.ok) { setTwoFAEnabled(false); notify.success(uiText("2FA disabled")); }
     }
   }
 
@@ -95,14 +95,14 @@ export function SettingsView() {
       const data = await res.json();
       if (!res.ok) { notify.error(data.error); return; }
       setTwoFAEnabled(true); setShow2FASetup(false); setVerifyCode("");
-      notify.success("2FA enabled");
+      notify.success(uiText("2FA enabled"));
     } catch { notify.error(uiText("Failed to verify")); }
     finally { setLoading(false); }
   }
 
   function applyTheme(t: "light" | "dark" | "system") {
     setTheme(t);
-    notify.success(`Theme: ${t}`);
+    notify.success(`${uiText("Theme:")} ${uiText(t)}`);
   }
 
   async function startQrLogin() {
@@ -131,7 +131,7 @@ export function SettingsView() {
         const data = await res.json();
         if (data.confirmed) {
           setQrDialogOpen(false);
-          notify.success("Login confirmed on another device!");
+          notify.success(uiText("Login confirmed on another device!"));
           return;
         }
         if (data.expired) {
@@ -148,7 +148,7 @@ export function SettingsView() {
   async function seedData() {
     const res = await fetch("/api/seed", { method: "POST" });
     const data = await res.json();
-    if (res.ok) { notify.success("Seed data created!"); setTimeout(() => window.location.reload(), 1500); }
+    if (res.ok) { notify.success(uiText("Seed data created!")); setTimeout(() => window.location.reload(), 1500); }
     else notify.error(data.error || uiText("Seeding failed"));
   }
 
@@ -213,7 +213,7 @@ export function SettingsView() {
           </div>
           <Button size="sm" onClick={async () => {
             const res = await fetch("/api/auth/profile", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name }) });
-            if (res.ok) notify.success("Profile updated");
+            if (res.ok) notify.success(uiText("Profile updated"));
           }} className="gap-1.5"><Icon name="Save" className="h-3.5 w-3.5" />{ uiText("Save profile")}</Button>
         </div>
       </SectionCard>
@@ -333,7 +333,7 @@ export function SettingsView() {
               <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600"><Icon name="Bell" className="h-4 w-4" /></span>
               <div><p className="text-sm font-medium">{uiText("Browser notifications")}</p><p className="text-[11px] text-muted-foreground">{uiText("Overdue & due task alerts")}</p></div>
             </div>
-            <Button size="sm" variant="outline" onClick={async () => { const g = await requestNotificationPermission(); if (g) { notify.success(uiText("Notifications enabled")); sendNotification("Life OS", "Enabled!"); } else notify.error(uiText("Permission denied")); }}>{uiText("Enable")}</Button>
+            <Button size="sm" variant="outline" onClick={async () => { const g = await requestNotificationPermission(); if (g) { notify.success(uiText("Notifications enabled")); sendNotification("Life OS", uiText("Enabled!")); } else notify.error(uiText("Permission denied")); }}>{uiText("Enable")}</Button>
           </div>
         </div>
       </SectionCard>
