@@ -87,7 +87,7 @@ export function ItemCard({ item, onClick, compact, showProject, className }: Ite
               className="mt-0.5 flex-shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
               style={{ background: `${PRIORITY_META[item.priority]?.color}1a`, color: PRIORITY_META[item.priority]?.color }}
             >
-              {PRIORITY_META[item.priority]?.name}
+              {uiText(PRIORITY_META[item.priority]?.name ?? "")}
             </span>
           )}
         </div>
@@ -106,7 +106,7 @@ export function ItemCard({ item, onClick, compact, showProject, className }: Ite
           {domain && (
             <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
               <span className="h-2 w-2 rounded-full" style={{ background: domain.color }} />
-              {domain.short}
+              {uiText(domain.short)}
             </span>
           )}
           {showProject && item.project && (
