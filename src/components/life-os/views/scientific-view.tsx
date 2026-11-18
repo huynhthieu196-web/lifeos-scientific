@@ -101,7 +101,10 @@ export function ScientificView() {
       const values=Object.fromEntries(fields.map(f=>[f.key,form[f.key].trim()===""?null:Number(form[f.key])]));
       const r=await fetch("/api/scientific-daily",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({date:selectedDate,...values})});
       if(!r.ok)throw new Error("Invalid values");
-      await queryClient.invalidateQueries({queryKey:["scientific-report"]});
+      await Promise.all([
+        queryClient.invalidateQueries({queryKey:["scientific-report"]}),
+        queryClient.invalidateQueries({queryKey:["lifeos-analytics"]}),
+      ]);
       setNotice(tr.saved);
     }catch{setFailed(true);setNotice(tr.saveError);}
     finally{setSaving(false);}
@@ -217,16 +220,6 @@ export function ScientificView() {
           })}
         </section>
 
-        <section className="rounded-2xl border border-border bg-card p-4">
-          <h2 className="mb-2 text-sm font-semibold"><Icon name="Database" className="mr-1.5 inline h-4 w-4" />{tr.export}</h2>
-          <p className="mb-3 text-xs text-muted-foreground">{tr.exportNote}</p>
-          <div className="flex flex-wrap gap-2">
-            {["daily","tasks","sessions","recommendations","sources"].map(ds=>
-              <a key={ds} href={`/api/powerbi/export?dataset=${ds}`} download>
-                <Button size="sm" variant="outline" type="button"><Icon name="Download" className="mr-1.5 h-3.5 w-3.5"/>{ds}.csv</Button>
-              </a>)}
-          </div>
-        </section>
         <section className="rounded-2xl border border-border bg-card p-4">
           <h2 className="mb-2 text-sm font-semibold">{tr.sourceList}</h2>
           <p className="mb-3 text-xs text-muted-foreground">{tr.sourcesNote}</p>
