@@ -6,8 +6,8 @@ Migration: [supabase-bi-views.sql](./supabase-bi-views.sql). Schema **`lifeos_bi
 
 | Nội dung | Thanh Thiệu | Cao Kỳ | Cột chính |
 |---|---|---|---|
-| Nhật ký khoa học | `thanh_daily` | `cao_daily` | Date, sleepHours, moderateMinutes, vigorousMinutes, paidWorkMinutes |
-| Công việc + Eisenhower | `thanh_tasks` | `cao_tasks` | TaskId, Title, Status, CreatedDate, CompletedDate, DueDate, Priority, Quadrant |
+| Nhật ký khoa học | `thanh_daily` | `cao_daily` | Date, SleepHours, ModerateMinutes, VigorousMinutes, PaidWorkMinutes |
+| Công việc + Eisenhower | `thanh_tasks` | `cao_tasks` | TaskId, Title, Status, CreatedDate, CompletedDate, DueDate, Priority, Quadrant, ProjectId |
 | Phiên theo dõi thời gian | `thanh_sessions` | `cao_sessions` | SessionId, Date, Label, StartedAt, EndedAt, Minutes, IsPrimary |
 | Thói quen | `thanh_habits` | `cao_habits` | LogId, HabitId, HabitTitle, Date, Value |
 | Review | `thanh_reviews` | `cao_reviews` | ReviewId, Date, ReviewType, Mood, Energy |
@@ -46,9 +46,9 @@ let
     ),
     FactDaily = Source{[Schema="lifeos_bi", Item="thanh_daily"]}[Data],
     Typed = Table.TransformColumnTypes(FactDaily, {
-        {"Date", type date}, {"sleepHours", type number},
-        {"moderateMinutes", Int64.Type}, {"vigorousMinutes", Int64.Type},
-        {"paidWorkMinutes", Int64.Type}
+        {"Date", type date}, {"SleepHours", type number},
+        {"ModerateMinutes", Int64.Type}, {"VigorousMinutes", Int64.Type},
+        {"PaidWorkMinutes", Int64.Type}
     })
 in
     Typed
