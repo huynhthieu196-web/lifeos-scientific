@@ -82,7 +82,7 @@ export function InsightsView() {
               title={uiText("Advance recurring items and reset stale habit streaks")}
             >
               <Icon name={runScheduler.isPending ? "Loader2" : "RefreshCw"} className={`h-3.5 w-3.5 ${runScheduler.isPending ? "animate-spin" : ""}`} />
-              <span className="hidden sm:inline">{runScheduler.isPending ? "Running…" : "Sync"}</span>
+              <span className="hidden sm:inline">{uiText(runScheduler.isPending ? "Running…" : "Sync")}</span>
             </Button>
             <Button variant="outline" size="sm" onClick={() => downloadCSV("finance")} className="gap-1.5">
               <Icon name="Download" className="h-3.5 w-3.5" /> <span className="hidden sm:inline">{uiText("Finances")}</span>
@@ -109,7 +109,7 @@ export function InsightsView() {
         {/* Mood & Energy trend */}
         <SectionCard title={uiText("Mood & Energy trend")} icon="Heart">
           {moodData.length === 0 ? (
-            <EmptyChart message="Log a daily reflection to see your mood trend." />
+            <EmptyChart message={uiText("Log a daily reflection to see your mood trend.")} />
           ) : (
             <ResponsiveContainer width="100%" height={220}>
               <LineChart data={moodData} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
@@ -167,7 +167,7 @@ export function InsightsView() {
         {/* Habit consistency heatmap */}
         <SectionCard title={uiText("Habit consistency (14 days)")} icon="Repeat">
           {data.habitMatrix.length === 0 ? (
-            <EmptyChart message="No active habits yet. Create one in Time & Action." />
+            <EmptyChart message={uiText("No active habits yet. Create one in Time & Action.")} />
           ) : (
             <div className="space-y-3">
               {data.habitMatrix.map((h: any) => (
@@ -181,7 +181,7 @@ export function InsightsView() {
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ delay: i * 0.02 }}
                         className="h-6 flex-1 rounded-sm"
-                        title={`${fmtDate(d.date, "MMM d")}: ${d.done ? "done" : "—"}`}
+                        title={`${fmtDate(d.date, "MMM d")}: ${d.done ? uiText("done") : "—"}`}
                         style={{
                           background: d.done ? "#10b981" : "var(--muted)",
                           opacity: d.done ? 1 : 0.4,
@@ -220,7 +220,7 @@ export function InsightsView() {
           {data.finance.subscriptions > 0 && (
             <div className="mt-3 flex items-center justify-between rounded-lg bg-amber-500/10 px-3 py-2 text-sm">
               <span className="inline-flex items-center gap-1.5 text-amber-600">
-                <Icon name="Repeat" className="h-3.5 w-3.5" /> Monthly subscriptions
+                <Icon name="Repeat" className="h-3.5 w-3.5" /> {uiText("Monthly subscriptions")}
               </span>
               <span className="font-semibold">${data.finance.subscriptions.toLocaleString()}/mo</span>
             </div>
@@ -259,16 +259,16 @@ export function InsightsView() {
                   <span className="h-3 w-3 rounded-full" style={{ background: p.color }} />
                   <span className="flex-1 truncate text-sm font-semibold">{p.name}</span>
                   {p.overdue > 0 && (
-                    <span className="rounded-full bg-rose-500/15 px-1.5 py-0.5 text-[10px] font-bold text-rose-500">{p.overdue} overdue</span>
+                    <span className="rounded-full bg-rose-500/15 px-1.5 py-0.5 text-[10px] font-bold text-rose-500">{p.overdue} {uiText("overdue")}</span>
                   )}
                 </div>
                 <div className="mb-1.5 flex items-center justify-between text-[11px] text-muted-foreground">
-                  <span>{p.done}/{p.total} tasks</span>
+                  <span>{p.done}/{p.total} {uiText("tasks")}</span>
                   <span className="font-semibold" style={{ color: p.color }}>{p.progress}%</span>
                 </div>
                 <Progress value={p.progress} className="h-1.5" />
                 {p.targetDate && (
-                  <p className="mt-2 text-[10px] text-muted-foreground">Target: {smartDate(p.targetDate)}</p>
+                  <p className="mt-2 text-[10px] text-muted-foreground">{uiText("Target:")} {smartDate(p.targetDate)}</p>
                 )}
               </motion.button>
             ))}
