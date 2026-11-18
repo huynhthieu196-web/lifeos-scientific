@@ -176,13 +176,13 @@ export function FocusView() {
               toggleHabit.mutate({ id: selectedItemId, date: todayKey });
               const habitName = habits.find((h) => h.id === selectedItemId)?.title;
               notify.success(
-                `Focus complete! ${elapsedMins} min`,
-                `✓ ${habitName} logged for today. Take a break!`,
+                `${uiText("Focus complete!")} ${elapsedMins} ${uiText("minutes")}`,
+                `✓ ${habitName} ${uiText("logged for today. Take a break!")}`,
               );
             } else if (selectedItemType === "task" && selectedItemId) {
-              notify.success(`Focus complete! ${elapsedMins} min`, "Great work. Take a short break.");
+              notify.success(`${uiText("Focus complete!")} ${elapsedMins} ${uiText("minutes")}`, uiText("Great work. Take a short break."));
             } else {
-              notify.success(`Focus complete! ${elapsedMins} min`, "Take a short break.");
+              notify.success(`${uiText("Focus complete!")} ${elapsedMins} ${uiText("minutes")}`, uiText("Take a short break."));
             }
 
             // auto-suggest break
