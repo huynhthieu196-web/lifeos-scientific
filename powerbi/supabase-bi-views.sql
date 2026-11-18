@@ -37,7 +37,7 @@ GRANT USAGE ON SCHEMA lifeos_bi TO lifeos_bi_thanh, lifeos_bi_cao;
 GRANT EXECUTE ON FUNCTION lifeos_bi.try_jsonb(text) TO lifeos_bi_thanh, lifeos_bi_cao;
 
 CREATE OR REPLACE VIEW lifeos_bi.thanh_daily WITH (security_barrier=true) AS
- SELECT i."startDate"::date AS "Date", CASE WHEN jsonb_typeof(m.json->'sleepHours')='number' THEN (m.json->>'sleepHours')::numeric ELSE NULL END AS "sleepHours", CASE WHEN jsonb_typeof(m.json->'moderateMinutes')='number' THEN (m.json->>'moderateMinutes')::numeric ELSE NULL END AS "moderateMinutes", CASE WHEN jsonb_typeof(m.json->'vigorousMinutes')='number' THEN (m.json->>'vigorousMinutes')::numeric ELSE NULL END AS "vigorousMinutes", CASE WHEN jsonb_typeof(m.json->'paidWorkMinutes')='number' THEN (m.json->>'paidWorkMinutes')::numeric ELSE NULL END AS "paidWorkMinutes"
+ SELECT i."startDate"::date AS "Date", CASE WHEN jsonb_typeof(m.json->'sleepHours')='number' THEN (m.json->>'sleepHours')::numeric ELSE NULL END AS "SleepHours", CASE WHEN jsonb_typeof(m.json->'moderateMinutes')='number' THEN (m.json->>'moderateMinutes')::numeric ELSE NULL END AS "ModerateMinutes", CASE WHEN jsonb_typeof(m.json->'vigorousMinutes')='number' THEN (m.json->>'vigorousMinutes')::numeric ELSE NULL END AS "VigorousMinutes", CASE WHEN jsonb_typeof(m.json->'paidWorkMinutes')='number' THEN (m.json->>'paidWorkMinutes')::numeric ELSE NULL END AS "PaidWorkMinutes"
  FROM public."Item" i CROSS JOIN LATERAL (SELECT lifeos_bi.try_jsonb(i."metadata") AS json) m
  WHERE i."ownerId"=(SELECT u."id" FROM public."User" u WHERE u."email"='account1@lifeos.internal') AND i."type"='scientific_daily_log' AND i."startDate" IS NOT NULL;
 
@@ -51,7 +51,7 @@ CREATE OR REPLACE VIEW lifeos_bi.thanh_tasks WITH (security_barrier=true) AS
  WHEN (m.json->'eisenhower'->>'important')::boolean AND (m.json->'eisenhower'->>'urgent')::boolean THEN 'do'
  WHEN (m.json->'eisenhower'->>'important')::boolean THEN 'schedule'
  WHEN (m.json->'eisenhower'->>'urgent')::boolean THEN 'delegate'
- ELSE 'eliminate' END ELSE 'unclassified' END AS "Quadrant"
+ ELSE 'eliminate' END ELSE 'unclassified' END AS "Quadrant", i."projectId" AS "ProjectId"
  FROM public."Item" i CROSS JOIN LATERAL (SELECT lifeos_bi.try_jsonb(i."metadata") AS json) m
  WHERE i."ownerId"=(SELECT u."id" FROM public."User" u WHERE u."email"='account1@lifeos.internal') AND i."type"='task';
 
@@ -79,7 +79,7 @@ CREATE OR REPLACE VIEW lifeos_bi.thanh_projects WITH (security_barrier=true) AS
  FROM public."Project" p WHERE p."ownerId"=(SELECT u."id" FROM public."User" u WHERE u."email"='account1@lifeos.internal');
 
 CREATE OR REPLACE VIEW lifeos_bi.cao_daily WITH (security_barrier=true) AS
- SELECT i."startDate"::date AS "Date", CASE WHEN jsonb_typeof(m.json->'sleepHours')='number' THEN (m.json->>'sleepHours')::numeric ELSE NULL END AS "sleepHours", CASE WHEN jsonb_typeof(m.json->'moderateMinutes')='number' THEN (m.json->>'moderateMinutes')::numeric ELSE NULL END AS "moderateMinutes", CASE WHEN jsonb_typeof(m.json->'vigorousMinutes')='number' THEN (m.json->>'vigorousMinutes')::numeric ELSE NULL END AS "vigorousMinutes", CASE WHEN jsonb_typeof(m.json->'paidWorkMinutes')='number' THEN (m.json->>'paidWorkMinutes')::numeric ELSE NULL END AS "paidWorkMinutes"
+ SELECT i."startDate"::date AS "Date", CASE WHEN jsonb_typeof(m.json->'sleepHours')='number' THEN (m.json->>'sleepHours')::numeric ELSE NULL END AS "SleepHours", CASE WHEN jsonb_typeof(m.json->'moderateMinutes')='number' THEN (m.json->>'moderateMinutes')::numeric ELSE NULL END AS "ModerateMinutes", CASE WHEN jsonb_typeof(m.json->'vigorousMinutes')='number' THEN (m.json->>'vigorousMinutes')::numeric ELSE NULL END AS "VigorousMinutes", CASE WHEN jsonb_typeof(m.json->'paidWorkMinutes')='number' THEN (m.json->>'paidWorkMinutes')::numeric ELSE NULL END AS "PaidWorkMinutes"
  FROM public."Item" i CROSS JOIN LATERAL (SELECT lifeos_bi.try_jsonb(i."metadata") AS json) m
  WHERE i."ownerId"=(SELECT u."id" FROM public."User" u WHERE u."email"='account2@lifeos.internal') AND i."type"='scientific_daily_log' AND i."startDate" IS NOT NULL;
 
@@ -93,7 +93,7 @@ CREATE OR REPLACE VIEW lifeos_bi.cao_tasks WITH (security_barrier=true) AS
  WHEN (m.json->'eisenhower'->>'important')::boolean AND (m.json->'eisenhower'->>'urgent')::boolean THEN 'do'
  WHEN (m.json->'eisenhower'->>'important')::boolean THEN 'schedule'
  WHEN (m.json->'eisenhower'->>'urgent')::boolean THEN 'delegate'
- ELSE 'eliminate' END ELSE 'unclassified' END AS "Quadrant"
+ ELSE 'eliminate' END ELSE 'unclassified' END AS "Quadrant", i."projectId" AS "ProjectId"
  FROM public."Item" i CROSS JOIN LATERAL (SELECT lifeos_bi.try_jsonb(i."metadata") AS json) m
  WHERE i."ownerId"=(SELECT u."id" FROM public."User" u WHERE u."email"='account2@lifeos.internal') AND i."type"='task';
 
