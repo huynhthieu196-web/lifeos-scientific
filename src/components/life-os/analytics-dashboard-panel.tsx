@@ -139,6 +139,7 @@ export function AnalyticsDashboardPanel(){
       return r.json();
     },
     refetchOnWindowFocus:true,
+    refetchInterval:60_000,
   });
   const science=useQuery<ScientificResponse>({
     queryKey:["scientific-report"],
@@ -270,7 +271,7 @@ export function AnalyticsDashboardPanel(){
           {tr.viewAll}
         </button>
       </div>
-      {science.isLoading&&<p className="mt-4 text-xs text-muted-foreground">{tr.loading}</p>}
+      <p className="mt-2 text-[11px] text-muted-foreground">{locale==="vi"?"Khuyến nghị luôn dùng dữ liệu khoa học trong 7 ngày gần nhất; bộ lọc 7/30/90 ngày chỉ áp dụng cho biểu đồ.":"Recommendations use the latest 7 days of scientific entries; the 7/30/90-day selector applies to the charts only."}</p>\n      {science.isLoading&&<p className="mt-4 text-xs text-muted-foreground">{tr.loading}</p>}
       {science.isError&&<p role="alert" className="mt-4 text-xs text-rose-700">{tr.error} <button type="button" onClick={()=>void science.refetch()} className="underline">{tr.retry}</button></p>}
       {science.data&&science.data.recommendations.length===0&&<p className="mt-4 rounded-lg border border-dashed border-blue-200 p-4 text-xs text-muted-foreground">{tr.adviceEmpty}</p>}
       {science.data&&science.data.recommendations.length>0&&
