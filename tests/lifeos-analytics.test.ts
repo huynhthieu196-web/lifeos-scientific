@@ -1,4 +1,10 @@
-import { describe, test, expect } from "bun:test";
+import { describe, test } from "node:test";
+import assert from "node:assert/strict";
+function expect<T>(actual:T) { return {
+  toBe(expected:T) { assert.equal(actual,expected); },
+  toEqual(expected:unknown) { assert.deepEqual(actual,expected); },
+  toBeNull() { assert.equal(actual,null); },
+}; }
 import { buildAnalytics, analyticsDays } from "../src/lib/lifeos-analytics";
 import { shiftDateKey } from "../src/lib/scientific-advisor";
 
