@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useState } from "react";
 import { useLifeOS } from "@/store/life-os";
@@ -32,8 +33,8 @@ export function AllItemsView() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="All Items"
-        subtitle="The full stream of your digital brain — every task, note, journal, habit, and idea."
+        title={uiText("All Items")}
+        subtitle={uiText("The full stream of your digital brain — every task, note, journal, habit, and idea.")}
         icon="Layers"
         color="#71717a"
         actions={
@@ -47,7 +48,7 @@ export function AllItemsView() {
       <div className="space-y-3">
         <div className="relative">
           <Icon name="Search" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search title or content…" className="pl-9" />
+          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={uiText("Search title or content…")} className="pl-9" />
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -63,15 +64,15 @@ export function AllItemsView() {
             ))}
           </div>
           <Select value={sort} onValueChange={setSort}>
-            <SelectTrigger className="h-9 w-[170px]" aria-label="Sort items">
+            <SelectTrigger className="h-9 w-[170px]" aria-label={uiText("Sort items")}>
               <Icon name="ArrowUpDown" className="h-3.5 w-3.5 text-muted-foreground" />
               <SelectValue />
             </SelectTrigger>
             <SelectContent align="end">
-              <SelectItem value="updatedAt:desc">Recently updated</SelectItem>
-              <SelectItem value="createdAt:desc">Recently created</SelectItem>
-              <SelectItem value="dueDate:asc">Due date</SelectItem>
-              <SelectItem value="title:asc">Title A–Z</SelectItem>
+              <SelectItem value="updatedAt:desc">{uiText("Recently updated")}</SelectItem>
+              <SelectItem value="createdAt:desc">{uiText("Recently created")}</SelectItem>
+              <SelectItem value="dueDate:asc">{uiText("Due date")}</SelectItem>
+              <SelectItem value="title:asc">{uiText("Title A–Z")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -103,7 +104,7 @@ export function AllItemsView() {
       {isLoading ? (
         <div className="space-y-2">{Array.from({ length: 6 }).map((_, i) => <div key={i} className="h-16 skeleton rounded-xl bg-muted/40" />)}</div>
       ) : items.length === 0 ? (
-        <EmptyState icon="Layers" title="No items match" description="Try clearing filters or capturing something new." />
+        <EmptyState icon="Layers" title={uiText("No items match")} description={uiText("Try clearing filters or capturing something new.")} />
       ) : (
         <>
           <p className="text-xs text-muted-foreground">{items.length} item{items.length !== 1 ? "s" : ""}</p>
