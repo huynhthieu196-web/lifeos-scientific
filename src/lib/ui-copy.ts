@@ -645,7 +645,27 @@ export const UI_VI_COPY: Readonly<Record<string,string>> = {
   "Watch list": "Danh sách xem",
   "Media details": "Chi tiết nội dung",
   "No items in domain": "Chưa có mục trong {domain}",
-  "Capture items in this domain to see them here and link them to projects.": "Hãy tạo mục trong lĩnh vực này để hiển thị và liên kết với dự án."
+  "Capture items in this domain to see them here and link them to projects.": "Hãy tạo mục trong lĩnh vực này để hiển thị và liên kết với dự án.",
+  "Notes saved": "Đã lưu ghi chú",
+  "Connected": "Đã liên kết",
+  "Link removed": "Đã xóa liên kết",
+  "Reopened": "Đã mở lại",
+  "Finished reading!": "Đã đọc xong!",
+  "Running scheduler…": "Đang cập nhật lịch tự động…",
+  "Add item": "Thêm mục",
+  "Habit check-in": "Ghi nhận thói quen",
+  "What do you want to achieve?": "Bạn muốn đạt được điều gì?",
+  "Create a goal": "Tạo mục tiêu",
+  "Start typing…": "Bắt đầu nhập…",
+  "Choose a category": "Chọn danh mục",
+  "Due soon": "Sắp đến hạn",
+  "Completed today": "Hoàn thành hôm nay",
+  "My projects": "Dự án của tôi",
+  "This quarter": "Quý này",
+  "Your tasks": "Công việc của bạn",
+  "All activities": "Tất cả hoạt động",
+  "All domains": "Tất cả lĩnh vực",
+  "All projects": "Tất cả dự án"
 };
 export function translateLegacy(locale:"vi"|"en",english:string):string {
   return locale==="vi"?(UI_VI_COPY[english]??english):english;
