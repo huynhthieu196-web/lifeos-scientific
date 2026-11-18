@@ -680,7 +680,9 @@ export const UI_VI_COPY: Readonly<Record<string,string>> = {
   "Sessions": "Phiên hoạt động",
   "Tasks this week": "Công việc tuần này",
   "Add new task": "Thêm công việc mới",
-  "Open": "Mở"
+  "Open": "Mở",
+  "Layers": "Các lớp lịch",
+  "What's on your mind? Press Enter to capture to inbox…": "Bạn đang nghĩ gì? Nhấn Enter để ghi vào hộp thư đến…"
 };
 export function translateLegacy(locale:"vi"|"en",english:string):string {
   return locale==="vi"?(UI_VI_COPY[english]??english):english;
