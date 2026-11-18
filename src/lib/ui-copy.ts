@@ -6,6 +6,7 @@
 import { useLifeOS } from "@/store/life-os";
 export const UI_VI_COPY: Readonly<Record<string,string>> = {
   "Dashboard": "Tổng quan",
+  "Scientific Insights": "Phân tích khoa học",
   "Welcome to Life OS": "Chào mừng đến LifeOS",
   "Opening your digital brain…": "Đang mở không gian LifeOS…",
   "Good morning": "Chào buổi sáng",
