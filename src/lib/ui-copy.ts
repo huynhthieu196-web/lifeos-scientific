@@ -5,6 +5,10 @@
  */
 import { useLifeOS } from "@/store/life-os";
 export const UI_VI_COPY: Readonly<Record<string,string>> = {
+  "Set": "Đặt",
+  "close": "đóng",
+  "Status & Priority": "Trạng thái và mức ưu tiên",
+  "Freeform note placeholder": "Bạn đang nghĩ gì? Hãy viết tự do…\\n\\nHỗ trợ Markdown: **in đậm**, *in nghiêng*, # tiêu đề, - danh sách.",
   "Title is required": "Vui lòng nhập tiêu đề",
   "min": "phút",
   "e.g. 320": "Ví dụ: 320",
