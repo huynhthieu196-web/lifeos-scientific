@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useState } from "react";
 import { useLifeOS } from "@/store/life-os";
@@ -31,8 +32,8 @@ export function ReviewsView() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Reviews & Reflections"
-        subtitle="Close the loop. Guided reflections keep your system — and your mind — trustworthy."
+        title={uiText("Reviews & Reflections")}
+        subtitle={uiText("Close the loop. Guided reflections keep your system — and your mind — trustworthy.")}
         icon="NotebookPen"
         color="#a78bfa"
         actions={
@@ -44,8 +45,8 @@ export function ReviewsView() {
 
       <Tabs value={tab} onValueChange={(v) => setTab(v as any)}>
         <TabsList className="grid w-full max-w-xs grid-cols-2">
-          <TabsTrigger value="daily" className="gap-1.5"><Icon name="Sun" className="h-3.5 w-3.5" /> Daily</TabsTrigger>
-          <TabsTrigger value="weekly" className="gap-1.5"><Icon name="CalendarRange" className="h-3.5 w-3.5" /> Weekly</TabsTrigger>
+          <TabsTrigger value="daily" className="gap-1.5"><Icon name="Sun" className="h-3.5 w-3.5" />{ uiText("Daily")}</TabsTrigger>
+          <TabsTrigger value="weekly" className="gap-1.5"><Icon name="CalendarRange" className="h-3.5 w-3.5" />{ uiText("Weekly")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value={tab} className="mt-6">
@@ -130,7 +131,7 @@ function ReviewForm({ type, onDone }: { type: "daily" | "weekly"; onDone: () => 
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
       {type === "weekly" && (inboxCount > 0 || openTasks > 0) && (
-        <SectionCard title="Weekly maintenance checklist" icon="ListChecks" className="mb-4 bg-amber-500/5">
+        <SectionCard title={uiText("Weekly maintenance checklist")} icon="ListChecks" className="mb-4 bg-amber-500/5">
           <div className="grid gap-2 sm:grid-cols-2">
             <div className="flex items-center gap-2 rounded-lg border border-border/60 p-2.5">
               <Icon name="Inbox" className="h-4 w-4 text-amber-500" />
@@ -149,7 +150,7 @@ function ReviewForm({ type, onDone }: { type: "daily" | "weekly"; onDone: () => 
           {/* Mood + Energy */}
           <div className="grid gap-6 sm:grid-cols-2">
             <div>
-              <Label className="mb-2 block text-xs font-medium text-muted-foreground">Mood</Label>
+              <Label className="mb-2 block text-xs font-medium text-muted-foreground">{uiText("Mood")}</Label>
               <div className="flex items-center gap-3">
                 <Slider value={[form.mood]} onValueChange={(v) => set("mood", v[0])} min={1} max={5} step={1} className="flex-1" />
                 <span className="w-16 text-right text-sm font-semibold">
@@ -158,7 +159,7 @@ function ReviewForm({ type, onDone }: { type: "daily" | "weekly"; onDone: () => 
               </div>
             </div>
             <div>
-              <Label className="mb-2 block text-xs font-medium text-muted-foreground">Energy</Label>
+              <Label className="mb-2 block text-xs font-medium text-muted-foreground">{uiText("Energy")}</Label>
               <div className="flex items-center gap-3">
                 <Slider value={[form.energy]} onValueChange={(v) => set("energy", v[0])} min={1} max={5} step={1} className="flex-1" />
                 <span className="w-16 text-right text-sm font-semibold">
@@ -168,10 +169,10 @@ function ReviewForm({ type, onDone }: { type: "daily" | "weekly"; onDone: () => 
             </div>
           </div>
 
-          <ReviewField label={prompts.wins} icon="Trophy" color="#f59e0b" value={form.wins} onChange={(v) => set("wins", v)} placeholder="Even small wins count…" />
-          <ReviewField label={prompts.challenges} icon="AlertCircle" color="#f43f5e" value={form.challenges} onChange={(v) => set("challenges", v)} placeholder="What got in the way?" />
-          <ReviewField label={prompts.learnings} icon="Lightbulb" color="#3b82f6" value={form.learnings} onChange={(v) => set("learnings", v)} placeholder="A lesson, an insight…" />
-          <ReviewField label={prompts.gratitude} icon="Heart" color="#ec4899" value={form.gratitude} onChange={(v) => set("gratitude", v)} placeholder="Who or what are you thankful for?" />
+          <ReviewField label={prompts.wins} icon="Trophy" color="#f59e0b" value={form.wins} onChange={(v) => set("wins", v)} placeholder={uiText("Even small wins count…")} />
+          <ReviewField label={prompts.challenges} icon="AlertCircle" color="#f43f5e" value={form.challenges} onChange={(v) => set("challenges", v)} placeholder={uiText("What got in the way?")} />
+          <ReviewField label={prompts.learnings} icon="Lightbulb" color="#3b82f6" value={form.learnings} onChange={(v) => set("learnings", v)} placeholder={uiText("A lesson, an insight…")} />
+          <ReviewField label={prompts.gratitude} icon="Heart" color="#ec4899" value={form.gratitude} onChange={(v) => set("gratitude", v)} placeholder={uiText("Who or what are you thankful for?")} />
 
           {/* Priorities */}
           <div>
@@ -189,10 +190,10 @@ function ReviewForm({ type, onDone }: { type: "daily" | "weekly"; onDone: () => 
             </div>
           </div>
 
-          <ReviewField label="Anything else?" icon="PenLine" color="#71717a" value={form.notes} onChange={(v) => set("notes", v)} placeholder="Free-form notes…" />
+          <ReviewField label={uiText("Anything else?")} icon="PenLine" color="#71717a" value={form.notes} onChange={(v) => set("notes", v)} placeholder={uiText("Free-form notes…")} />
 
           <div className="flex justify-end gap-2 border-t border-border/60 pt-4">
-            <Button variant="ghost" onClick={onDone}>Cancel</Button>
+            <Button variant="ghost" onClick={onDone}>{uiText("Cancel")}</Button>
             <Button onClick={save} disabled={create.isPending} className="gap-1.5">
               <Icon name="Save" className="h-4 w-4" /> Save reflection
             </Button>
@@ -248,10 +249,10 @@ function ReviewCard({ review, onOpenItem }: { review: any; onOpenItem: (id: stri
               className="overflow-hidden"
             >
               <div className="mt-4 space-y-3 border-t border-border/60 pt-4">
-                {review.wins && <ReviewBlock label="Wins" icon="Trophy" color="#f59e0b" text={review.wins} />}
-                {review.challenges && <ReviewBlock label="Challenges" icon="AlertCircle" color="#f43f5e" text={review.challenges} />}
-                {review.learnings && <ReviewBlock label="Learnings" icon="Lightbulb" color="#3b82f6" text={review.learnings} />}
-                {review.gratitude && <ReviewBlock label="Gratitude" icon="Heart" color="#ec4899" text={review.gratitude} />}
+                {review.wins && <ReviewBlock label={uiText("Wins")} icon="Trophy" color="#f59e0b" text={review.wins} />}
+                {review.challenges && <ReviewBlock label={uiText("Challenges")} icon="AlertCircle" color="#f43f5e" text={review.challenges} />}
+                {review.learnings && <ReviewBlock label={uiText("Learnings")} icon="Lightbulb" color="#3b82f6" text={review.learnings} />}
+                {review.gratitude && <ReviewBlock label={uiText("Gratitude")} icon="Heart" color="#ec4899" text={review.gratitude} />}
                 {review.priorities?.length > 0 && (
                   <div>
                     <p className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -262,7 +263,7 @@ function ReviewCard({ review, onOpenItem }: { review: any; onOpenItem: (id: stri
                     </ol>
                   </div>
                 )}
-                {review.notes && <ReviewBlock label="Notes" icon="PenLine" color="#71717a" text={review.notes} />}
+                {review.notes && <ReviewBlock label={uiText("Notes")} icon="PenLine" color="#71717a" text={review.notes} />}
                 <div className="flex items-center justify-between pt-2">
                   <div className="flex gap-3 text-xs text-muted-foreground">
                     {review.mood && <span>Mood {["", "Low", "Meh", "Okay", "Good", "Great"][review.mood]}</span>}
