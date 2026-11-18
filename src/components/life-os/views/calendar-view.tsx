@@ -46,7 +46,7 @@ export function CalendarView() {
     return m;
   }, [data]);
 
-  const layers = calendarLayerMode === "type" ? ITEM_TYPES.map((t) => ({ id: t.type, name: t.name, color: t.color, icon: t.icon })) : DOMAINS.map((d) => ({ id: d.key, name: d.name, color: d.color, icon: d.icon }));
+  const layers = calendarLayerMode === "type" ? ITEM_TYPES.map((t) => ({ id: t.type, name: uiText(t.name), color: t.color, icon: t.icon })) : DOMAINS.map((d) => ({ id: d.key, name: uiText(d.name), color: d.color, icon: d.icon }));
 
   const selectedDayItems = selectedDay ? dayMap[format(selectedDay, "yyyy-MM-dd")] || [] : [];
 
