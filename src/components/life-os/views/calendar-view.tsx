@@ -77,7 +77,7 @@ export function CalendarView() {
         <SectionCard className="overflow-hidden p-0">
           {/* Month header */}
           <div className="flex items-center justify-between border-b border-border/60 px-4 py-3">
-            <h2 className="text-lg font-semibold">{format(cursor, "MMMM yyyy")}</h2>
+            <h2 className="text-lg font-semibold">{fmtDate(cursor, "MMMM yyyy")}</h2>
             <span className="text-xs text-muted-foreground">
               {Object.values(dayMap).reduce((s, v) => s + v.length, 0)} items this view
             </span>
@@ -204,7 +204,7 @@ export function CalendarView() {
 
           {/* Selected day detail */}
           <SectionCard
-            title={selectedDay ? format(selectedDay, "EEEE, MMM d") : "Select a day"}
+            title={selectedDay ? fmtDate(selectedDay, "EEEE, MMM d") : uiText("Select a day")}
             icon="CalendarClock"
           >
             {selectedDayItems.length === 0 ? (
