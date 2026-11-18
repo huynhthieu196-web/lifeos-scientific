@@ -181,7 +181,7 @@ export default function LoginPage() {
 
                   {error && (
                     <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="rounded-lg bg-rose-500/10 px-3 py-2 text-sm text-rose-500">
-                      {error}
+                      {uiText(error)}
                     </motion.p>
                   )}
 
@@ -241,7 +241,7 @@ export default function LoginPage() {
                     autoComplete="one-time-code"
                     autoFocus
                   />
-                  {error && <p className="text-center text-sm text-rose-500">{error}</p>}
+                  {error && <p className="text-center text-sm text-rose-500">{uiText(error)}</p>}
                   <Button type="submit" disabled={loading || verifyCode.length !== 6} className="h-11 w-full gap-2 bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
                     {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <>{t(locale, "verify")} <ArrowRight className="h-5 w-5" /></>}
                   </Button>
@@ -287,7 +287,7 @@ export default function LoginPage() {
                     <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
                     <Input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="h-11 pl-10" />
                   </div>
-                  {error && <p className="text-sm text-rose-500">{error}</p>}
+                  {error && <p className="text-sm text-rose-500">{uiText(error)}</p>}
                   <Button type="submit" disabled={loading} className="h-11 w-full gap-2 bg-gradient-to-br from-violet-500 to-fuchsia-600 text-white">
                     {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <>{t(locale, "confirmLogin")} <ArrowRight className="h-5 w-5" /></>}
                   </Button>
