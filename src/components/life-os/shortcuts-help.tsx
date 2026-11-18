@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useEffect, useState } from "react";
 import {
@@ -75,7 +76,7 @@ export function ShortcutsHelp() {
             <Icon name="Keyboard" className="h-5 w-5 text-violet-500" />
             Keyboard Shortcuts
           </DialogTitle>
-          <DialogDescription>Navigate your Life OS at the speed of thought.</DialogDescription>
+          <DialogDescription>{uiText("Navigate your Life OS at the speed of thought.")}</DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-2">
           {SHORTCUT_GROUPS.map((group) => (
