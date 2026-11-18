@@ -80,7 +80,7 @@ export function SettingsView() {
         const qr = await QRCode.toDataURL(data.otpauthUrl, { width: 200, margin: 1, color: { dark: "#0f172a", light: "#ffffff" } });
         setQr2faUrl(qr);
         setManualEntry(data.manualEntry);
-      } catch { notify.error("Failed to set up 2FA"); }
+      } catch { notify.error(uiText("Failed to set up 2FA")); }
       finally { setLoading(false); }
     } else {
       const res = await fetch("/api/auth/disable-2fa", { method: "POST" });
@@ -96,7 +96,7 @@ export function SettingsView() {
       if (!res.ok) { notify.error(data.error); return; }
       setTwoFAEnabled(true); setShow2FASetup(false); setVerifyCode("");
       notify.success("2FA enabled");
-    } catch { notify.error("Failed to verify"); }
+    } catch { notify.error(uiText("Failed to verify")); }
     finally { setLoading(false); }
   }
 
@@ -114,13 +114,13 @@ export function SettingsView() {
         body: JSON.stringify({ email, password: "" }), // password not needed — already authenticated
       });
       const data = await res.json();
-      if (!res.ok) { notify.error(data.error || "Failed"); return; }
+      if (!res.ok) { notify.error(data.error || uiText("Failed")); return; }
       const qr = await QRCode.toDataURL(data.qrUrl, { width: 280, margin: 1, color: { dark: "#0f172a", light: "#ffffff" } });
       setQrLoginUrl(qr);
       setQrLoginToken(data.token);
       setQrDialogOpen(true);
       pollQrStatus(data.token);
-    } catch { notify.error("Failed to generate QR"); }
+    } catch { notify.error(uiText("Failed to generate QR")); }
     finally { setQrLoading(false); }
   }
 
@@ -135,7 +135,7 @@ export function SettingsView() {
           return;
         }
         if (data.expired) {
-          notify.error("QR expired");
+          notify.error(uiText("QR expired"));
           setQrDialogOpen(false);
           return;
         }
@@ -149,7 +149,7 @@ export function SettingsView() {
     const res = await fetch("/api/seed", { method: "POST" });
     const data = await res.json();
     if (res.ok) { notify.success("Seed data created!"); setTimeout(() => window.location.reload(), 1500); }
-    else notify.error(data.error || "Seeding failed");
+    else notify.error(data.error || uiText("Seeding failed"));
   }
 
   if (loading) return (
@@ -290,9 +290,9 @@ export function SettingsView() {
                   </SelectContent>
                 </Select>
                 <p className="mt-1 text-[10px] text-muted-foreground">
-                  {prefs?.aiProvider === "z-ai-sdk" && "Uses the built-in z-ai-web-dev-sdk. No configuration needed."}
-                  {prefs?.aiProvider === "openai-compatible" && "Works with any OpenAI-compatible API. Enter your API key and base URL below."}
-                  {prefs?.aiProvider === "custom" && "Enter a custom API endpoint, key, and model name."}
+                  {prefs?.aiProvider === "z-ai-sdk" && uiText("Uses the built-in z-ai-web-dev-sdk. No configuration needed.")}
+                  {prefs?.aiProvider === "openai-compatible" && uiText("Works with any OpenAI-compatible API. Enter your API key and base URL below.")}
+                  {prefs?.aiProvider === "custom" && uiText("Enter a custom API endpoint, key, and model name.")}
                 </p>
               </div>
 
@@ -331,9 +331,9 @@ export function SettingsView() {
           <div className="flex items-center justify-between rounded-xl border border-border/40 p-3">
             <div className="flex items-center gap-3">
               <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600"><Icon name="Bell" className="h-4 w-4" /></span>
-              <div><p className="text-sm font-medium">{uiText("Browser notifications")}</p><p className="text-[11px] text-muted-foreground">Overdue & due task alerts</p></div>
+              <div><p className="text-sm font-medium">{uiText("Browser notifications")}</p><p className="text-[11px] text-muted-foreground">{uiText("Overdue & due task alerts")}</p></div>
             </div>
-            <Button size="sm" variant="outline" onClick={async () => { const g = await requestNotificationPermission(); if (g) { notify.success("Notifications enabled"); sendNotification("Life OS", "Enabled!"); } else notify.error("Permission denied"); }}>{uiText("Enable")}</Button>
+            <Button size="sm" variant="outline" onClick={async () => { const g = await requestNotificationPermission(); if (g) { notify.success(uiText("Notifications enabled")); sendNotification("Life OS", "Enabled!"); } else notify.error(uiText("Permission denied")); }}>{uiText("Enable")}</Button>
           </div>
         </div>
       </SectionCard>
@@ -341,35 +341,24 @@ export function SettingsView() {
       {/* Database */}
       <SectionCard title={uiText("Database")} icon="Database">
         <div className="space-y-3">
-          <div className="flex items-center gap-2 rounded-lg border border-border/40 p-3">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600"><Icon name="HardDrive" className="h-4 w-4" /></span>
-            <div className="flex-1">
-              <p className="text-sm font-medium">SQLite (local file)</p>
-              <p className="text-[11px] text-muted-foreground">{uiText("Current database — stored at") }<code className="rounded bg-muted px-1 text-[10px]">db/custom.db</code></p>
+          <div className="flex items-center gap-3 rounded-xl border border-blue-200/70 bg-blue-50/60 p-4 dark:border-blue-900/50 dark:bg-blue-950/20">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600"><Icon name="Cloud" className="h-5 w-5" /></span>
+            <div>
+              <p className="text-sm font-semibold">{uiText("PostgreSQL (Supabase cloud)")}</p>
+              <p className="text-xs text-muted-foreground">{uiText("Your personal records are stored in the cloud and separated by account.")}</p>
             </div>
           </div>
-
-          <div className="rounded-lg border border-border/40 p-3">
-            <p className="mb-2 text-xs font-medium">{uiText("Want to use a cloud database?")}</p>
-            <p className="text-[11px] text-muted-foreground">{uiText("Life OS supports any PostgreSQL database. To switch:")}</p>
-            <ol className="mt-1.5 space-y-1 text-[11px] text-muted-foreground">
-              <li>{uiText("1. Create a free database on") }<a href="https://neon.tech" target="_blank" className="text-blue-500 hover:underline">Neon</a>{ uiText("or") }<a href="https://supabase.com" target="_blank" className="text-blue-500 hover:underline">Supabase</a></li>
-              <li>{uiText("2. Set") }<code className="rounded bg-muted px-1">DATABASE_URL</code>{ uiText("in your") }<code className="rounded bg-muted px-1">.env</code>{ uiText("file")}</li>
-              <li>{uiText("3. Change Prisma provider from") }<code className="rounded bg-muted px-1">sqlite</code>{ uiText("to") }<code className="rounded bg-muted px-1">postgresql</code></li>
-              <li>{uiText("4. Run") }<code className="rounded bg-muted px-1">bun run db:push</code></li>
-            </ol>
-            <p className="mt-2 text-[10px] text-muted-foreground">{uiText("PostgreSQL connection string format:") }<code className="rounded bg-muted px-1">postgresql://user:pass@host/dbname</code></p>
-          </div>
+          <p className="text-xs text-muted-foreground">{uiText("No local SQLite database or Power BI installation is required.")}</p>
 
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" size="sm" className="gap-1.5" onClick={seedData}>
-              <Icon name="Sprout" className="h-3.5 w-3.5" /> Seed test data
+              <Icon name="Sprout" className="h-3.5 w-3.5" /> {uiText("Seed test data")}
             </Button>
 
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="outline" size="sm" className="gap-1.5 text-rose-500 hover:bg-rose-500/10 hover:text-rose-600">
-                <Icon name="Trash2" className="h-3.5 w-3.5" /> Reset database
+                <Icon name="Trash2" className="h-3.5 w-3.5" /> {uiText("Reset database")}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -382,8 +371,8 @@ export function SettingsView() {
                 <AlertDialogAction onClick={async () => {
                   const res = await fetch("/api/reset-db", { method: "POST" });
                   const data = await res.json();
-                  if (res.ok) { notify.success("Database reset. Reloading…"); setTimeout(() => window.location.reload(), 1500); }
-                  else notify.error(data.error || "Reset failed");
+                  if (res.ok) { notify.success(uiText("Database reset. Reloading…")); setTimeout(() => window.location.reload(), 1500); }
+                  else notify.error(data.error || uiText("Reset failed"));
                 }} className="bg-rose-500 hover:bg-rose-600">{uiText("Reset everything")}</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -399,7 +388,7 @@ export function SettingsView() {
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
             const url = URL.createObjectURL(blob); const a = document.createElement("a");
             a.href = url; a.download = `lifeos-backup-${new Date().toISOString().slice(0, 10)}.json`; a.click();
-            URL.revokeObjectURL(url); notify.success("Backup downloaded");
+            URL.revokeObjectURL(url); notify.success(uiText("Backup downloaded"));
           }}><Icon name="Download" className="h-3.5 w-3.5" />{ uiText("Full backup (JSON)")}</Button>
           <Button variant="outline" size="sm" className="gap-1.5" onClick={() => {
             const input = document.createElement("input"); input.type = "file"; input.accept = ".json";
@@ -409,9 +398,9 @@ export function SettingsView() {
               try {
                 const data = JSON.parse(text);
                 const res = await fetch("/api/backup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
-                if (res.ok) { notify.success("Backup restored"); setTimeout(() => window.location.reload(), 1000); }
-                else notify.error("Restore failed");
-              } catch { notify.error("Invalid file"); }
+                if (res.ok) { notify.success(uiText("Backup restored")); setTimeout(() => window.location.reload(), 1000); }
+                else notify.error(uiText("Restore failed"));
+              } catch { notify.error(uiText("Invalid file")); }
             };
             input.click();
           }}><Icon name="Upload" className="h-3.5 w-3.5" />{ uiText("Restore backup")}</Button>
@@ -423,7 +412,7 @@ export function SettingsView() {
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">{uiText("Sign out of your account")}</p>
           <Button variant="outline" size="sm" className="gap-1.5 text-rose-500 hover:bg-rose-500/10 hover:text-rose-600" onClick={async () => { await fetch("/api/auth/logout", { method: "POST" }); window.location.href = "/login"; }}>
-            <Icon name="LogOut" className="h-3.5 w-3.5" /> Sign out
+            <Icon name="LogOut" className="h-3.5 w-3.5" /> {uiText("Sign out")}
           </Button>
         </div>
       </SectionCard>
