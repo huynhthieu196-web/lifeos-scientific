@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useLifeOS } from "@/store/life-os";
@@ -111,20 +112,20 @@ export function QuickCapture() {
     <Dialog open={quickCaptureOpen} onOpenChange={setQuickCaptureOpen}>
       <DialogContent className="gap-0 p-0 sm:max-w-[560px]" showCloseButton={false}>
         <DialogHeader className="sr-only">
-          <DialogTitle>Quick Capture</DialogTitle>
-          <DialogDescription>Capture a thought instantly.</DialogDescription>
+          <DialogTitle>{uiText("Quick Capture")}</DialogTitle>
+          <DialogDescription>{uiText("Capture a thought instantly.")}</DialogDescription>
         </DialogHeader>
 
         <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3">
           <Icon name="Zap" className="h-4 w-4 shrink-0 text-amber-500" />
-          <span className="text-sm font-medium">Quick Capture</span>
+          <span className="text-sm font-medium">{uiText("Quick Capture")}</span>
           <div className="ml-auto flex shrink-0 items-center gap-2">
             <span className="hidden items-center gap-1 text-[10px] text-muted-foreground sm:inline-flex">
               <Kbd>{mod}K</Kbd> to open
             </span>
             <DialogClose className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
               <Icon name="X" className="h-4 w-4" />
-              <span className="sr-only">Close</span>
+              <span className="sr-only">{uiText("Close")}</span>
             </DialogClose>
           </div>
         </div>
@@ -191,7 +192,7 @@ export function QuickCapture() {
             onChange={(e) => setDomainId(e.target.value)}
             className="rounded-md border border-border/60 bg-background px-2 py-1 text-xs"
           >
-            <option value="">No domain</option>
+            <option value="">{uiText("No domain")}</option>
             {domains.map((d: any) => (
               <option key={d.id} value={d.id}>{d.name}</option>
             ))}
@@ -201,7 +202,7 @@ export function QuickCapture() {
             onChange={(e) => setProjectId(e.target.value)}
             className="rounded-md border border-border/60 bg-background px-2 py-1 text-xs"
           >
-            <option value="">No project</option>
+            <option value="">{uiText("No project")}</option>
             {projects.map((p: any) => (
               <option key={p.id} value={p.id}>{p.name}</option>
             ))}
