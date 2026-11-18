@@ -122,8 +122,8 @@ export function OnboardingFlow() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
               >
-                <h2 className="text-xl font-bold tracking-tight">{current.title}</h2>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{current.desc}</p>
+                <h2 className="text-xl font-bold tracking-tight">{uiText(current.title)}</h2>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{uiText(current.desc)}</p>
               </motion.div>
             </AnimatePresence>
 
@@ -143,7 +143,7 @@ export function OnboardingFlow() {
                   <Button variant="ghost" size="sm" onClick={skip}>{uiText("Skip")}</Button>
                 )}
                 <Button size="sm" onClick={next} className="gap-1.5" style={{ background: current.color, color: "white" }}>
-                  {step < STEPS.length - 1 ? "Next" : "Get started"}
+                  {uiText(step < STEPS.length - 1 ? "Next" : "Get started")}
                   <Icon name={step < STEPS.length - 1 ? "ArrowRight" : "Check"} className="h-3.5 w-3.5" />
                 </Button>
               </div>
