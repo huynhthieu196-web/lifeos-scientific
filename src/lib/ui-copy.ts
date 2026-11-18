@@ -682,7 +682,24 @@ export const UI_VI_COPY: Readonly<Record<string,string>> = {
   "Add new task": "Thêm công việc mới",
   "Open": "Mở",
   "Layers": "Các lớp lịch",
-  "What's on your mind? Press Enter to capture to inbox…": "Bạn đang nghĩ gì? Nhấn Enter để ghi vào hộp thư đến…"
+  "What's on your mind? Press Enter to capture to inbox…": "Bạn đang nghĩ gì? Nhấn Enter để ghi vào hộp thư đến…",
+  "Authentication failed": "Đăng nhập không thành công",
+  "Invalid credentials": "Thông tin đăng nhập không đúng",
+  "Invalid username or password": "Tên đăng nhập hoặc mật khẩu không đúng",
+  "Invalid email or password": "Email hoặc mật khẩu không đúng",
+  "Verification failed": "Xác minh không thành công",
+  "Network error": "Lỗi kết nối mạng",
+  "Network error. Please try again.": "Lỗi kết nối mạng. Vui lòng thử lại.",
+  "Failed to confirm": "Không thể xác nhận",
+  "Invalid code": "Mã xác minh không hợp lệ",
+  "Invalid verification code": "Mã xác minh không hợp lệ",
+  "Invalid or expired code": "Mã không hợp lệ hoặc đã hết hạn",
+  "Account not found": "Không tìm thấy tài khoản",
+  "Registration is disabled": "Tính năng đăng ký tài khoản hiện không khả dụng",
+  "Registration disabled": "Tính năng đăng ký tài khoản hiện không khả dụng",
+  "Please enter your password": "Vui lòng nhập mật khẩu",
+  "Incorrect password": "Mật khẩu không đúng",
+  "Too many attempts. Please try again later.": "Thử quá nhiều lần. Vui lòng thử lại sau."
 };
 export function translateLegacy(locale:"vi"|"en",english:string):string {
   return locale==="vi"?(UI_VI_COPY[english]??english):english;
