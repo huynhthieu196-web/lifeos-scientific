@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useLifeOS } from "@/store/life-os";
@@ -230,8 +231,8 @@ export function FocusView() {
     return (
       <div className="space-y-6">
         <PageHeader
-          title="Focus & Deep Work"
-          subtitle="Protect your attention. Run a pomodoro, connect it to a habit, and watch your practice grow."
+          title={uiText("Focus & Deep Work")}
+          subtitle={uiText("Protect your attention. Run a pomodoro, connect it to a habit, and watch your practice grow.")}
           icon="Brain"
           color="#f59e0b"
         />
@@ -289,8 +290,8 @@ export function FocusView() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Focus & Deep Work"
-        subtitle="Protect your attention. Run a pomodoro, connect it to a habit, and watch your practice grow."
+        title={uiText("Focus & Deep Work")}
+        subtitle={uiText("Protect your attention. Run a pomodoro, connect it to a habit, and watch your practice grow.")}
         icon="Brain"
         color="#f59e0b"
         actions={
@@ -333,7 +334,7 @@ export function FocusView() {
                 onChange={(e) => applyCustomMins(Number(e.target.value) || 1)}
                 className="h-9 w-20 text-center text-lg font-bold"
               />
-              <span className="text-sm text-muted-foreground">minutes</span>
+              <span className="text-sm text-muted-foreground">{uiText("minutes")}</span>
               {[10, 20, 30, 45, 60].map((m) => (
                 <button
                   key={m}
@@ -401,7 +402,7 @@ export function FocusView() {
               variant="outline"
               className="h-12 w-12 p-0"
               onClick={() => { setRunning(false); setRemaining(duration); completedRef.current = false; }}
-              title="Reset"
+              title={uiText("Reset")}
             >
               <Icon name="RotateCcw" className="h-5 w-5" />
             </Button>
@@ -410,7 +411,7 @@ export function FocusView() {
               variant="ghost"
               className="h-12 px-4"
               onClick={() => switchMode(mode)}
-              title="Skip"
+              title={uiText("Skip")}
             >
               <Icon name="SkipForward" className="h-5 w-5" />
             </Button>
@@ -420,15 +421,15 @@ export function FocusView() {
         {/* Right column */}
         <div className="space-y-6">
           {/* Today's stats */}
-          <SectionCard title="Today" icon="Flame">
+          <SectionCard title={uiText("Today")} icon="Flame">
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-xl bg-amber-500/10 p-4 text-center">
                 <div className="text-3xl font-bold text-amber-500">{completedSessions}</div>
-                <div className="mt-1 text-[11px] uppercase tracking-wide text-muted-foreground">sessions</div>
+                <div className="mt-1 text-[11px] uppercase tracking-wide text-muted-foreground">{uiText("sessions")}</div>
               </div>
               <div className="rounded-xl bg-emerald-500/10 p-4 text-center">
                 <div className="text-3xl font-bold text-emerald-500">{todayMinutes}</div>
-                <div className="mt-1 text-[11px] uppercase tracking-wide text-muted-foreground">focus minutes</div>
+                <div className="mt-1 text-[11px] uppercase tracking-wide text-muted-foreground">{uiText("focus minutes")}</div>
               </div>
             </div>
             {completedSessions > 0 && (
@@ -450,14 +451,14 @@ export function FocusView() {
           </SectionCard>
 
           {/* Task / Habit selector */}
-          <SectionCard title="Focus on" icon="Target">
+          <SectionCard title={uiText("Focus on")} icon="Target">
             {tasks.length > 0 && (
               <div className="mb-3">
-                <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-amber-500">Tasks</p>
+                <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-amber-500">{uiText("Tasks")}</p>
                 <Select value={selectedItemType === "task" ? selectedItemId : "none"} onValueChange={(v) => selectItem(v, "task")}>
-                  <SelectTrigger className="h-9"><SelectValue placeholder="Pick a task…" /></SelectTrigger>
+                  <SelectTrigger className="h-9"><SelectValue placeholder={uiText("Pick a task…")} /></SelectTrigger>
                   <SelectContent className="max-h-60">
-                    <SelectItem value="none">No task</SelectItem>
+                    <SelectItem value="none">{uiText("No task")}</SelectItem>
                     {tasks.map((t) => (
                       <SelectItem key={t.id} value={t.id}>
                         <span className="line-clamp-1">{t.title}</span>
@@ -470,11 +471,11 @@ export function FocusView() {
 
             {habits.length > 0 && (
               <div className="mb-3">
-                <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-500">Habits</p>
+                <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-500">{uiText("Habits")}</p>
                 <Select value={selectedItemType === "habit" ? selectedItemId : "none"} onValueChange={(v) => selectItem(v, "habit")}>
-                  <SelectTrigger className="h-9"><SelectValue placeholder="Pick a habit…" /></SelectTrigger>
+                  <SelectTrigger className="h-9"><SelectValue placeholder={uiText("Pick a habit…")} /></SelectTrigger>
                   <SelectContent className="max-h-60">
-                    <SelectItem value="none">No habit</SelectItem>
+                    <SelectItem value="none">{uiText("No habit")}</SelectItem>
                     {habits.map((h) => (
                       <SelectItem key={h.id} value={h.id}>
                         <span className="line-clamp-1">Leaf {h.title}</span>
