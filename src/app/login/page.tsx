@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -308,8 +309,8 @@ export default function LoginPage() {
                 >
                   <Check className="h-8 w-8" strokeWidth={3} />
                 </motion.div>
-                <h2 className="text-xl font-bold">Welcome to Life OS</h2>
-                <p className="mt-1.5 text-sm text-muted-foreground">Opening your digital brain…</p>
+                <h2 className="text-xl font-bold">{uiText("Welcome to Life OS")}</h2>
+                <p className="mt-1.5 text-sm text-muted-foreground">{uiText("Opening your digital brain…")}</p>
                 <Loader2 className="mx-auto mt-4 h-5 w-5 animate-spin text-muted-foreground" />
               </motion.div>
             )}
