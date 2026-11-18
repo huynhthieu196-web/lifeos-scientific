@@ -76,7 +76,7 @@ export function ReviewsView() {
               icon="NotebookPen"
               title={`No ${tab} reviews yet`}
               description={tab === "daily" ? "End each day with a few minutes of reflection. Wins, challenges, gratitude, and a focus for tomorrow." : "Once a week, clear the inbox, check project health, and set priorities for the week ahead."}
-              action={{ label: "Start reflection", onClick: () => setDrafting(true) }}
+              action={{ label: uiText("Start reflection"), onClick: () => setDrafting(true) }}
             />
           ) : (
             <div className="space-y-4">
@@ -121,7 +121,7 @@ function ReviewForm({ type, onDone }: { type: "daily" | "weekly"; onDone: () => 
       priorities: form.priorities.filter((p) => p.trim()),
       mood: form.mood, energy: form.energy,
     });
-    notify.success(`${type === "daily" ? "Daily" : "Weekly"} reflection saved`);
+    notify.success(type === "daily" ? uiText("Daily review saved") : uiText("Weekly review saved"));
     onDone();
   }
 
@@ -269,7 +269,7 @@ function ReviewCard({ review, onOpenItem }: { review: any; onOpenItem: (id: stri
                     {review.mood && <span>Mood {["", "Low", "Meh", "Okay", "Good", "Great"][review.mood]}</span>}
                     {review.energy && <span>Energy {["", "Drained", "Low", "Steady", "Strong", "Charged"][review.energy]}</span>}
                   </div>
-                  <Button variant="ghost" size="sm" className="text-rose-500 hover:text-rose-600" onClick={() => { del.mutate(review.id); notify.success("Deleted"); }}>
+                  <Button variant="ghost" size="sm" className="text-rose-500 hover:text-rose-600" onClick={() => { del.mutate(review.id); notify.success(uiText("Deleted")); }}>
                     <Icon name="Trash2" className="h-3.5 w-3.5" />
                   </Button>
                 </div>
