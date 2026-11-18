@@ -76,7 +76,7 @@ export function InsightsView() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => { runScheduler.mutate(); notify.info("Running scheduler…"); }}
+              onClick={() => { runScheduler.mutate(); notify.info(uiText("Running scheduler…")); }}
               disabled={runScheduler.isPending}
               className="gap-1.5"
               title={uiText("Advance recurring items and reset stale habit streaks")}
