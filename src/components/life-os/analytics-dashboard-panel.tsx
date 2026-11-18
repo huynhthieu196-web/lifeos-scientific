@@ -7,7 +7,6 @@ import {
   Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from "recharts";
 import { useLifeOS } from "@/store/life-os";
-import { useId } from "react";
 import { Icon } from "./icon";
 import type { AnalyticsDays, AnalyticsDay } from "@/lib/lifeos-analytics";
 import type { ScientificRecommendation } from "@/lib/scientific-advisor";
