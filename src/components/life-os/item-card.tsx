@@ -1,4 +1,5 @@
 "use client";
+import { uiText } from "@/lib/ui-copy";
 
 import { cn } from "@/lib/utils";
 import { Icon } from "./icon";
@@ -50,7 +51,7 @@ export function ItemCard({ item, onClick, compact, showProject, className }: Ite
       {/* checkbox or type icon */}
       <div className="ml-1.5 flex-shrink-0 pt-0.5">
         {completable ? (
-          <button onClick={toggleDone} className="flex h-5 w-5 items-center justify-center" aria-label="toggle complete">
+          <button onClick={toggleDone} className="flex h-5 w-5 items-center justify-center" aria-label={uiText("toggle complete")}>
             <div
               className={cn(
                 "flex h-[18px] w-[18px] items-center justify-center rounded-md border-2 transition-all",
