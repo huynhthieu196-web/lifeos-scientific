@@ -158,7 +158,7 @@ export function CalendarView() {
         {/* Right column: layers + selected day */}
         <div className="space-y-6">
           {/* Layers */}
-          <SectionCard title="Layers" icon="Layers">
+          <SectionCard title={uiText("Layers")} icon="Layers">
             <div className="mb-3 flex gap-1 rounded-lg bg-muted p-1">
               <button
                 onClick={() => setCalendarLayerMode("type")}
