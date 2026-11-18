@@ -173,7 +173,7 @@ export function QuickCapture() {
                   style={type === t ? { background: m.color } : {}}
                 >
                   <Icon name={m.icon} className="h-3 w-3" />
-                  {m.name}
+                  {uiText(m.name)}
                   <span className={cn(
                     "ml-0.5 inline-flex h-3.5 w-3.5 items-center justify-center rounded text-[8px] font-bold leading-none",
                     type === t ? "text-white/60" : "text-muted-foreground/50"
