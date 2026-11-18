@@ -679,7 +679,7 @@ function JournalEditor({
           onChange={(e) => onChange(e.target.value)}
           rows={14}
           className="resize-y border-0 bg-background p-4 text-[15px] leading-relaxed focus-visible:ring-0"
-          placeholder="What's on your mind? Write freely…&#10;&#10;Markdown is supported — use **bold**, *italic*, # headings, - lists."
+          placeholder={useLifeOS.getState().locale === "vi" ? "Bạn đang nghĩ gì? Hãy viết tự do…\n\nHỗ trợ Markdown: **in đậm**, *in nghiêng*, # tiêu đề, - danh sách." : "What’s on your mind? Write freely…\n\nMarkdown is supported — use **bold**, *italic*, # headings, - lists."}
           autoFocus
         />
       </div>
