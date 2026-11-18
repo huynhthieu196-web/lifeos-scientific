@@ -90,7 +90,7 @@ export function FocusView() {
       if (soundPref !== null) setSoundEnabled(soundPref === "true");
     } catch {}
     void refreshFocusStats().catch(() => {
-      notify.error("Focus history unavailable", "Check your cloud connection and try again.");
+      notify.error(uiText("Focus history unavailable"), uiText("Check your cloud connection and try again."));
     });
   }, [refreshFocusStats]);
 
@@ -111,7 +111,7 @@ export function FocusView() {
       if (!res.ok) throw new Error("Cloud save failed");
       await refreshFocusStats();
     } catch {
-      notify.error("Could not save focus session", "Your progress has not been stored on cloud. Check your connection.");
+      notify.error(uiText("Could not save focus session"), uiText("Your progress has not been stored on cloud. Check your connection."));
     }
   }
 
@@ -318,7 +318,7 @@ export function FocusView() {
                 style={mode === m ? { color: PRESETS[m].color } : {}}
               >
                 <Icon name={PRESETS[m].icon} className="h-3.5 w-3.5" />
-                {PRESETS[m].label}
+                {uiText(PRESETS[m].label)}
               </button>
             ))}
           </div>
